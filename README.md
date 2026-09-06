@@ -219,7 +219,34 @@ tests/                 scoring, de-vig, matching, aggregation, simulation
 - **CBS** serves season-long totals under the weekly URL until a week's
   projections publish. The scraper detects this via the games-played column and
   skips rather than feeding season totals into a weekly consensus.
-- **Vegas** props are cached hard — the free tier is 500 requests/month.
+- **Vegas** props are cached hard, and the request budget needs watching. The
+  Odds API bills **one credit per market per region for every event priced**, so
+  with six markets each game costs six credits, not one. Its events endpoint is
+  free but lists the *whole season*, so events are filtered to the target week
+  before anything is fetched:
+
+  | | events priced | credits |
+  | --- | --- | --- |
+  | Pricing every listed event | 272 | 1,632 |
+  | One week, filtered | ~16 | ~96 |
+
+  That is roughly 413 credits a month at one run per week, inside the free
+  tier's 500 but without much headroom. Two guards protect it:
+  `odds_api.max_events_per_pull` caps the events in a single pull, and a pull
+  refuses to start if the remaining quota is below its estimated cost, so a run
+  either completes or spends nothing. `--refresh` deliberately does not bust the
+  Vegas cache for this reason. To cut the cost, drop entries from
+  `odds_api.markets` — the bill scales linearly with that list.
+
+  Check the key and the current budget any time:
+
+  ```bash
+  python tools/check_odds_api.py          # 2 requests; verifies key, markets, cost
+  python tools/check_odds_api.py --quota  # 1 request; quota only
+  ```
+
+  Secrets only exist inside a CI runner, so the `odds-api` job in
+  `.github/workflows/tests.yml` runs this on every push.
 
 ## Tests
 
