@@ -167,6 +167,20 @@ The `Weekly projections` workflow runs every Tuesday at 13:00 UTC and can also
 be triggered by hand from the Actions tab (with an optional week override). It
 regenerates the site, commits `docs/` and `output/`, and deploys Pages.
 
+The site is published at **https://pykerl.github.io/fantasy_stats/**.
+
+Either Pages source works, and the workflow handles both:
+
+- **Source: GitHub Actions** — the `deploy` job publishes the generated site as
+  an artifact. This is what the workflow is built for.
+- **Source: Deploy from a branch → `main` → `/docs`** — Pages serves the `docs/`
+  directory the workflow already commits. The `deploy` job has nothing to do and
+  is allowed to fail without failing the run.
+
+Setting the branch source to `/ (root)` instead of `/docs` makes Pages render
+`README.md` through Jekyll rather than serving the site; the generated pages are
+then reachable only under `/docs/`.
+
 To enable it:
 
 1. **Settings → Pages → Source: GitHub Actions.**

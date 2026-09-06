@@ -122,9 +122,17 @@ jobs:
         with:
           path: docs
 
+  # Publishes the site when Pages is set to "GitHub Actions" as its source.
+  #
+  # Under the other setting — "Deploy from a branch" — Pages serves the docs/
+  # directory that the generate job already committed, and this step has nothing
+  # to do and errors out. That is a configuration difference, not a broken run,
+  # so it is allowed to fail without failing the workflow: the site is published
+  # either way, and the generate job is what actually matters.
   deploy:
     needs: generate
     runs-on: ubuntu-latest
+    continue-on-error: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
