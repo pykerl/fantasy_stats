@@ -57,6 +57,16 @@ class TeamSim:
     scores: np.ndarray = field(repr=False, default=None)
 
     @property
+    def floor(self) -> float:
+        """10th-percentile team score — a realistic bad week, not the worst case."""
+        return round(float(np.percentile(self.scores, 10)), 1) if self.scores is not None and self.scores.size else 0.0
+
+    @property
+    def ceiling(self) -> float:
+        """90th-percentile team score."""
+        return round(float(np.percentile(self.scores, 90)), 1) if self.scores is not None and self.scores.size else 0.0
+
+    @property
     def problems(self) -> list[StarterProjection]:
         return [s for s in self.starters if s.problem]
 

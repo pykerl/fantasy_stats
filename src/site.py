@@ -80,6 +80,18 @@ def _week_data(result) -> dict:
         "is_demo": result.league.is_demo,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source_status": result.source_status,
+        "power_rankings": [
+            {
+                "rank": rank,
+                "team": t.team.name,
+                "record": t.team.record,
+                "projected": round(t.mean, 2),
+                "floor_p10": t.floor,
+                "ceiling_p90": t.ceiling,
+                "sigma": round(t.sigma, 2),
+            }
+            for rank, t in enumerate(sorted(result.sim.teams, key=lambda x: -x.mean), start=1)
+        ],
         "matchups": [
             {
                 "home": m.home.team.name,
@@ -120,6 +132,7 @@ def _render_week_page(site: dict, result, archive: dict, is_index: bool = False)
             "The projections, the Vegas math and the simulation are real; the league is not.</div>"
         )
 
+    body.append(_render_power_rankings(sim))
     body.append(_render_scoreboard(sim))
     body.append(_render_league_notes(sim))
     body.append(f'<section class="column">{to_html(result.markdown)}</section>')
@@ -195,6 +208,64 @@ def _matchup_card(m: MatchupSim, volatile_cut: float) -> str:
     <div><dt>Boom-bust</dt><dd>{m.boom_bust:.1f}</dd></div>
   </dl>
 </article>"""
+
+
+def _render_power_rankings(sim: LeagueSim) -> str:
+    """All teams ranked by projection, with the spread of outcomes behind it.
+
+    A table rather than a chart: sixteen teams all carry meaning, and past about
+    seven classes a chart's categories blur into each other. The range mark is a
+    single hue on one shared scale, so rows are directly comparable — and the
+    overlap between them is the point.
+    """
+    teams = sorted(sim.teams, key=lambda t: -t.mean)
+    if not teams:
+        return ""
+
+    low = min(t.floor for t in teams)
+    high = max(t.ceiling for t in teams)
+    span = (high - low) or 1.0
+
+    rows = []
+    for rank, team in enumerate(teams, start=1):
+        left = (team.floor - low) / span * 100
+        width = (team.ceiling - team.floor) / span * 100
+        centre = (team.mean - low) / span * 100
+        label = (
+            f"{team.team.name}: projected {team.mean:.1f}, "
+            f"range {team.floor:.0f} to {team.ceiling:.0f}"
+        )
+        rows.append(
+            f"<tr><td class='num rank'>{rank}</td>"
+            f"<td class='rank-team'>{html.escape(team.team.name)}"
+            f"<span class='rank-record'>{html.escape(team.team.record)}</span></td>"
+            f"<td class='num strong'>{team.mean:.1f}</td>"
+            f"<td class='num muted'>{team.floor:.0f}&ndash;{team.ceiling:.0f}</td>"
+            f"<td class='rangecell'>"
+            f"<div class='rangetrack' role='img' aria-label=\"{html.escape(label)}\">"
+            f"<div class='rangebar' style='left:{left:.2f}%;width:{max(width, 0.6):.2f}%'></div>"
+            f"<div class='rangedot' style='left:{centre:.2f}%'></div>"
+            f"</div></td>"
+            f"<td class='num muted'>{team.sigma:.1f}</td></tr>"
+        )
+
+    gap = teams[0].mean - teams[-1].mean
+    overlap = sum(1 for t in teams if t.ceiling >= teams[0].mean)
+    return (
+        '<section><h2 class="section-title">Power Rankings</h2>'
+        '<div class="scroll"><table class="data rankings"><thead><tr>'
+        "<th class='num'>#</th><th>Team</th><th class='num'>Proj</th>"
+        "<th class='num'>Range</th>"
+        "<th class='rangehead'>Distribution"
+        f"<span class='rangescale'><span>{low:.0f}</span><span>{high:.0f}</span></span></th>"
+        "<th class='num'>&sigma;</th>"
+        f'</tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
+        f'<p class="note">Ranked by projected points. The bar spans the 10th to 90th '
+        f'percentile of 10,000 simulations and the dot is the projection, all on one '
+        f'shared scale. First to last is {gap:.1f} points, but {overlap} of '
+        f'{len(teams)} teams have a ceiling above the top team\'s projection — on any '
+        f'given week this order means less than it looks.</p></section>'
+    )
 
 
 def _render_league_notes(sim: LeagueSim) -> str:
@@ -485,6 +556,54 @@ table.data td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
 table.data tr:hover td { background: var(--accent-soft); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .note { font-size: 14px; color: var(--muted); margin-top: -6px; }
+/* Power rankings. One hue on one shared scale; the numbers sit in the table so
+   nothing is conveyed by position or colour alone. */
+table.rankings td { vertical-align: middle; }
+td.rank { color: var(--muted); width: 1%; }
+td.strong { font-weight: 700; }
+td.muted { color: var(--muted); }
+.rank-team { font-weight: 600; white-space: nowrap; }
+.rank-record { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 8px; }
+/* The scale endpoints sit on their own line so they cannot collide with the
+   column label, and they align with the track they describe. */
+th.rangehead { min-width: 200px; }
+th.rangehead .rangescale {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  padding-top: 2px;
+}
+td.rangecell { width: 40%; min-width: 180px; }
+.rangetrack { position: relative; height: 18px; }
+/* Hairline, solid, one step off the surface — the axis must stay recessive. */
+.rangetrack::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: var(--border);
+}
+.rangebar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  border-radius: 3px;      /* rounded data-ends */
+  background: var(--accent);
+  opacity: 0.35;           /* a wash, so the projection dot reads on top */
+}
+.rangedot {
+  position: absolute;
+  top: 50%;
+  width: 9px; height: 9px;
+  margin-left: -4.5px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--surface);   /* surface ring, not a border */
+}
 .archive { list-style: none; padding: 0; margin: 0; }
 .archive li {
   display: flex;

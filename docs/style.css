@@ -173,6 +173,54 @@ table.data td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
 table.data tr:hover td { background: var(--accent-soft); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .note { font-size: 14px; color: var(--muted); margin-top: -6px; }
+/* Power rankings. One hue on one shared scale; the numbers sit in the table so
+   nothing is conveyed by position or colour alone. */
+table.rankings td { vertical-align: middle; }
+td.rank { color: var(--muted); width: 1%; }
+td.strong { font-weight: 700; }
+td.muted { color: var(--muted); }
+.rank-team { font-weight: 600; white-space: nowrap; }
+.rank-record { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 8px; }
+/* The scale endpoints sit on their own line so they cannot collide with the
+   column label, and they align with the track they describe. */
+th.rangehead { min-width: 200px; }
+th.rangehead .rangescale {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  padding-top: 2px;
+}
+td.rangecell { width: 40%; min-width: 180px; }
+.rangetrack { position: relative; height: 18px; }
+/* Hairline, solid, one step off the surface — the axis must stay recessive. */
+.rangetrack::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: var(--border);
+}
+.rangebar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  border-radius: 3px;      /* rounded data-ends */
+  background: var(--accent);
+  opacity: 0.35;           /* a wash, so the projection dot reads on top */
+}
+.rangedot {
+  position: absolute;
+  top: 50%;
+  width: 9px; height: 9px;
+  margin-left: -4.5px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--surface);   /* surface ring, not a border */
+}
 .archive { list-style: none; padding: 0; margin: 0; }
 .archive li {
   display: flex;

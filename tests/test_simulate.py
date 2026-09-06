@@ -102,3 +102,38 @@ def test_problem_flags_surface_broken_lineup_slots():
     assert empty.problem == "empty slot"
     assert "O" in injured.problem
     assert healthy.problem == ""
+
+
+# --------------------------------------------------------------------------
+# Floor and ceiling, which the power rankings table is built on
+# --------------------------------------------------------------------------
+
+
+def test_floor_and_ceiling_bracket_the_projection():
+    lineup = [starter(f"p{i}", f"T{i}", 15.0, 6.0) for i in range(9)]
+    scores = _simulate_team(lineup, np.random.default_rng(11), ITERATIONS, 0.0)
+    team = TeamSim(Team("t", "Team"), lineup, float(scores.mean()), float(scores.std()), scores)
+
+    assert team.floor < team.mean < team.ceiling
+    # 10th and 90th percentiles of a normal sit about 1.28 sigma either side.
+    assert team.mean - team.floor == pytest.approx(1.28 * team.sigma, rel=0.1)
+    assert team.ceiling - team.mean == pytest.approx(1.28 * team.sigma, rel=0.1)
+
+
+def test_a_volatile_team_has_a_wider_range_at_the_same_projection():
+    steady = [starter(f"s{i}", f"T{i}", 15.0, 3.0) for i in range(9)]
+    wild = [starter(f"w{i}", f"U{i}", 15.0, 9.0) for i in range(9)]
+
+    steady_scores = _simulate_team(steady, np.random.default_rng(12), ITERATIONS, 0.0)
+    wild_scores = _simulate_team(wild, np.random.default_rng(12), ITERATIONS, 0.0)
+    a = TeamSim(Team("a", "Steady"), steady, float(steady_scores.mean()), float(steady_scores.std()), steady_scores)
+    b = TeamSim(Team("b", "Wild"), wild, float(wild_scores.mean()), float(wild_scores.std()), wild_scores)
+
+    assert a.mean == pytest.approx(b.mean, rel=0.02)
+    assert (b.ceiling - b.floor) > (a.ceiling - a.floor)
+
+
+def test_floor_and_ceiling_are_zero_for_an_unsimulated_team():
+    empty = TeamSim(Team("e", "Empty"), [], 0.0, 0.0, np.array([]))
+    assert empty.floor == 0.0
+    assert empty.ceiling == 0.0

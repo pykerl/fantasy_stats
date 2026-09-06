@@ -379,6 +379,20 @@ def render_markdown(ctx: ReportContext) -> str:
 
     add("---")
     add("")
+    add("## Power Rankings")
+    add("")
+    add("| # | Team | Proj | Floor | Ceiling | σ |")
+    add("| --- | --- | --- | --- | --- | --- |")
+    for rank, team in enumerate(sorted(ctx.sim.teams, key=lambda t: -t.mean), start=1):
+        add(f"| {rank} | {team.team.name} ({team.team.record}) | {team.mean:.1f} | "
+            f"{team.floor:.0f} | {team.ceiling:.0f} | {team.sigma:.1f} |")
+    add("")
+    add("*Floor and ceiling are the 10th and 90th percentiles of 10,000 simulations. "
+        "The ranges overlap almost completely, which is the honest summary of how much "
+        "this order is worth in any single week.*")
+    add("")
+    add("---")
+    add("")
     add("## League Power Notes")
     add("")
     sim = ctx.sim
