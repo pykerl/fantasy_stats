@@ -3,7 +3,7 @@
   "season": 2026,
   "league": "Philly_VZW",
   "is_demo": false,
-  "generated_at": "2026-09-06T15:43:30+00:00",
+  "generated_at": "2026-09-06T15:51:13+00:00",
   "source_status": {
     "sleeper": "462 projections",
     "espn": "675 projections",
@@ -11,6 +11,7 @@
     "cbs": "returned no usable projections",
     "vegas": "474 projections"
   },
+  "schedule_known": false,
   "power_rankings": [
     {
       "rank": 1,
@@ -157,96 +158,7 @@
       "sigma": 15.84
     }
   ],
-  "matchups": [
-    {
-      "home": "Parita's Pleasant Team",
-      "away": "The Chickens",
-      "home_projected": 94.14,
-      "away_projected": 86.59,
-      "home_sigma": 16.4,
-      "away_sigma": 15.95,
-      "home_win_probability": 0.6327,
-      "spread": 7.55,
-      "boom_bust_index": 23.04
-    },
-    {
-      "home": "Krista's Team",
-      "away": "Man Coverage Brandon",
-      "home_projected": 90.68,
-      "away_projected": 90.94,
-      "home_sigma": 16.55,
-      "away_sigma": 16.58,
-      "home_win_probability": 0.4985,
-      "spread": -0.26,
-      "boom_bust_index": 23.21
-    },
-    {
-      "home": "The Fangfather",
-      "away": "Nitya's Definitive Team",
-      "home_projected": 81.18,
-      "away_projected": 93.25,
-      "home_sigma": 15.84,
-      "away_sigma": 16.16,
-      "home_win_probability": 0.294,
-      "spread": -12.06,
-      "boom_bust_index": 22.54
-    },
-    {
-      "home": "CROWN ME THE CHAMP!!",
-      "away": "Pending Update",
-      "home_projected": 93.73,
-      "away_projected": 89.62,
-      "home_sigma": 16.72,
-      "away_sigma": 15.74,
-      "home_win_probability": 0.5763,
-      "spread": 4.11,
-      "boom_bust_index": 22.96
-    },
-    {
-      "home": "Eagles2",
-      "away": "Deck s Destroyers",
-      "home_projected": 85.37,
-      "away_projected": 86.53,
-      "home_sigma": 15.67,
-      "away_sigma": 15.46,
-      "home_win_probability": 0.4784,
-      "spread": -1.15,
-      "boom_bust_index": 22.11
-    },
-    {
-      "home": "pyk's picks",
-      "away": "Hickey's Brawlers",
-      "home_projected": 91.26,
-      "away_projected": 82.4,
-      "home_sigma": 16.15,
-      "away_sigma": 15.39,
-      "home_win_probability": 0.6548,
-      "spread": 8.86,
-      "boom_bust_index": 22.32
-    },
-    {
-      "home": "Scott's Stars",
-      "away": "Mad Dawgs",
-      "home_projected": 89.96,
-      "away_projected": 85.0,
-      "home_sigma": 15.81,
-      "away_sigma": 16.31,
-      "home_win_probability": 0.5896,
-      "spread": 4.97,
-      "boom_bust_index": 22.37
-    },
-    {
-      "home": "Michael\u2019s Blitz",
-      "away": "jeffin's Unrivaled Team",
-      "home_projected": 88.08,
-      "away_projected": 86.78,
-      "home_sigma": 15.32,
-      "away_sigma": 15.11,
-      "home_win_probability": 0.5302,
-      "spread": 1.29,
-      "boom_bust_index": 21.57
-    }
-  ],
+  "matchups": [],
   "players": [
     {
       "name": "Jalen Hurts",

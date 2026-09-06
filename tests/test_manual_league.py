@@ -326,3 +326,26 @@ def test_build_league_pairs_teams_when_the_week_is_unscheduled(tmp_path, index):
     built = build_league(league, week=7, index=index, points={})
     assert len(built.matchups) == 1
     assert any("week 7" in note for note in built.notes)
+
+
+def test_a_week_without_a_schedule_is_flagged(tmp_path, index):
+    """Matchup output is withheld rather than invented when the pairings are unknown."""
+    data = {**MINIMAL}
+    data.pop("schedule")
+    league = load_manual_league(write(tmp_path, data))
+    built = build_league(league, week=1, index=index, points={})
+
+    assert built.schedule_known is False
+    assert any("matchups are hidden" in note for note in built.notes)
+
+
+def test_a_scheduled_week_is_not_flagged(tmp_path, index):
+    league = load_manual_league(write(tmp_path, MINIMAL))
+    built = build_league(league, week=1, index=index, points={})
+    assert built.schedule_known is True
+
+
+def test_an_unscheduled_week_of_a_scheduled_league_is_flagged(tmp_path, index):
+    """A schedule covering week 1 says nothing about week 7."""
+    league = load_manual_league(write(tmp_path, MINIMAL))
+    assert build_league(league, week=7, index=index, points={}).schedule_known is False

@@ -69,6 +69,11 @@ class League:
     # Set when the league came from a hand-maintained file whose lineups are
     # chosen from projections, so the pipeline knows to fill them later.
     manual: object | None = None
+    # False when the matchups are placeholder pairings rather than the real
+    # schedule. Everything matchup-derived is withheld until this is true,
+    # because a spread between two teams that do not play is worse than no
+    # spread at all.
+    schedule_known: bool = True
 
     @property
     def needs_lineups(self) -> bool:

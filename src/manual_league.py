@@ -557,6 +557,8 @@ def build_league(
     by_name = {team.name: team for team in teams}
     matchups = _matchups_for_week(manual, week, by_name, teams)
 
+    scheduled = bool(manual.schedule.get(week))
+
     notes: list[str] = []
     if auto_lineup_teams:
         notes.append(
@@ -571,10 +573,19 @@ def build_league(
             + ("…" if len(unresolved) > 6 else "")
             + ". Run `python -m src.run --check-league` to fix the spellings."
         )
-    if not manual.schedule:
-        notes.append("No `schedule:` in the league file, so teams were paired in listed order.")
-    elif week not in manual.schedule:
-        notes.append(f"No schedule entry for week {week}; teams were paired in listed order.")
+    if not scheduled:
+        where = (
+            "No `schedule:` in the league file"
+            if not manual.schedule
+            else f"No schedule entry for week {week}"
+        )
+        notes.append(
+            f"{where}, so head-to-head matchups are hidden. Team projections and the "
+            "power rankings do not depend on the schedule and are unaffected. Add the "
+            "week's pairings to "
+            f"{manual.source_path.name if manual.source_path else 'the league file'} "
+            "and the matchups come back automatically."
+        )
 
     return League(
         name=manual.name,
@@ -583,6 +594,7 @@ def build_league(
         matchups=matchups,
         is_demo=False,
         notes=notes,
+        schedule_known=scheduled,
     )
 
 

@@ -72,11 +72,19 @@ def main(argv: list[str] | None = None) -> int:
         only_sources=args.sources.split(",") if args.sources else None,
     )
 
-    print(f"\nWeek {result.week}: {len(result.sim.matchups)} matchups, "
+    print(f"\nWeek {result.week}: {len(result.league.teams)} teams, "
           f"{len(result.projections)} players projected from {len(result.source_status)} sources")
-    for matchup in result.sim.matchups:
-        print(f"  {matchup.favorite.team.name} by {abs(matchup.spread):.1f} "
-              f"({matchup.favorite_win_probability:.0%}) over {matchup.underdog.team.name}")
+
+    if result.league.schedule_known:
+        print()
+        for matchup in result.sim.matchups:
+            print(f"  {matchup.favorite.team.name} by {abs(matchup.spread):.1f} "
+                  f"({matchup.favorite_win_probability:.0%}) over {matchup.underdog.team.name}")
+    else:
+        print("\n  Power rankings (matchups hidden — no schedule):")
+        for rank, team in enumerate(sorted(result.sim.teams, key=lambda t: -t.mean), start=1):
+            print(f"  {rank:3}. {team.team.name:26} {team.mean:6.1f}  "
+                  f"({team.floor:.0f}-{team.ceiling:.0f})")
 
     if not args.no_site:
         build_site(config, result)

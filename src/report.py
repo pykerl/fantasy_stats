@@ -139,6 +139,7 @@ class ReportContext:
     source_status: dict[str, str] = field(default_factory=dict)
     league_notes: list[str] = field(default_factory=list)
     is_demo: bool = False
+    schedule_known: bool = True
     cold_open: str = ""
     closer: str = ""
     slate_td_leaders: list[tuple[str, float]] = field(default_factory=list)
@@ -260,26 +261,31 @@ def build_context(
     league_notes: list[str],
     is_demo: bool,
     seed: int | None = None,
+    schedule_known: bool = True,
 ) -> ReportContext:
     rng = random.Random(seed if seed is not None else week * 7919)
 
-    ordered = sorted(sim.matchups, key=lambda m: (abs(m.spread), -m.total))
+    # Without the real schedule every matchup number — spread, win probability,
+    # the Love/Hate picks that are chosen within a matchup — describes a game
+    # nobody is playing. The column runs on the rankings instead.
     narratives = []
-    for matchup in sim.matchups:
-        picks = pick_love_hate(matchup, rng)
-        narratives.append(
-            MatchupNarrative(
-                sim=matchup,
-                picks=picks,
-                riff=_riff(matchup, picks, rng),
-                standings_line=_standings_line(matchup),
+    if schedule_known:
+        for matchup in sim.matchups:
+            picks = pick_love_hate(matchup, rng)
+            narratives.append(
+                MatchupNarrative(
+                    sim=matchup,
+                    picks=picks,
+                    riff=_riff(matchup, picks, rng),
+                    standings_line=_standings_line(matchup),
+                )
             )
-        )
 
-    headline = ordered[0] if ordered else None
-    matchup_label = (
-        f"{headline.home.team.name} vs. {headline.away.team.name}" if headline else "this week's slate"
-    )
+    if schedule_known and sim.matchups:
+        headline = min(sim.matchups, key=lambda m: (abs(m.spread), -m.total))
+        matchup_label = f"{headline.home.team.name} vs. {headline.away.team.name}"
+    else:
+        matchup_label = f"{sim.highest_projected.team.name} sitting on top of the rankings"
 
     return ReportContext(
         week=week,
@@ -290,6 +296,7 @@ def build_context(
         source_status=source_status,
         league_notes=league_notes,
         is_demo=is_demo,
+        schedule_known=schedule_known,
         cold_open=rng.choice(ANECDOTES) + "\n\n" + rng.choice(SEGUES).format(matchup=matchup_label),
         closer=rng.choice(CLOSERS),
         slate_td_leaders=_td_leaders(sim),
@@ -371,11 +378,19 @@ def render_markdown(ctx: ReportContext) -> str:
     add("")
     add("---")
     add("")
-    add("## The Slate")
-    add("")
-
-    for narrative in ctx.narratives:
-        add(_render_matchup(narrative))
+    if ctx.schedule_known:
+        add("## The Slate")
+        add("")
+        for narrative in ctx.narratives:
+            add(_render_matchup(narrative))
+    else:
+        add("## The Slate")
+        add("")
+        add("There isn't one yet — the league export doesn't carry the matchup schedule, "
+            "and I'm not going to preview games nobody is playing. It's not that I don't "
+            "have opinions. It's just that they'd be about the wrong sixteen teams. "
+            "Add the pairings and the spreads come right back.")
+        add("")
 
     add("---")
     add("")
@@ -405,7 +420,7 @@ def render_markdown(ctx: ReportContext) -> str:
         f"{sim.most_volatile.sigma:.1f}-point standard deviation. The boom-bust index does not "
         f"care about your feelings.")
 
-    upsets = [n for n in ctx.narratives if n.sim.is_upset_alert]
+    upsets = [n for n in ctx.narratives if n.sim.is_upset_alert] if ctx.schedule_known else []
     if upsets:
         add(f"- **Upset alerts ({len(upsets)}):** " + ", ".join(
             f"{n.sim.underdog.team.name} ({n.sim.underdog_win_probability:.0%})" for n in upsets
@@ -470,6 +485,23 @@ def build_llm_payload(ctx: ReportContext) -> dict:
         "season": ctx.season,
         "league": ctx.league_name,
         "is_demo": ctx.is_demo,
+        "schedule_known": ctx.schedule_known,
+        "note_for_the_writer": (
+            "The matchup schedule is unknown this week. Do not invent, imply or preview "
+            "any head-to-head game; write from the power rankings instead."
+            if not ctx.schedule_known
+            else ""
+        ),
+        "power_rankings": [
+            {
+                "rank": rank,
+                "team": t.team.name,
+                "projected": round(t.mean, 1),
+                "floor": t.floor,
+                "ceiling": t.ceiling,
+            }
+            for rank, t in enumerate(sorted(ctx.sim.teams, key=lambda x: -x.mean), start=1)
+        ],
         "matchups": [
             {
                 "home": n.sim.home.team.name,

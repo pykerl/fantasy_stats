@@ -91,6 +91,7 @@ def run_week(
         source_status=source_status,
         league_notes=league.notes,
         is_demo=league.is_demo,
+        schedule_known=league.schedule_known,
     )
 
     markdown = None

@@ -80,6 +80,9 @@ def _week_data(result) -> dict:
         "is_demo": result.league.is_demo,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source_status": result.source_status,
+        # Placeholder pairings are withheld here too — a consumer of this file
+        # cannot tell a real spread from an invented one.
+        "schedule_known": result.league.schedule_known,
         "power_rankings": [
             {
                 "rank": rank,
@@ -92,7 +95,7 @@ def _week_data(result) -> dict:
             }
             for rank, t in enumerate(sorted(result.sim.teams, key=lambda x: -x.mean), start=1)
         ],
-        "matchups": [
+        "matchups": [] if not result.league.schedule_known else [
             {
                 "home": m.home.team.name,
                 "away": m.away.team.name,
@@ -133,8 +136,11 @@ def _render_week_page(site: dict, result, archive: dict, is_index: bool = False)
         )
 
     body.append(_render_power_rankings(sim))
-    body.append(_render_scoreboard(sim))
-    body.append(_render_league_notes(sim))
+    if result.league.schedule_known:
+        body.append(_render_scoreboard(sim))
+    else:
+        body.append(_render_schedule_pending())
+    body.append(_render_league_notes(sim, result.league.schedule_known))
     body.append(f'<section class="column">{to_html(result.markdown)}</section>')
     body.append(_render_source_table(result.source_status))
     body.append(_render_player_table(result.projections))
@@ -147,6 +153,19 @@ def _render_week_page(site: dict, result, archive: dict, is_index: bool = False)
         tagline=site["tagline"],
         subtitle=subtitle,
         body="\n".join(body),
+    )
+
+
+def _render_schedule_pending() -> str:
+    """Stand-in for the scoreboard while the matchups are placeholders."""
+    return (
+        '<section><h2 class="section-title">Head-to-Head</h2>'
+        '<div class="pending"><p><strong>Matchups are hidden until the schedule is in.</strong></p>'
+        "<p>The Yahoo export does not include the matchup schedule, so pairing teams here "
+        "would invent games that are not being played. Everything above is unaffected: "
+        "team projections and the power rankings do not depend on who plays whom.</p>"
+        "<p>Add the week's pairings to <code>league.yaml</code> and the spreads, win "
+        "probabilities and matchup previews return automatically.</p></div></section>"
     )
 
 
@@ -268,7 +287,7 @@ def _render_power_rankings(sim: LeagueSim) -> str:
     )
 
 
-def _render_league_notes(sim: LeagueSim) -> str:
+def _render_league_notes(sim: LeagueSim, schedule_known: bool = True) -> str:
     top = sim.highest_projected
     volatile = sim.most_volatile
     scorer = sim.top_scorer
@@ -279,13 +298,17 @@ def _render_league_notes(sim: LeagueSim) -> str:
     if scorer and scorer.projection:
         p = scorer.projection
         tiles.append(("Projected top scorer", html.escape(p.name), f"{p.consensus:.1f} pts · {html.escape(p.position)}"))
-    closest = sim.closest_matchup
+    # "Closest call" compares two teams, so it means nothing without a schedule.
+    closest = sim.closest_matchup if schedule_known else None
     if closest:
         tiles.append((
             "Closest call",
             f"{html.escape(closest.home.team.name)} / {html.escape(closest.away.team.name)}",
             f"{abs(closest.spread):.1f}-point spread",
         ))
+    else:
+        spread = top.mean - min(t.mean for t in sim.teams)
+        tiles.append(("Top to bottom", f"{spread:.1f} points", "across all teams"))
     cells = "".join(
         f'<div class="tile"><span class="tile-label">{label}</span>'
         f'<span class="tile-value">{value}</span>'
@@ -623,6 +646,21 @@ footer {
 }
 .disclaimer { font-size: 12px; }
 .empty { color: var(--muted); }
+.pending {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 4px 20px 16px;
+  color: var(--muted);
+}
+.pending strong { color: var(--text); }
+.pending code {
+  background: var(--accent-soft);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 13px;
+}
 @media (max-width: 560px) {
   .teams { grid-template-columns: 1fr auto; }
   .team-away > * { grid-column: 2; }

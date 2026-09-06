@@ -240,6 +240,21 @@ footer {
 }
 .disclaimer { font-size: 12px; }
 .empty { color: var(--muted); }
+.pending {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 4px 20px 16px;
+  color: var(--muted);
+}
+.pending strong { color: var(--text); }
+.pending code {
+  background: var(--accent-soft);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 13px;
+}
 @media (max-width: 560px) {
   .teams { grid-template-columns: 1fr auto; }
   .team-away > * { grid-column: 2; }
