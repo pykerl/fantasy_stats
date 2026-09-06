@@ -57,7 +57,11 @@ class ESPNSource(Source):
 
     def parse(self, payload) -> list[Projection]:
         out: list[Projection] = []
+        skipped = 0
         for entry in payload.get("players", []):
+            if _is_unprojected(entry):
+                skipped += 1
+                continue
             stats = {STAT_IDS[k]: float(v) for k, v in (entry.get("stats") or {}).items() if k in STAT_IDS}
             if entry.get("position") == "K":
                 # ESPN publishes made-FG buckets but not total yardage, which
@@ -75,7 +79,20 @@ class ESPNSource(Source):
                     points=entry.get("points"),
                 )
             )
+        if skipped:
+            log.info("espn: skipped %d players it publishes no projection for", skipped)
         return out
+
+
+def _is_unprojected(entry: dict) -> bool:
+    """True when ESPN is not projecting this player, rather than projecting zero.
+
+    ESPN emits a weekly row for players it has no projection for: an empty stat
+    dict with an applied total of 0.0. That is a missing value, not a forecast
+    of zero points, and averaging it into a consensus drags a real starter down
+    by a third. A genuine zero still carries its stat keys.
+    """
+    return not (entry.get("stats") or {}) and not entry.get("points")
 
 
 def _slim(players: list, week: int) -> list:
@@ -94,6 +111,8 @@ def _slim(players: list, week: int) -> list:
                 break
         if row is None:
             continue
+        if not (row.get("stats") or {}) and not row.get("appliedTotal"):
+            continue  # ESPN has no projection for this player this week
         slim.append(
             {
                 "name": player.get("fullName") or "",

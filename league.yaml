@@ -360,26 +360,15 @@ teams:
   - Cameron Dicker
   - Bengals
 
-# ---------------------------------------------------------------------------
-# NO SCHEDULE IN THE EXPORT.
-#
-# Yahoo's export does not include the matchup schedule, so until you fill this
-# in the engine pairs teams in the order above — which is NOT who actually
-# plays whom. Every other number (projections, spreads, win probabilities) is
-# correct; only the pairings are placeholders, and the report says so.
-#
-# Uncomment and set each week's matchups as [home, away]:
-# ---------------------------------------------------------------------------
-#
-# schedule:
-#   1:
-#     - ["Parita's Pleasant Team", "The Chickens"]
-#     - ["Krista's Team", "Man Coverage Brandon"]
-#     - ["The Fangfather", "Nitya's Definitive Team"]
-#     - ["CROWN ME THE CHAMP!!", "Pending Update"]
-#     - ["Eagles2", "Deck s Destroyers"]
-#     - ["pyk's picks", "Hickey's Brawlers"]
-#     - ["Scott's Stars", "Mad Dawgs"]
-#     - ["Michael’s Blitz", "jeffin's Unrivaled Team"]
-#   2:
-#     - [...]
+# Week 1 matchups, entered from the Yahoo league page as [home, away].
+# Add later weeks the same way; a week with no entry hides its matchups.
+schedule:
+  1:
+    - ["pyk's picks", "Nitya's Definitive Team"]
+    - ["CROWN ME THE CHAMP!!", "Eagles2"]
+    - ["Michael’s Blitz", "Mad Dawgs"]
+    - ["Deck s Destroyers", "Scott's Stars"]
+    - ["The Fangfather", "Krista's Team"]
+    - ["Pending Update", "Hickey's Brawlers"]
+    - ["jeffin's Unrivaled Team", "The Chickens"]
+    - ["Parita's Pleasant Team", "Man Coverage Brandon"]
