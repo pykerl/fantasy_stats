@@ -1,0 +1,79 @@
+# Fantasy Weekly Projection Engine — configuration
+#
+# Secrets are NEVER stored here. Every `env:` value below is read from the
+# environment (or a local .env you source yourself). See README.md.
+
+season: 2026
+
+yahoo:
+  # Your Yahoo fantasy league id, e.g. "449.l.123456" or just "123456".
+  league_id: ""
+  game_code: nfl
+  # Yahoo developer app credentials -> https://developer.yahoo.com/apps/
+  consumer_key_env: YAHOO_CONSUMER_KEY
+  consumer_secret_env: YAHOO_CONSUMER_SECRET
+  # Path to the yahoo_oauth token JSON produced by the one-time browser auth.
+  token_file: oauth2.json
+
+fantasypros:
+  # Optional. Without a key the public projection page is scraped, which only
+  # exposes the top ~10 players per position to anonymous visitors.
+  key_env: FANTASYPROS_API_KEY
+
+odds_api:
+  key_env: ODDS_API_KEY
+  # Free tier is 500 requests/month, so we pull once per week and cache hard.
+  regions: us
+  bookmakers: [draftkings, fanduel, betmgm]
+  markets:
+    - player_pass_yds
+    - player_pass_tds
+    - player_rush_yds
+    - player_reception_yds
+    - player_receptions
+    - player_anytime_td
+  # Skip the pull entirely if the cached file is younger than this.
+  cache_ttl_hours: 24
+
+anthropic:
+  key_env: ANTHROPIC_API_KEY
+  model: claude-opus-5
+  max_tokens: 4000
+
+# Relative weights in the consensus. FantasyPros is itself a ~100-analyst
+# aggregate that overlaps the others, so it is deliberately down-weighted.
+source_weights:
+  sleeper: 1.0
+  espn: 1.0
+  fantasypros: 0.7
+  cbs: 0.8
+  vegas: 1.2
+
+# Coefficient of variation priors per position, used to floor the sigma we
+# derive from cross-provider disagreement.
+positional_cv:
+  QB: 0.32
+  RB: 0.46
+  WR: 0.52
+  TE: 0.55
+  K: 0.40
+  DEF: 0.62
+
+simulation:
+  iterations: 10000
+  seed: 20260906
+  # Correlation applied between starters who share an NFL team (a QB->WR stack
+  # booms and busts together).
+  stack_correlation: 0.25
+
+matching:
+  fuzzy_threshold: 90
+  # name -> sleeper_player_id, for players the matcher cannot resolve.
+  overrides: {}
+
+site:
+  title: "The Talented Mr. Roto-ish Weekly"
+  tagline: "Projections, spreads, and mildly unhinged commentary."
+  # Shown in the footer of every page.
+  league_name: "The League"
+  base_url: ""

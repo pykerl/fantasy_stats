@@ -1,0 +1,133 @@
+name: Weekly projections
+
+on:
+  schedule:
+    # 13:00 UTC Tuesday — after Monday Night Football has settled, before waivers.
+    - cron: "0 13 * * 2"
+  workflow_dispatch:
+    inputs:
+      week:
+        description: "NFL week to project (blank = current week)"
+        required: false
+        type: string
+      refresh:
+        description: "Bust the cache and refetch every source"
+        required: false
+        type: boolean
+        default: false
+      llm:
+        description: "Write the column with Claude instead of templates"
+        required: false
+        type: boolean
+        default: true
+
+# Allow the workflow to commit the regenerated site and deploy Pages.
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Never let two runs publish over each other.
+concurrency:
+  group: weekly-projections
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install anthropic pytest
+
+      - name: Run tests
+        run: python -m pytest tests/ -q
+
+      # The Odds API free tier is 500 requests/month, so the cache is restored
+      # between runs and only refreshed when its TTL expires.
+      - name: Restore source cache
+        uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: source-cache-${{ github.run_id }}
+          restore-keys: source-cache-
+
+      # The `secrets` context is not available in a step-level `if`, so the
+      # token is written conditionally inside the script instead.
+      - name: Restore Yahoo OAuth token
+        env:
+          YAHOO_OAUTH_JSON: ${{ secrets.YAHOO_OAUTH_JSON }}
+        run: |
+          if [ -n "$YAHOO_OAUTH_JSON" ]; then
+            printf '%s' "$YAHOO_OAUTH_JSON" > oauth2.json
+            echo "Yahoo OAuth token restored."
+          else
+            echo "No YAHOO_OAUTH_JSON secret set; the run will use the demo league."
+          fi
+
+      - name: Generate the weekly report and site
+        env:
+          YAHOO_CONSUMER_KEY: ${{ secrets.YAHOO_CONSUMER_KEY }}
+          YAHOO_CONSUMER_SECRET: ${{ secrets.YAHOO_CONSUMER_SECRET }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FANTASYPROS_API_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
+          # On a scheduled run these are empty, which is the intended default:
+          # current week, warm cache, LLM column on.
+          INPUT_WEEK: ${{ inputs.week }}
+          INPUT_REFRESH: ${{ inputs.refresh }}
+          INPUT_LLM: ${{ inputs.llm }}
+        run: |
+          # Actions runs this with `set -e`, so use if-blocks rather than
+          # `[ ... ] && ...`, whose failing test would abort the step.
+          args=""
+          if [ -n "$INPUT_WEEK" ]; then
+            args="$args --week $INPUT_WEEK"
+          fi
+          if [ "$INPUT_REFRESH" = "true" ]; then
+            args="$args --refresh"
+          fi
+          # Default to the LLM column; only an explicit "false" turns it off.
+          if [ "$INPUT_LLM" != "false" ]; then
+            args="$args --llm"
+          fi
+          echo "Running: python -m src.run$args"
+          python -m src.run $args
+
+      # The refreshed OAuth token must not be committed.
+      - name: Commit the published site
+        run: |
+          rm -f oauth2.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs output
+          if git diff --staged --quiet; then
+            echo "No changes to publish."
+          else
+            git commit -m "Publish week $(date -u +%V) projections"
+            git push
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: generate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

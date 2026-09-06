@@ -1,0 +1,3638 @@
+{
+  "week": 2,
+  "season": 2026,
+  "league": "Demo League",
+  "is_demo": true,
+  "generated_at": "2026-09-06T14:44:12+00:00",
+  "source_status": {
+    "sleeper": "531 projections",
+    "espn": "634 projections",
+    "fantasypros": "returned no usable projections",
+    "cbs": "returned no usable projections",
+    "vegas": "unavailable \u2014 no Odds API key: set the environment variable named by odds_api.key_env"
+  },
+  "matchups": [
+    {
+      "home": "Fourth and Inches",
+      "away": "Bye Week Believers",
+      "home_projected": 121.69,
+      "away_projected": 127.64,
+      "home_sigma": 20.59,
+      "away_sigma": 21.56,
+      "home_win_probability": 0.4239,
+      "spread": -5.95,
+      "boom_bust_index": 29.84
+    },
+    {
+      "home": "Two Tight End Sets",
+      "away": "The Kicker Truthers",
+      "home_projected": 119.85,
+      "away_projected": 126.77,
+      "home_sigma": 20.36,
+      "away_sigma": 22.42,
+      "home_win_probability": 0.4132,
+      "spread": -6.92,
+      "boom_bust_index": 30.01
+    },
+    {
+      "home": "The Autodrafters",
+      "away": "Certified Flex Enjoyers",
+      "home_projected": 122.15,
+      "away_projected": 129.86,
+      "home_sigma": 21.18,
+      "away_sigma": 22.58,
+      "home_win_probability": 0.4009,
+      "spread": -7.71,
+      "boom_bust_index": 30.87
+    },
+    {
+      "home": "Waiver Wire Warriors",
+      "away": "Pancake Blocks",
+      "home_projected": 120.26,
+      "away_projected": 118.3,
+      "home_sigma": 20.62,
+      "away_sigma": 20.53,
+      "home_win_probability": 0.5253,
+      "spread": 1.96,
+      "boom_bust_index": 29.1
+    },
+    {
+      "home": "Regression Candidates",
+      "away": "Sunday Scaries",
+      "home_projected": 122.98,
+      "away_projected": 115.64,
+      "home_sigma": 20.6,
+      "away_sigma": 19.37,
+      "home_win_probability": 0.6045,
+      "spread": 7.34,
+      "boom_bust_index": 28.39
+    }
+  ],
+  "players": [
+    {
+      "name": "Christian McCaffrey",
+      "position": "RB",
+      "team": "SF",
+      "consensus": 22.14,
+      "sigma": 10.2,
+      "sources": {
+        "sleeper": 22.52,
+        "espn": 21.76
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Josh Allen",
+      "position": "QB",
+      "team": "BUF",
+      "consensus": 21.77,
+      "sigma": 7.02,
+      "sources": {
+        "sleeper": 21.14,
+        "espn": 22.39
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Lamar Jackson",
+      "position": "QB",
+      "team": "BAL",
+      "consensus": 21.57,
+      "sigma": 7.3,
+      "sources": {
+        "sleeper": 19.88,
+        "espn": 23.25
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jayden Daniels",
+      "position": "QB",
+      "team": "WAS",
+      "consensus": 20.59,
+      "sigma": 6.7,
+      "sources": {
+        "sleeper": 19.74,
+        "espn": 21.44
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jahmyr Gibbs",
+      "position": "RB",
+      "team": "DET",
+      "consensus": 20.53,
+      "sigma": 10.06,
+      "sources": {
+        "sleeper": 22.99,
+        "espn": 18.07
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jalen Hurts",
+      "position": "QB",
+      "team": "PHI",
+      "consensus": 20.43,
+      "sigma": 6.63,
+      "sources": {
+        "sleeper": 19.62,
+        "espn": 21.23
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Bijan Robinson",
+      "position": "RB",
+      "team": "ATL",
+      "consensus": 20.33,
+      "sigma": 9.87,
+      "sources": {
+        "sleeper": 22.56,
+        "espn": 18.11
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Puka Nacua",
+      "position": "WR",
+      "team": "LAR",
+      "consensus": 20.22,
+      "sigma": 10.54,
+      "sources": {
+        "sleeper": 20.71,
+        "espn": 19.73
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Justin Fields",
+      "position": "QB",
+      "team": "KC",
+      "consensus": 19.88,
+      "sigma": 6.36,
+      "sources": {
+        "espn": 19.88
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ja'Marr Chase",
+      "position": "WR",
+      "team": "CIN",
+      "consensus": 19.62,
+      "sigma": 10.21,
+      "sources": {
+        "sleeper": 19.37,
+        "espn": 19.86
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Patrick Mahomes",
+      "position": "QB",
+      "team": "KC",
+      "consensus": 19.09,
+      "sigma": 6.27,
+      "sources": {
+        "sleeper": 18.08,
+        "espn": 20.1
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kyler Murray",
+      "position": "QB",
+      "team": "MIN",
+      "consensus": 18.7,
+      "sigma": 6.18,
+      "sources": {
+        "sleeper": 17.61,
+        "espn": 19.79
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dak Prescott",
+      "position": "QB",
+      "team": "DAL",
+      "consensus": 18.6,
+      "sigma": 6.14,
+      "sources": {
+        "sleeper": 19.66,
+        "espn": 17.55
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Drake Maye",
+      "position": "QB",
+      "team": "NE",
+      "consensus": 18.53,
+      "sigma": 5.93,
+      "sources": {
+        "sleeper": 18.59,
+        "espn": 18.46
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Caleb Williams",
+      "position": "QB",
+      "team": "CHI",
+      "consensus": 18.28,
+      "sigma": 5.94,
+      "sources": {
+        "sleeper": 19.01,
+        "espn": 17.56
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Justin Jefferson",
+      "position": "WR",
+      "team": "MIN",
+      "consensus": 18.28,
+      "sigma": 9.72,
+      "sources": {
+        "sleeper": 16.87,
+        "espn": 19.7
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "CeeDee Lamb",
+      "position": "WR",
+      "team": "DAL",
+      "consensus": 18.24,
+      "sigma": 9.52,
+      "sources": {
+        "sleeper": 17.68,
+        "espn": 18.8
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Amon-Ra St. Brown",
+      "position": "WR",
+      "team": "DET",
+      "consensus": 18.19,
+      "sigma": 9.63,
+      "sources": {
+        "sleeper": 19.46,
+        "espn": 16.91
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Justin Herbert",
+      "position": "QB",
+      "team": "LAC",
+      "consensus": 18.09,
+      "sigma": 5.79,
+      "sources": {
+        "sleeper": 18.06,
+        "espn": 18.13
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jordan Love",
+      "position": "QB",
+      "team": "GB",
+      "consensus": 18.04,
+      "sigma": 5.79,
+      "sources": {
+        "sleeper": 17.7,
+        "espn": 18.37
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "De'Von Achane",
+      "position": "RB",
+      "team": "MIA",
+      "consensus": 17.94,
+      "sigma": 8.32,
+      "sources": {
+        "sleeper": 17.2,
+        "espn": 18.69
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Trevor Lawrence",
+      "position": "QB",
+      "team": "JAX",
+      "consensus": 17.85,
+      "sigma": 5.76,
+      "sources": {
+        "sleeper": 17.31,
+        "espn": 18.4
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jaxon Smith-Njigba",
+      "position": "WR",
+      "team": "SEA",
+      "consensus": 17.84,
+      "sigma": 10.44,
+      "sources": {
+        "sleeper": 21.22,
+        "espn": 14.45
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Bo Nix",
+      "position": "QB",
+      "team": "DEN",
+      "consensus": 17.74,
+      "sigma": 5.7,
+      "sources": {
+        "sleeper": 18.1,
+        "espn": 17.38
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "J.J. McCarthy",
+      "position": "QB",
+      "team": "MIN",
+      "consensus": 17.69,
+      "sigma": 5.66,
+      "sources": {
+        "espn": 17.69
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chase Brown",
+      "position": "RB",
+      "team": "CIN",
+      "consensus": 17.45,
+      "sigma": 8.05,
+      "sources": {
+        "sleeper": 17.01,
+        "espn": 17.89
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jonathan Taylor",
+      "position": "RB",
+      "team": "IND",
+      "consensus": 17.44,
+      "sigma": 8.46,
+      "sources": {
+        "sleeper": 19.34,
+        "espn": 15.55
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Baker Mayfield",
+      "position": "QB",
+      "team": "TB",
+      "consensus": 17.42,
+      "sigma": 5.6,
+      "sources": {
+        "sleeper": 17.04,
+        "espn": 17.81
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Matthew Stafford",
+      "position": "QB",
+      "team": "LAR",
+      "consensus": 17.38,
+      "sigma": 5.57,
+      "sources": {
+        "sleeper": 17.14,
+        "espn": 17.61
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "C.J. Stroud",
+      "position": "QB",
+      "team": "HOU",
+      "consensus": 17.28,
+      "sigma": 5.54,
+      "sources": {
+        "sleeper": 17.03,
+        "espn": 17.53
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Nico Collins",
+      "position": "WR",
+      "team": "HOU",
+      "consensus": 17.21,
+      "sigma": 8.96,
+      "sources": {
+        "sleeper": 17.52,
+        "espn": 16.9
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tua Tagovailoa",
+      "position": "QB",
+      "team": "ATL",
+      "consensus": 17.04,
+      "sigma": 5.45,
+      "sources": {
+        "sleeper": 17.0,
+        "espn": 17.07
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jared Goff",
+      "position": "QB",
+      "team": "DET",
+      "consensus": 16.92,
+      "sigma": 5.57,
+      "sources": {
+        "sleeper": 17.84,
+        "espn": 16.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Daniel Jones",
+      "position": "QB",
+      "team": "IND",
+      "consensus": 16.61,
+      "sigma": 5.35,
+      "sources": {
+        "sleeper": 16.15,
+        "espn": 17.07
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "James Cook",
+      "position": "RB",
+      "team": "BUF",
+      "consensus": 16.6,
+      "sigma": 7.83,
+      "sources": {
+        "sleeper": 17.82,
+        "espn": 15.37
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kyren Williams",
+      "position": "RB",
+      "team": "LAR",
+      "consensus": 16.57,
+      "sigma": 7.97,
+      "sources": {
+        "sleeper": 14.91,
+        "espn": 18.23
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Saquon Barkley",
+      "position": "RB",
+      "team": "PHI",
+      "consensus": 16.56,
+      "sigma": 8.08,
+      "sources": {
+        "sleeper": 14.66,
+        "espn": 18.46
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Derrick Henry",
+      "position": "RB",
+      "team": "BAL",
+      "consensus": 16.54,
+      "sigma": 7.85,
+      "sources": {
+        "sleeper": 15.17,
+        "espn": 17.91
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Russell Wilson",
+      "position": "QB",
+      "team": "",
+      "consensus": 16.45,
+      "sigma": 5.26,
+      "sources": {
+        "espn": 16.45
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Josh Jacobs",
+      "position": "RB",
+      "team": "GB",
+      "consensus": 16.11,
+      "sigma": 8.01,
+      "sources": {
+        "sleeper": 13.95,
+        "espn": 18.27
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Drake London",
+      "position": "WR",
+      "team": "ATL",
+      "consensus": 16.05,
+      "sigma": 8.4,
+      "sources": {
+        "sleeper": 16.72,
+        "espn": 15.39
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Brock Bowers",
+      "position": "TE",
+      "team": "LV",
+      "consensus": 16.05,
+      "sigma": 8.83,
+      "sources": {
+        "sleeper": 16.22,
+        "espn": 15.87
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Malik Nabers",
+      "position": "WR",
+      "team": "NYG",
+      "consensus": 16.04,
+      "sigma": 8.95,
+      "sources": {
+        "sleeper": 13.75,
+        "espn": 18.33
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "A.J. Brown",
+      "position": "WR",
+      "team": "NE",
+      "consensus": 15.98,
+      "sigma": 8.32,
+      "sources": {
+        "sleeper": 16.17,
+        "espn": 15.8
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ashton Jeanty",
+      "position": "RB",
+      "team": "LV",
+      "consensus": 15.92,
+      "sigma": 7.57,
+      "sources": {
+        "sleeper": 14.55,
+        "espn": 17.29
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Trey McBride",
+      "position": "TE",
+      "team": "ARI",
+      "consensus": 15.56,
+      "sigma": 8.56,
+      "sources": {
+        "sleeper": 15.52,
+        "espn": 15.61
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Bryce Young",
+      "position": "QB",
+      "team": "CAR",
+      "consensus": 15.54,
+      "sigma": 4.98,
+      "sources": {
+        "sleeper": 15.73,
+        "espn": 15.34
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Michael Penix",
+      "position": "QB",
+      "team": "ATL",
+      "consensus": 15.49,
+      "sigma": 4.96,
+      "sources": {
+        "espn": 15.49
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Sam Darnold",
+      "position": "QB",
+      "team": "SEA",
+      "consensus": 15.46,
+      "sigma": 5.7,
+      "sources": {
+        "sleeper": 17.46,
+        "espn": 13.46
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Mac Jones",
+      "position": "QB",
+      "team": "SF",
+      "consensus": 15.46,
+      "sigma": 4.95,
+      "sources": {
+        "espn": 15.46
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Omarion Hampton",
+      "position": "RB",
+      "team": "LAC",
+      "consensus": 15.44,
+      "sigma": 7.11,
+      "sources": {
+        "sleeper": 15.16,
+        "espn": 15.72
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Geno Smith",
+      "position": "QB",
+      "team": "NYJ",
+      "consensus": 15.41,
+      "sigma": 5.4,
+      "sources": {
+        "sleeper": 13.85,
+        "espn": 16.97
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Spencer Rattler",
+      "position": "QB",
+      "team": "NO",
+      "consensus": 15.3,
+      "sigma": 4.9,
+      "sources": {
+        "espn": 15.3
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cam Ward",
+      "position": "QB",
+      "team": "TEN",
+      "consensus": 15.26,
+      "sigma": 4.94,
+      "sources": {
+        "sleeper": 14.71,
+        "espn": 15.8
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Aaron Rodgers",
+      "position": "QB",
+      "team": "PIT",
+      "consensus": 14.78,
+      "sigma": 4.74,
+      "sources": {
+        "sleeper": 14.61,
+        "espn": 14.96
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Breece Hall",
+      "position": "RB",
+      "team": "NYJ",
+      "consensus": 14.74,
+      "sigma": 6.84,
+      "sources": {
+        "sleeper": 14.13,
+        "espn": 15.36
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tee Higgins",
+      "position": "WR",
+      "team": "CIN",
+      "consensus": 14.73,
+      "sigma": 7.71,
+      "sources": {
+        "sleeper": 15.38,
+        "espn": 14.07
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jeremiyah Love",
+      "position": "RB",
+      "team": "ARI",
+      "consensus": 14.65,
+      "sigma": 6.83,
+      "sources": {
+        "sleeper": 13.85,
+        "espn": 15.45
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Zay Flowers",
+      "position": "WR",
+      "team": "BAL",
+      "consensus": 14.63,
+      "sigma": 7.64,
+      "sources": {
+        "sleeper": 15.14,
+        "espn": 14.12
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyreek Hill",
+      "position": "WR",
+      "team": "",
+      "consensus": 14.13,
+      "sigma": 7.35,
+      "sources": {
+        "espn": 14.13
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Javonte Williams",
+      "position": "RB",
+      "team": "DAL",
+      "consensus": 14.1,
+      "sigma": 6.48,
+      "sources": {
+        "sleeper": 14.12,
+        "espn": 14.07
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chris Olave",
+      "position": "WR",
+      "team": "NO",
+      "consensus": 14.07,
+      "sigma": 7.63,
+      "sources": {
+        "sleeper": 15.6,
+        "espn": 12.55
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Terry McLaurin",
+      "position": "WR",
+      "team": "WAS",
+      "consensus": 14.06,
+      "sigma": 7.31,
+      "sources": {
+        "sleeper": 14.14,
+        "espn": 13.98
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Bucky Irving",
+      "position": "RB",
+      "team": "TB",
+      "consensus": 14.06,
+      "sigma": 6.99,
+      "sources": {
+        "sleeper": 12.19,
+        "espn": 15.93
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Garrett Wilson",
+      "position": "WR",
+      "team": "NYJ",
+      "consensus": 14.03,
+      "sigma": 7.43,
+      "sources": {
+        "sleeper": 13.02,
+        "espn": 15.03
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jaylen Waddle",
+      "position": "WR",
+      "team": "DEN",
+      "consensus": 14.03,
+      "sigma": 7.39,
+      "sources": {
+        "sleeper": 14.87,
+        "espn": 13.19
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tetairoa McMillan",
+      "position": "WR",
+      "team": "CAR",
+      "consensus": 13.91,
+      "sigma": 7.26,
+      "sources": {
+        "sleeper": 14.33,
+        "espn": 13.49
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jaylen Warren",
+      "position": "RB",
+      "team": "PIT",
+      "consensus": 13.87,
+      "sigma": 6.51,
+      "sources": {
+        "sleeper": 12.93,
+        "espn": 14.8
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "DeVonta Smith",
+      "position": "WR",
+      "team": "PHI",
+      "consensus": 13.81,
+      "sigma": 7.39,
+      "sources": {
+        "sleeper": 15.04,
+        "espn": 12.58
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Mike Evans",
+      "position": "WR",
+      "team": "SF",
+      "consensus": 13.78,
+      "sigma": 7.18,
+      "sources": {
+        "sleeper": 13.48,
+        "espn": 14.08
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Davante Adams",
+      "position": "WR",
+      "team": "LAR",
+      "consensus": 13.77,
+      "sigma": 7.42,
+      "sources": {
+        "sleeper": 12.39,
+        "espn": 15.13
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "David Montgomery",
+      "position": "RB",
+      "team": "HOU",
+      "consensus": 13.72,
+      "sigma": 6.37,
+      "sources": {
+        "sleeper": 14.35,
+        "espn": 13.09
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "George Pickens",
+      "position": "WR",
+      "team": "DAL",
+      "consensus": 13.71,
+      "sigma": 7.63,
+      "sources": {
+        "sleeper": 15.62,
+        "espn": 11.79
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Brian Thomas",
+      "position": "WR",
+      "team": "JAX",
+      "consensus": 13.65,
+      "sigma": 8.29,
+      "sources": {
+        "sleeper": 10.61,
+        "espn": 16.68
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ladd McConkey",
+      "position": "WR",
+      "team": "LAC",
+      "consensus": 13.65,
+      "sigma": 7.14,
+      "sources": {
+        "sleeper": 13.08,
+        "espn": 14.22
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kenneth Walker",
+      "position": "RB",
+      "team": "KC",
+      "consensus": 13.33,
+      "sigma": 6.94,
+      "sources": {
+        "sleeper": 15.63,
+        "espn": 11.03
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jameson Williams",
+      "position": "WR",
+      "team": "DET",
+      "consensus": 13.33,
+      "sigma": 6.95,
+      "sources": {
+        "sleeper": 13.68,
+        "espn": 12.98
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ricky Pearsall",
+      "position": "WR",
+      "team": "SF",
+      "consensus": 13.21,
+      "sigma": 6.87,
+      "sources": {
+        "espn": 13.21
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Joe Flacco",
+      "position": "QB",
+      "team": "CIN",
+      "consensus": 13.2,
+      "sigma": 4.23,
+      "sources": {
+        "espn": 13.2
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "DK Metcalf",
+      "position": "WR",
+      "team": "PIT",
+      "consensus": 13.18,
+      "sigma": 7.19,
+      "sources": {
+        "sleeper": 11.65,
+        "espn": 14.71
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "D'Andre Swift",
+      "position": "RB",
+      "team": "CHI",
+      "consensus": 13.09,
+      "sigma": 6.2,
+      "sources": {
+        "sleeper": 12.04,
+        "espn": 14.14
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Deshaun Watson",
+      "position": "QB",
+      "team": "CLE",
+      "consensus": 12.95,
+      "sigma": 4.19,
+      "sources": {
+        "sleeper": 13.36,
+        "espn": 12.55
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chuba Hubbard",
+      "position": "RB",
+      "team": "CAR",
+      "consensus": 12.88,
+      "sigma": 7.07,
+      "sources": {
+        "sleeper": 10.16,
+        "espn": 15.6
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Travis Etienne",
+      "position": "RB",
+      "team": "NO",
+      "consensus": 12.76,
+      "sigma": 5.98,
+      "sources": {
+        "sleeper": 11.96,
+        "espn": 13.56
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Emeka Egbuka",
+      "position": "WR",
+      "team": "TB",
+      "consensus": 12.73,
+      "sigma": 6.86,
+      "sources": {
+        "sleeper": 11.47,
+        "espn": 14.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "DJ Moore",
+      "position": "WR",
+      "team": "BUF",
+      "consensus": 12.72,
+      "sigma": 6.83,
+      "sources": {
+        "sleeper": 11.52,
+        "espn": 13.93
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Rome Odunze",
+      "position": "WR",
+      "team": "CHI",
+      "consensus": 12.42,
+      "sigma": 6.64,
+      "sources": {
+        "sleeper": 11.34,
+        "espn": 13.51
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Marvin Harrison",
+      "position": "WR",
+      "team": "ARI",
+      "consensus": 12.32,
+      "sigma": 6.83,
+      "sources": {
+        "sleeper": 10.66,
+        "espn": 13.98
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jadarian Price",
+      "position": "RB",
+      "team": "SEA",
+      "consensus": 12.31,
+      "sigma": 6.96,
+      "sources": {
+        "sleeper": 9.45,
+        "espn": 15.18
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tony Pollard",
+      "position": "RB",
+      "team": "TEN",
+      "consensus": 12.27,
+      "sigma": 6.4,
+      "sources": {
+        "sleeper": 10.14,
+        "espn": 14.4
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jayden Reed",
+      "position": "WR",
+      "team": "GB",
+      "consensus": 12.23,
+      "sigma": 6.51,
+      "sources": {
+        "sleeper": 13.21,
+        "espn": 11.25
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Courtland Sutton",
+      "position": "WR",
+      "team": "DEN",
+      "consensus": 12.18,
+      "sigma": 6.7,
+      "sources": {
+        "sleeper": 10.64,
+        "espn": 13.72
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jakobi Meyers",
+      "position": "WR",
+      "team": "JAX",
+      "consensus": 12.11,
+      "sigma": 6.93,
+      "sources": {
+        "sleeper": 10.07,
+        "espn": 14.15
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "TreVeyon Henderson",
+      "position": "RB",
+      "team": "NE",
+      "consensus": 12.05,
+      "sigma": 5.59,
+      "sources": {
+        "sleeper": 11.54,
+        "espn": 12.55
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Deebo Samuel",
+      "position": "WR",
+      "team": "SF",
+      "consensus": 11.92,
+      "sigma": 6.43,
+      "sources": {
+        "sleeper": 10.72,
+        "espn": 13.12
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Travis Kelce",
+      "position": "TE",
+      "team": "KC",
+      "consensus": 11.87,
+      "sigma": 6.56,
+      "sources": {
+        "sleeper": 11.47,
+        "espn": 12.28
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyler Warren",
+      "position": "TE",
+      "team": "IND",
+      "consensus": 11.79,
+      "sigma": 6.63,
+      "sources": {
+        "sleeper": 12.77,
+        "espn": 10.81
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Nick Chubb",
+      "position": "RB",
+      "team": "",
+      "consensus": 11.53,
+      "sigma": 5.3,
+      "sources": {
+        "espn": 11.53
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Sam LaPorta",
+      "position": "TE",
+      "team": "DET",
+      "consensus": 11.47,
+      "sigma": 6.32,
+      "sources": {
+        "sleeper": 11.79,
+        "espn": 11.15
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Khalil Shakir",
+      "position": "WR",
+      "team": "BUF",
+      "consensus": 11.37,
+      "sigma": 5.93,
+      "sources": {
+        "sleeper": 11.06,
+        "espn": 11.68
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Quentin Johnston",
+      "position": "WR",
+      "team": "LAC",
+      "consensus": 11.31,
+      "sigma": 5.89,
+      "sources": {
+        "sleeper": 11.09,
+        "espn": 11.53
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Rhamondre Stevenson",
+      "position": "RB",
+      "team": "NE",
+      "consensus": 11.16,
+      "sigma": 5.18,
+      "sources": {
+        "sleeper": 10.7,
+        "espn": 11.62
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Michael Pittman",
+      "position": "WR",
+      "team": "PIT",
+      "consensus": 11.15,
+      "sigma": 5.86,
+      "sources": {
+        "sleeper": 10.53,
+        "espn": 11.77
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tucker Kraft",
+      "position": "TE",
+      "team": "GB",
+      "consensus": 11.1,
+      "sigma": 6.37,
+      "sources": {
+        "sleeper": 12.38,
+        "espn": 9.82
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Carnell Tate",
+      "position": "WR",
+      "team": "TEN",
+      "consensus": 11.07,
+      "sigma": 5.79,
+      "sources": {
+        "sleeper": 10.62,
+        "espn": 11.52
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Aaron Jones",
+      "position": "RB",
+      "team": "MIN",
+      "consensus": 10.95,
+      "sigma": 6.16,
+      "sources": {
+        "sleeper": 8.45,
+        "espn": 13.46
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Keenan Allen",
+      "position": "WR",
+      "team": "IND",
+      "consensus": 10.85,
+      "sigma": 6.35,
+      "sources": {
+        "sleeper": 8.78,
+        "espn": 12.91
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Stefon Diggs",
+      "position": "WR",
+      "team": "WAS",
+      "consensus": 10.74,
+      "sigma": 5.67,
+      "sources": {
+        "sleeper": 11.42,
+        "espn": 10.06
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Colston Loveland",
+      "position": "TE",
+      "team": "CHI",
+      "consensus": 10.59,
+      "sigma": 7.56,
+      "sources": {
+        "sleeper": 14.0,
+        "espn": 7.18
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jordan Mason",
+      "position": "RB",
+      "team": "MIN",
+      "consensus": 10.44,
+      "sigma": 5.08,
+      "sources": {
+        "sleeper": 9.27,
+        "espn": 11.61
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cedric Tillman",
+      "position": "WR",
+      "team": "NO",
+      "consensus": 10.35,
+      "sigma": 5.38,
+      "sources": {
+        "espn": 10.35
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Matthew Golden",
+      "position": "WR",
+      "team": "GB",
+      "consensus": 10.34,
+      "sigma": 5.4,
+      "sources": {
+        "sleeper": 9.98,
+        "espn": 10.69
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Alvin Kamara",
+      "position": "RB",
+      "team": "NO",
+      "consensus": 10.28,
+      "sigma": 8.2,
+      "sources": {
+        "sleeper": 5.54,
+        "espn": 15.02
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Rashid Shaheed",
+      "position": "WR",
+      "team": "SEA",
+      "consensus": 10.2,
+      "sigma": 5.49,
+      "sources": {
+        "sleeper": 9.2,
+        "espn": 11.21
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jonathon Brooks",
+      "position": "RB",
+      "team": "CAR",
+      "consensus": 10.04,
+      "sigma": 4.98,
+      "sources": {
+        "sleeper": 8.72,
+        "espn": 11.36
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Brock Purdy",
+      "position": "QB",
+      "team": "SF",
+      "consensus": 10.02,
+      "sigma": 14.52,
+      "sources": {
+        "sleeper": 20.03,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Romeo Doubs",
+      "position": "WR",
+      "team": "NE",
+      "consensus": 9.98,
+      "sigma": 5.2,
+      "sources": {
+        "sleeper": 10.19,
+        "espn": 9.76
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Calvin Ridley",
+      "position": "WR",
+      "team": "TEN",
+      "consensus": 9.97,
+      "sigma": 7.22,
+      "sources": {
+        "sleeper": 6.42,
+        "espn": 13.53
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "JuJu Smith-Schuster",
+      "position": "WR",
+      "team": "",
+      "consensus": 9.96,
+      "sigma": 5.18,
+      "sources": {
+        "espn": 9.96
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kyle Pitts",
+      "position": "TE",
+      "team": "ATL",
+      "consensus": 9.95,
+      "sigma": 5.88,
+      "sources": {
+        "sleeper": 11.48,
+        "espn": 8.43
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jauan Jennings",
+      "position": "WR",
+      "team": "MIN",
+      "consensus": 9.95,
+      "sigma": 5.77,
+      "sources": {
+        "sleeper": 8.14,
+        "espn": 11.76
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Joe Burrow",
+      "position": "QB",
+      "team": "CIN",
+      "consensus": 9.89,
+      "sigma": 14.35,
+      "sources": {
+        "sleeper": 19.79,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Trey Benson",
+      "position": "RB",
+      "team": "ARI",
+      "consensus": 9.86,
+      "sigma": 4.54,
+      "sources": {
+        "espn": 9.86
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "T.J. Hockenson",
+      "position": "TE",
+      "team": "MIN",
+      "consensus": 9.84,
+      "sigma": 5.73,
+      "sources": {
+        "sleeper": 8.51,
+        "espn": 11.17
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Josh Downs",
+      "position": "WR",
+      "team": "IND",
+      "consensus": 9.83,
+      "sigma": 5.68,
+      "sources": {
+        "sleeper": 11.57,
+        "espn": 8.09
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jerry Jeudy",
+      "position": "WR",
+      "team": "CLE",
+      "consensus": 9.81,
+      "sigma": 7.36,
+      "sources": {
+        "sleeper": 6.07,
+        "espn": 13.56
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Wan'Dale Robinson",
+      "position": "WR",
+      "team": "TEN",
+      "consensus": 9.77,
+      "sigma": 5.08,
+      "sources": {
+        "sleeper": 9.63,
+        "espn": 9.9
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Mark Andrews",
+      "position": "TE",
+      "team": "BAL",
+      "consensus": 9.77,
+      "sigma": 5.43,
+      "sources": {
+        "sleeper": 10.33,
+        "espn": 9.21
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jake Ferguson",
+      "position": "TE",
+      "team": "DAL",
+      "consensus": 9.76,
+      "sigma": 5.38,
+      "sources": {
+        "sleeper": 10.04,
+        "espn": 9.48
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "J.K. Dobbins",
+      "position": "RB",
+      "team": "DEN",
+      "consensus": 9.75,
+      "sigma": 5.08,
+      "sources": {
+        "sleeper": 8.06,
+        "espn": 11.44
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "James Conner",
+      "position": "RB",
+      "team": "ARI",
+      "consensus": 9.72,
+      "sigma": 10.42,
+      "sources": {
+        "sleeper": 3.06,
+        "espn": 16.37
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyrone Tracy",
+      "position": "RB",
+      "team": "NYG",
+      "consensus": 9.7,
+      "sigma": 7.77,
+      "sources": {
+        "sleeper": 5.2,
+        "espn": 14.2
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jaxson Dart",
+      "position": "QB",
+      "team": "NYG",
+      "consensus": 9.69,
+      "sigma": 13.36,
+      "sources": {
+        "sleeper": 18.88,
+        "espn": 0.5
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Juwan Johnson",
+      "position": "TE",
+      "team": "NO",
+      "consensus": 9.44,
+      "sigma": 5.21,
+      "sources": {
+        "sleeper": 9.74,
+        "espn": 9.14
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Hunter Henry",
+      "position": "TE",
+      "team": "NE",
+      "consensus": 9.37,
+      "sigma": 5.17,
+      "sources": {
+        "sleeper": 9.05,
+        "espn": 9.68
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Michael Wilson",
+      "position": "WR",
+      "team": "ARI",
+      "consensus": 9.36,
+      "sigma": 5.57,
+      "sources": {
+        "sleeper": 11.28,
+        "espn": 7.45
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Harold Fannin",
+      "position": "TE",
+      "team": "CLE",
+      "consensus": 9.3,
+      "sigma": 5.45,
+      "sources": {
+        "sleeper": 10.63,
+        "espn": 7.97
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Zach Ertz",
+      "position": "TE",
+      "team": "",
+      "consensus": 9.3,
+      "sigma": 5.11,
+      "sources": {
+        "espn": 9.3
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dylan Sampson",
+      "position": "RB",
+      "team": "CLE",
+      "consensus": 9.19,
+      "sigma": 5.67,
+      "sources": {
+        "sleeper": 6.52,
+        "espn": 11.86
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kareem Hunt",
+      "position": "RB",
+      "team": "",
+      "consensus": 9.13,
+      "sigma": 4.2,
+      "sources": {
+        "espn": 9.13
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kayshon Boutte",
+      "position": "WR",
+      "team": "HOU",
+      "consensus": 9.12,
+      "sigma": 4.79,
+      "sources": {
+        "sleeper": 8.65,
+        "espn": 9.58
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kenny Gainwell",
+      "position": "RB",
+      "team": "TB",
+      "consensus": 9.1,
+      "sigma": 4.21,
+      "sources": {
+        "sleeper": 9.41,
+        "espn": 8.79
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cam Skattebo",
+      "position": "RB",
+      "team": "NYG",
+      "consensus": 9.01,
+      "sigma": 7.31,
+      "sources": {
+        "sleeper": 13.27,
+        "espn": 4.75
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chig Okonkwo",
+      "position": "TE",
+      "team": "WAS",
+      "consensus": 9.01,
+      "sigma": 4.98,
+      "sources": {
+        "sleeper": 9.38,
+        "espn": 8.64
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Rico Dowdle",
+      "position": "RB",
+      "team": "PIT",
+      "consensus": 9.01,
+      "sigma": 6.0,
+      "sources": {
+        "sleeper": 12.07,
+        "espn": 5.94
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Matt Prater",
+      "position": "K",
+      "team": "",
+      "consensus": 8.96,
+      "sigma": 3.59,
+      "sources": {
+        "espn": 8.96
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dalton Schultz",
+      "position": "TE",
+      "team": "HOU",
+      "consensus": 8.94,
+      "sigma": 5.04,
+      "sources": {
+        "sleeper": 9.74,
+        "espn": 8.13
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "De'Zhaun Stribling",
+      "position": "WR",
+      "team": "SF",
+      "consensus": 8.92,
+      "sigma": 5.15,
+      "sources": {
+        "sleeper": 7.33,
+        "espn": 10.5
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "RJ Harvey",
+      "position": "RB",
+      "team": "DEN",
+      "consensus": 8.8,
+      "sigma": 4.64,
+      "sources": {
+        "sleeper": 10.4,
+        "espn": 7.19
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cooper Kupp",
+      "position": "WR",
+      "team": "SEA",
+      "consensus": 8.8,
+      "sigma": 4.72,
+      "sources": {
+        "sleeper": 7.96,
+        "espn": 9.63
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "KC Concepcion",
+      "position": "WR",
+      "team": "CLE",
+      "consensus": 8.75,
+      "sigma": 4.55,
+      "sources": {
+        "sleeper": 8.82,
+        "espn": 8.67
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jacory Croskey-Merritt",
+      "position": "RB",
+      "team": "WAS",
+      "consensus": 8.7,
+      "sigma": 4.02,
+      "sources": {
+        "sleeper": 8.99,
+        "espn": 8.42
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Brandon McManus",
+      "position": "K",
+      "team": "",
+      "consensus": 8.64,
+      "sigma": 3.46,
+      "sources": {
+        "espn": 8.64
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Travis Hunter",
+      "position": "WR",
+      "team": "JAX",
+      "consensus": 8.58,
+      "sigma": 8.38,
+      "sources": {
+        "sleeper": 3.56,
+        "espn": 13.6
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tre Tucker",
+      "position": "WR",
+      "team": "LV",
+      "consensus": 8.57,
+      "sigma": 4.71,
+      "sources": {
+        "sleeper": 9.65,
+        "espn": 7.49
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Rachaad White",
+      "position": "RB",
+      "team": "WAS",
+      "consensus": 8.55,
+      "sigma": 4.6,
+      "sources": {
+        "sleeper": 10.24,
+        "espn": 6.87
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Joshua Karty",
+      "position": "K",
+      "team": "",
+      "consensus": 8.55,
+      "sigma": 3.42,
+      "sources": {
+        "espn": 8.55
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Alec Pierce",
+      "position": "WR",
+      "team": "IND",
+      "consensus": 8.44,
+      "sigma": 5.37,
+      "sources": {
+        "sleeper": 10.63,
+        "espn": 6.26
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Brenton Strange",
+      "position": "TE",
+      "team": "JAX",
+      "consensus": 8.43,
+      "sigma": 4.66,
+      "sources": {
+        "sleeper": 8.13,
+        "espn": 8.74
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cameron Dicker",
+      "position": "K",
+      "team": "LAC",
+      "consensus": 8.39,
+      "sigma": 3.38,
+      "sources": {
+        "sleeper": 8.08,
+        "espn": 8.7
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dalton Kincaid",
+      "position": "TE",
+      "team": "BUF",
+      "consensus": 8.36,
+      "sigma": 4.75,
+      "sources": {
+        "sleeper": 9.19,
+        "espn": 7.54
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyler Loop",
+      "position": "K",
+      "team": "BAL",
+      "consensus": 8.35,
+      "sigma": 3.47,
+      "sources": {
+        "sleeper": 7.69,
+        "espn": 9.01
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyler Shough",
+      "position": "QB",
+      "team": "NO",
+      "consensus": 8.35,
+      "sigma": 12.11,
+      "sources": {
+        "sleeper": 16.71,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Malik Willis",
+      "position": "QB",
+      "team": "MIA",
+      "consensus": 8.34,
+      "sigma": 12.09,
+      "sources": {
+        "sleeper": 16.68,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Keon Coleman",
+      "position": "WR",
+      "team": "BUF",
+      "consensus": 8.33,
+      "sigma": 7.29,
+      "sources": {
+        "sleeper": 4.18,
+        "espn": 12.48
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Brandon Aubrey",
+      "position": "K",
+      "team": "DAL",
+      "consensus": 8.24,
+      "sigma": 3.34,
+      "sources": {
+        "sleeper": 7.87,
+        "espn": 8.6
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ka'imi Fairbairn",
+      "position": "K",
+      "team": "HOU",
+      "consensus": 8.11,
+      "sigma": 3.25,
+      "sources": {
+        "sleeper": 7.96,
+        "espn": 8.26
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Rashod Bateman",
+      "position": "WR",
+      "team": "BAL",
+      "consensus": 8.09,
+      "sigma": 4.41,
+      "sources": {
+        "sleeper": 7.16,
+        "espn": 9.02
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Harrison Butker",
+      "position": "K",
+      "team": "KC",
+      "consensus": 8.04,
+      "sigma": 3.28,
+      "sources": {
+        "sleeper": 7.57,
+        "espn": 8.51
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Luther Burden",
+      "position": "WR",
+      "team": "CHI",
+      "consensus": 8.03,
+      "sigma": 8.65,
+      "sources": {
+        "sleeper": 13.39,
+        "espn": 2.67
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Eddy Pineiro",
+      "position": "K",
+      "team": "SF",
+      "consensus": 8.01,
+      "sigma": 3.29,
+      "sources": {
+        "sleeper": 7.5,
+        "espn": 8.53
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Makai Lemon",
+      "position": "WR",
+      "team": "PHI",
+      "consensus": 8.01,
+      "sigma": 4.43,
+      "sources": {
+        "sleeper": 6.94,
+        "espn": 9.07
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Spencer Shrader",
+      "position": "K",
+      "team": "IND",
+      "consensus": 8.0,
+      "sigma": 3.2,
+      "sources": {
+        "espn": 8.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Evan McPherson",
+      "position": "K",
+      "team": "CIN",
+      "consensus": 7.99,
+      "sigma": 3.35,
+      "sources": {
+        "sleeper": 7.28,
+        "espn": 8.71
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Will Reichard",
+      "position": "K",
+      "team": "MIN",
+      "consensus": 7.98,
+      "sigma": 3.26,
+      "sources": {
+        "sleeper": 7.5,
+        "espn": 8.46
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jake Bates",
+      "position": "K",
+      "team": "DET",
+      "consensus": 7.95,
+      "sigma": 3.39,
+      "sources": {
+        "sleeper": 7.11,
+        "espn": 8.79
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Parker Romo",
+      "position": "K",
+      "team": "",
+      "consensus": 7.95,
+      "sigma": 3.18,
+      "sources": {
+        "espn": 7.95
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chase McLaughlin",
+      "position": "K",
+      "team": "TB",
+      "consensus": 7.93,
+      "sigma": 3.29,
+      "sources": {
+        "sleeper": 7.32,
+        "espn": 8.54
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "AJ Barner",
+      "position": "TE",
+      "team": "SEA",
+      "consensus": 7.92,
+      "sigma": 4.87,
+      "sources": {
+        "sleeper": 9.46,
+        "espn": 6.37
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Trey Smack",
+      "position": "K",
+      "team": "GB",
+      "consensus": 7.87,
+      "sigma": 3.31,
+      "sources": {
+        "sleeper": 7.14,
+        "espn": 8.6
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Calvin Austin",
+      "position": "WR",
+      "team": "NYG",
+      "consensus": 7.87,
+      "sigma": 4.09,
+      "sources": {
+        "espn": 7.87
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Marquise Brown",
+      "position": "WR",
+      "team": "PHI",
+      "consensus": 7.85,
+      "sigma": 8.47,
+      "sources": {
+        "sleeper": 2.6,
+        "espn": 13.1
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Nick Folk",
+      "position": "K",
+      "team": "ATL",
+      "consensus": 7.84,
+      "sigma": 3.2,
+      "sources": {
+        "sleeper": 7.38,
+        "espn": 8.3
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cam Little",
+      "position": "K",
+      "team": "JAX",
+      "consensus": 7.84,
+      "sigma": 3.18,
+      "sources": {
+        "sleeper": 7.45,
+        "espn": 8.23
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jason Myers",
+      "position": "K",
+      "team": "SEA",
+      "consensus": 7.82,
+      "sigma": 3.13,
+      "sources": {
+        "sleeper": 7.87,
+        "espn": 7.76
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Graham Gano",
+      "position": "K",
+      "team": "",
+      "consensus": 7.82,
+      "sigma": 3.13,
+      "sources": {
+        "espn": 7.82
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Andy Borregales",
+      "position": "K",
+      "team": "NE",
+      "consensus": 7.77,
+      "sigma": 3.17,
+      "sources": {
+        "sleeper": 7.35,
+        "espn": 8.2
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Quinshon Judkins",
+      "position": "RB",
+      "team": "CLE",
+      "consensus": 7.77,
+      "sigma": 7.61,
+      "sources": {
+        "sleeper": 12.52,
+        "espn": 3.02
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jake Elliott",
+      "position": "K",
+      "team": "PHI",
+      "consensus": 7.76,
+      "sigma": 3.3,
+      "sources": {
+        "sleeper": 6.96,
+        "espn": 8.55
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cade Otton",
+      "position": "TE",
+      "team": "TB",
+      "consensus": 7.75,
+      "sigma": 4.31,
+      "sources": {
+        "sleeper": 7.3,
+        "espn": 8.19
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Matt Gay",
+      "position": "K",
+      "team": "LV",
+      "consensus": 7.74,
+      "sigma": 3.21,
+      "sources": {
+        "sleeper": 7.13,
+        "espn": 8.35
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cairo Santos",
+      "position": "K",
+      "team": "CHI",
+      "consensus": 7.73,
+      "sigma": 3.15,
+      "sources": {
+        "sleeper": 7.32,
+        "espn": 8.15
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Adam Thielen",
+      "position": "WR",
+      "team": "",
+      "consensus": 7.72,
+      "sigma": 4.01,
+      "sources": {
+        "espn": 7.72
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Wil Lutz",
+      "position": "K",
+      "team": "DEN",
+      "consensus": 7.71,
+      "sigma": 3.13,
+      "sources": {
+        "sleeper": 7.32,
+        "espn": 8.1
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Darnell Mooney",
+      "position": "WR",
+      "team": "NYG",
+      "consensus": 7.63,
+      "sigma": 5.24,
+      "sources": {
+        "sleeper": 5.2,
+        "espn": 10.05
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chris Boswell",
+      "position": "K",
+      "team": "PIT",
+      "consensus": 7.61,
+      "sigma": 3.27,
+      "sources": {
+        "sleeper": 6.78,
+        "espn": 8.45
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Rashee Rice",
+      "position": "WR",
+      "team": "KC",
+      "consensus": 7.57,
+      "sigma": 11.41,
+      "sources": {
+        "sleeper": 15.15,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chad Ryland",
+      "position": "K",
+      "team": "ARI",
+      "consensus": 7.51,
+      "sigma": 3.18,
+      "sources": {
+        "sleeper": 6.77,
+        "espn": 8.26
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Malik Washington",
+      "position": "WR",
+      "team": "MIA",
+      "consensus": 7.49,
+      "sigma": 4.05,
+      "sources": {
+        "sleeper": 6.7,
+        "espn": 8.27
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jalen Nailor",
+      "position": "WR",
+      "team": "LV",
+      "consensus": 7.49,
+      "sigma": 4.07,
+      "sources": {
+        "sleeper": 8.32,
+        "espn": 6.66
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Bhayshul Tuten",
+      "position": "RB",
+      "team": "JAX",
+      "consensus": 7.48,
+      "sigma": 5.82,
+      "sources": {
+        "sleeper": 10.8,
+        "espn": 4.16
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Isiah Pacheco",
+      "position": "RB",
+      "team": "DET",
+      "consensus": 7.48,
+      "sigma": 5.94,
+      "sources": {
+        "sleeper": 4.05,
+        "espn": 10.9
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kirk Cousins",
+      "position": "QB",
+      "team": "LV",
+      "consensus": 7.46,
+      "sigma": 10.82,
+      "sources": {
+        "sleeper": 14.92,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ryan Fitzgerald",
+      "position": "K",
+      "team": "CAR",
+      "consensus": 7.41,
+      "sigma": 3.06,
+      "sources": {
+        "sleeper": 6.89,
+        "espn": 7.94
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Hunter Renfrow",
+      "position": "WR",
+      "team": "",
+      "consensus": 7.38,
+      "sigma": 3.84,
+      "sources": {
+        "espn": 7.38
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jacoby Brissett",
+      "position": "QB",
+      "team": "ARI",
+      "consensus": 7.35,
+      "sigma": 10.66,
+      "sources": {
+        "sleeper": 14.71,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Blake Grupe",
+      "position": "K",
+      "team": "NYJ",
+      "consensus": 7.35,
+      "sigma": 3.0,
+      "sources": {
+        "sleeper": 6.93,
+        "espn": 7.76
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "David Njoku",
+      "position": "TE",
+      "team": "LAC",
+      "consensus": 7.23,
+      "sigma": 6.09,
+      "sources": {
+        "sleeper": 3.97,
+        "espn": 10.49
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "DeMario Douglas",
+      "position": "WR",
+      "team": "NE",
+      "consensus": 7.23,
+      "sigma": 4.64,
+      "sources": {
+        "sleeper": 5.3,
+        "espn": 9.15
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Denzel Boston",
+      "position": "WR",
+      "team": "CLE",
+      "consensus": 7.13,
+      "sigma": 3.88,
+      "sources": {
+        "sleeper": 6.33,
+        "espn": 7.93
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Joey Slye",
+      "position": "K",
+      "team": "TEN",
+      "consensus": 7.11,
+      "sigma": 3.02,
+      "sources": {
+        "sleeper": 6.4,
+        "espn": 7.82
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Blake Corum",
+      "position": "RB",
+      "team": "LAR",
+      "consensus": 7.09,
+      "sigma": 4.1,
+      "sources": {
+        "sleeper": 8.85,
+        "espn": 5.33
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Pat Freiermuth",
+      "position": "TE",
+      "team": "PIT",
+      "consensus": 6.96,
+      "sigma": 3.84,
+      "sources": {
+        "sleeper": 7.16,
+        "espn": 6.75
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Christian Watson",
+      "position": "WR",
+      "team": "GB",
+      "consensus": 6.87,
+      "sigma": 10.35,
+      "sources": {
+        "sleeper": 13.73,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Zach Charbonnet",
+      "position": "RB",
+      "team": "SEA",
+      "consensus": 6.76,
+      "sigma": 5.7,
+      "sources": {
+        "sleeper": 3.38,
+        "espn": 10.14
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Greg Dulcich",
+      "position": "TE",
+      "team": "MIA",
+      "consensus": 6.74,
+      "sigma": 3.73,
+      "sources": {
+        "sleeper": 6.46,
+        "espn": 7.01
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Andre Szmyt",
+      "position": "K",
+      "team": "CLE",
+      "consensus": 6.7,
+      "sigma": 2.86,
+      "sources": {
+        "sleeper": 6.01,
+        "espn": 7.4
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Brandin Cooks",
+      "position": "WR",
+      "team": "",
+      "consensus": 6.62,
+      "sigma": 3.45,
+      "sources": {
+        "espn": 6.62
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ray-Ray McCloud",
+      "position": "WR",
+      "team": "",
+      "consensus": 6.57,
+      "sigma": 3.41,
+      "sources": {
+        "espn": 6.57
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyquan Thornton",
+      "position": "WR",
+      "team": "KC",
+      "consensus": 6.55,
+      "sigma": 3.95,
+      "sources": {
+        "sleeper": 5.14,
+        "espn": 7.96
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dominic Zvada",
+      "position": "K",
+      "team": "NYG",
+      "consensus": 6.54,
+      "sigma": 2.99,
+      "sources": {
+        "sleeper": 5.52,
+        "espn": 7.56
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jayden Higgins",
+      "position": "WR",
+      "team": "HOU",
+      "consensus": 6.43,
+      "sigma": 3.34,
+      "sources": {
+        "espn": 6.43
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Parker Washington",
+      "position": "WR",
+      "team": "JAX",
+      "consensus": 6.42,
+      "sigma": 7.56,
+      "sources": {
+        "sleeper": 11.22,
+        "espn": 1.63
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Evan Engram",
+      "position": "TE",
+      "team": "DEN",
+      "consensus": 6.41,
+      "sigma": 4.95,
+      "sources": {
+        "sleeper": 3.96,
+        "espn": 8.87
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "DeAndre Hopkins",
+      "position": "WR",
+      "team": "",
+      "consensus": 6.32,
+      "sigma": 3.29,
+      "sources": {
+        "espn": 6.32
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Marvin Mims",
+      "position": "WR",
+      "team": "DEN",
+      "consensus": 6.3,
+      "sigma": 4.21,
+      "sources": {
+        "sleeper": 4.42,
+        "espn": 8.17
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Mason Taylor",
+      "position": "TE",
+      "team": "NYJ",
+      "consensus": 6.29,
+      "sigma": 3.69,
+      "sources": {
+        "sleeper": 5.38,
+        "espn": 7.21
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Elic Ayomanor",
+      "position": "WR",
+      "team": "TEN",
+      "consensus": 6.2,
+      "sigma": 5.72,
+      "sources": {
+        "sleeper": 2.86,
+        "espn": 9.54
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "George Kittle",
+      "position": "TE",
+      "team": "SF",
+      "consensus": 6.06,
+      "sigma": 9.2,
+      "sources": {
+        "sleeper": 12.13,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Caleb Douglas",
+      "position": "WR",
+      "team": "MIA",
+      "consensus": 6.04,
+      "sigma": 3.26,
+      "sources": {
+        "sleeper": 5.41,
+        "espn": 6.67
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jalen Coker",
+      "position": "WR",
+      "team": "CAR",
+      "consensus": 5.96,
+      "sigma": 8.97,
+      "sources": {
+        "sleeper": 11.91,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jerome Ford",
+      "position": "RB",
+      "team": "WAS",
+      "consensus": 5.96,
+      "sigma": 2.74,
+      "sources": {
+        "espn": 5.96
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Brian Robinson",
+      "position": "RB",
+      "team": "ATL",
+      "consensus": 5.94,
+      "sigma": 3.02,
+      "sources": {
+        "sleeper": 5.03,
+        "espn": 6.85
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dontayvion Wicks",
+      "position": "WR",
+      "team": "PHI",
+      "consensus": 5.92,
+      "sigma": 3.12,
+      "sources": {
+        "sleeper": 6.29,
+        "espn": 5.55
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Riley Patterson",
+      "position": "K",
+      "team": "MIA",
+      "consensus": 5.85,
+      "sigma": 3.99,
+      "sources": {
+        "sleeper": 3.56,
+        "espn": 8.14
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kyle Monangai",
+      "position": "RB",
+      "team": "CHI",
+      "consensus": 5.85,
+      "sigma": 4.0,
+      "sources": {
+        "sleeper": 7.95,
+        "espn": 3.76
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Xavier Legette",
+      "position": "WR",
+      "team": "CAR",
+      "consensus": 5.78,
+      "sigma": 4.97,
+      "sources": {
+        "sleeper": 2.98,
+        "espn": 8.57
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Malachi Fields",
+      "position": "WR",
+      "team": "NYG",
+      "consensus": 5.77,
+      "sigma": 3.31,
+      "sources": {
+        "sleeper": 6.76,
+        "espn": 4.77
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Germie Bernard",
+      "position": "WR",
+      "team": "PIT",
+      "consensus": 5.76,
+      "sigma": 3.08,
+      "sources": {
+        "sleeper": 5.27,
+        "espn": 6.25
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Devaughn Vele",
+      "position": "WR",
+      "team": "NO",
+      "consensus": 5.76,
+      "sigma": 4.96,
+      "sources": {
+        "sleeper": 8.56,
+        "espn": 2.97
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Gunnar Helm",
+      "position": "TE",
+      "team": "TEN",
+      "consensus": 5.7,
+      "sigma": 4.19,
+      "sources": {
+        "sleeper": 7.66,
+        "espn": 3.74
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jordan Addison",
+      "position": "WR",
+      "team": "MIN",
+      "consensus": 5.68,
+      "sigma": 8.56,
+      "sources": {
+        "sleeper": 11.36,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Justice Hill",
+      "position": "RB",
+      "team": "BAL",
+      "consensus": 5.68,
+      "sigma": 2.96,
+      "sources": {
+        "sleeper": 4.7,
+        "espn": 6.67
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Mike Gesicki",
+      "position": "TE",
+      "team": "CIN",
+      "consensus": 5.65,
+      "sigma": 3.24,
+      "sources": {
+        "sleeper": 6.3,
+        "espn": 4.99
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Noah Fant",
+      "position": "TE",
+      "team": "NO",
+      "consensus": 5.63,
+      "sigma": 4.52,
+      "sources": {
+        "sleeper": 3.3,
+        "espn": 7.96
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Miles Sanders",
+      "position": "RB",
+      "team": "",
+      "consensus": 5.53,
+      "sigma": 2.55,
+      "sources": {
+        "espn": 5.53
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Theo Johnson",
+      "position": "TE",
+      "team": "NYG",
+      "consensus": 5.51,
+      "sigma": 4.01,
+      "sources": {
+        "sleeper": 3.65,
+        "espn": 7.37
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Darius Slayton",
+      "position": "WR",
+      "team": "NYG",
+      "consensus": 5.49,
+      "sigma": 3.72,
+      "sources": {
+        "sleeper": 3.81,
+        "espn": 7.18
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jonnu Smith",
+      "position": "TE",
+      "team": "GB",
+      "consensus": 5.41,
+      "sigma": 5.92,
+      "sources": {
+        "sleeper": 1.79,
+        "espn": 9.03
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chris Godwin",
+      "position": "WR",
+      "team": "TB",
+      "consensus": 5.4,
+      "sigma": 8.14,
+      "sources": {
+        "sleeper": 10.81,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyler Allgeier",
+      "position": "RB",
+      "team": "ARI",
+      "consensus": 5.4,
+      "sigma": 3.0,
+      "sources": {
+        "sleeper": 6.59,
+        "espn": 4.2
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Daniel Carlson",
+      "position": "K",
+      "team": "NO",
+      "consensus": 5.38,
+      "sigma": 4.21,
+      "sources": {
+        "sleeper": 2.83,
+        "espn": 7.94
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Joshua Palmer",
+      "position": "WR",
+      "team": "BUF",
+      "consensus": 5.28,
+      "sigma": 5.46,
+      "sources": {
+        "sleeper": 1.94,
+        "espn": 8.61
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chris Bell",
+      "position": "WR",
+      "team": "MIA",
+      "consensus": 5.26,
+      "sigma": 2.74,
+      "sources": {
+        "sleeper": 5.33,
+        "espn": 5.2
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Omar Cooper",
+      "position": "WR",
+      "team": "NYJ",
+      "consensus": 5.18,
+      "sigma": 2.78,
+      "sources": {
+        "sleeper": 4.71,
+        "espn": 5.66
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Woody Marks",
+      "position": "RB",
+      "team": "HOU",
+      "consensus": 5.18,
+      "sigma": 3.71,
+      "sources": {
+        "sleeper": 7.19,
+        "espn": 3.16
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "New Orleans Saints",
+      "position": "DEF",
+      "team": "NO",
+      "consensus": 5.12,
+      "sigma": 3.17,
+      "sources": {
+        "espn": 5.12
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Xavier Worthy",
+      "position": "WR",
+      "team": "KC",
+      "consensus": 5.11,
+      "sigma": 7.7,
+      "sources": {
+        "sleeper": 10.22,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyler Lockett",
+      "position": "WR",
+      "team": "",
+      "consensus": 5.06,
+      "sigma": 2.63,
+      "sources": {
+        "espn": 5.06
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Cole Kmet",
+      "position": "TE",
+      "team": "CHI",
+      "consensus": 5.0,
+      "sigma": 2.83,
+      "sources": {
+        "sleeper": 4.52,
+        "espn": 5.48
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Justin Watson",
+      "position": "WR",
+      "team": "",
+      "consensus": 4.98,
+      "sigma": 2.59,
+      "sources": {
+        "espn": 4.98
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Drew Stevens",
+      "position": "K",
+      "team": "WAS",
+      "consensus": 4.95,
+      "sigma": 4.8,
+      "sources": {
+        "sleeper": 1.86,
+        "espn": 8.04
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Troy Franklin",
+      "position": "WR",
+      "team": "DEN",
+      "consensus": 4.92,
+      "sigma": 4.02,
+      "sources": {
+        "sleeper": 2.73,
+        "espn": 7.11
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Xavier Hutchinson",
+      "position": "WR",
+      "team": "HOU",
+      "consensus": 4.91,
+      "sigma": 2.99,
+      "sources": {
+        "sleeper": 3.82,
+        "espn": 6.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tutu Atwell",
+      "position": "WR",
+      "team": "LAR",
+      "consensus": 4.89,
+      "sigma": 2.55,
+      "sources": {
+        "espn": 4.89
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dallas Goedert",
+      "position": "TE",
+      "team": "PHI",
+      "consensus": 4.86,
+      "sigma": 7.38,
+      "sources": {
+        "sleeper": 9.73,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Isaiah Likely",
+      "position": "TE",
+      "team": "NYG",
+      "consensus": 4.82,
+      "sigma": 7.31,
+      "sources": {
+        "sleeper": 9.64,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ja'Kobi Lane",
+      "position": "WR",
+      "team": "BAL",
+      "consensus": 4.8,
+      "sigma": 3.43,
+      "sources": {
+        "sleeper": 3.13,
+        "espn": 6.46
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Adonai Mitchell",
+      "position": "WR",
+      "team": "NYJ",
+      "consensus": 4.71,
+      "sigma": 3.2,
+      "sources": {
+        "sleeper": 6.17,
+        "espn": 3.26
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Noah Gray",
+      "position": "TE",
+      "team": "KC",
+      "consensus": 4.69,
+      "sigma": 2.59,
+      "sources": {
+        "sleeper": 4.51,
+        "espn": 4.87
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ollie Gordon",
+      "position": "RB",
+      "team": "MIA",
+      "consensus": 4.68,
+      "sigma": 3.63,
+      "sources": {
+        "sleeper": 2.61,
+        "espn": 6.75
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Olamide Zaccheaus",
+      "position": "WR",
+      "team": "ATL",
+      "consensus": 4.63,
+      "sigma": 2.54,
+      "sources": {
+        "sleeper": 4.06,
+        "espn": 5.21
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jaylin Noel",
+      "position": "WR",
+      "team": "HOU",
+      "consensus": 4.6,
+      "sigma": 2.57,
+      "sources": {
+        "sleeper": 5.26,
+        "espn": 3.93
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Michael Mayer",
+      "position": "TE",
+      "team": "LV",
+      "consensus": 4.53,
+      "sigma": 2.61,
+      "sources": {
+        "sleeper": 3.98,
+        "espn": 5.08
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kendrick Bourne",
+      "position": "WR",
+      "team": "ARI",
+      "consensus": 4.49,
+      "sigma": 2.38,
+      "sources": {
+        "sleeper": 4.82,
+        "espn": 4.16
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Antonio Williams",
+      "position": "WR",
+      "team": "WAS",
+      "consensus": 4.46,
+      "sigma": 2.33,
+      "sources": {
+        "sleeper": 4.33,
+        "espn": 4.6
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Samaje Perine",
+      "position": "RB",
+      "team": "CIN",
+      "consensus": 4.46,
+      "sigma": 2.54,
+      "sources": {
+        "sleeper": 3.4,
+        "espn": 5.51
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dare Ogunbowale",
+      "position": "RB",
+      "team": "LV",
+      "consensus": 4.46,
+      "sigma": 2.05,
+      "sources": {
+        "espn": 4.46
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kenyon Sadiq",
+      "position": "TE",
+      "team": "NYJ",
+      "consensus": 4.45,
+      "sigma": 2.59,
+      "sources": {
+        "sleeper": 3.83,
+        "espn": 5.06
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jahan Dotson",
+      "position": "WR",
+      "team": "ATL",
+      "consensus": 4.45,
+      "sigma": 2.5,
+      "sources": {
+        "sleeper": 5.12,
+        "espn": 3.78
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "KaVontae Turpin",
+      "position": "WR",
+      "team": "DAL",
+      "consensus": 4.43,
+      "sigma": 2.52,
+      "sources": {
+        "sleeper": 3.71,
+        "espn": 5.16
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Zachariah Branch",
+      "position": "WR",
+      "team": "ATL",
+      "consensus": 4.36,
+      "sigma": 2.37,
+      "sources": {
+        "sleeper": 3.87,
+        "espn": 4.85
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dyami Brown",
+      "position": "WR",
+      "team": "WAS",
+      "consensus": 4.35,
+      "sigma": 6.03,
+      "sources": {
+        "sleeper": 0.4,
+        "espn": 8.3
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Andrei Iosivas",
+      "position": "WR",
+      "team": "CIN",
+      "consensus": 4.19,
+      "sigma": 2.19,
+      "sources": {
+        "sleeper": 4.0,
+        "espn": 4.38
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ty Johnson",
+      "position": "RB",
+      "team": "BUF",
+      "consensus": 4.11,
+      "sigma": 1.89,
+      "sources": {
+        "sleeper": 4.08,
+        "espn": 4.13
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jake Tonges",
+      "position": "TE",
+      "team": "SF",
+      "consensus": 4.09,
+      "sigma": 3.38,
+      "sources": {
+        "sleeper": 2.3,
+        "espn": 5.88
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Dawson Knox",
+      "position": "TE",
+      "team": "BUF",
+      "consensus": 4.06,
+      "sigma": 2.48,
+      "sources": {
+        "sleeper": 4.82,
+        "espn": 3.29
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Najee Harris",
+      "position": "RB",
+      "team": "NYG",
+      "consensus": 4.05,
+      "sigma": 3.96,
+      "sources": {
+        "sleeper": 1.58,
+        "espn": 6.53
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Kevin Coleman",
+      "position": "WR",
+      "team": "MIA",
+      "consensus": 4.04,
+      "sigma": 2.11,
+      "sources": {
+        "sleeper": 4.14,
+        "espn": 3.94
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Jonah Coleman",
+      "position": "RB",
+      "team": "DEN",
+      "consensus": 4.03,
+      "sigma": 1.99,
+      "sources": {
+        "sleeper": 3.52,
+        "espn": 4.54
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Harrison Mevis",
+      "position": "K",
+      "team": "LAR",
+      "consensus": 3.94,
+      "sigma": 5.79,
+      "sources": {
+        "sleeper": 7.88,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tyler Higbee",
+      "position": "TE",
+      "team": "LAR",
+      "consensus": 3.94,
+      "sigma": 3.81,
+      "sources": {
+        "sleeper": 1.72,
+        "espn": 6.16
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Darren Waller",
+      "position": "TE",
+      "team": "CAR",
+      "consensus": 3.94,
+      "sigma": 5.99,
+      "sources": {
+        "sleeper": 7.89,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Elijah Arroyo",
+      "position": "TE",
+      "team": "SEA",
+      "consensus": 3.94,
+      "sigma": 2.17,
+      "sources": {
+        "sleeper": 3.95,
+        "espn": 3.93
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Mike Washington",
+      "position": "RB",
+      "team": "LV",
+      "consensus": 3.91,
+      "sigma": 1.8,
+      "sources": {
+        "sleeper": 3.92,
+        "espn": 3.89
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Baltimore Ravens",
+      "position": "DEF",
+      "team": "BAL",
+      "consensus": 3.9,
+      "sigma": 6.03,
+      "sources": {
+        "sleeper": 0.0,
+        "espn": 7.81
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chris Rodriguez",
+      "position": "RB",
+      "team": "JAX",
+      "consensus": 3.9,
+      "sigma": 5.8,
+      "sources": {
+        "sleeper": 7.8,
+        "espn": 0.0
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Tory Horton",
+      "position": "WR",
+      "team": "SEA",
+      "consensus": 3.85,
+      "sigma": 2.13,
+      "sources": {
+        "sleeper": 3.36,
+        "espn": 4.35
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Ray Davis",
+      "position": "RB",
+      "team": "BUF",
+      "consensus": 3.85,
+      "sigma": 1.79,
+      "sources": {
+        "sleeper": 4.03,
+        "espn": 3.67
+      },
+      "vegas_implied": null
+    },
+    {
+      "name": "Chimere Dike",
+      "position": "WR",
+      "team": "TEN",
+      "consensus": 3.84,
+      "sigma": 2.22,
+      "sources": {
+        "sleeper": 3.15,
+        "espn": 4.53
+      },
+      "vegas_implied": null
+    }
+  ]
+}

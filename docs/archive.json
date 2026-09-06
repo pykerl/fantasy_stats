@@ -1,0 +1,22 @@
+{
+  "1": {
+    "generated_at": "2026-09-06T14:43:47+00:00",
+    "is_demo": true,
+    "league": "Demo League",
+    "matchups": 5,
+    "season": 2026,
+    "top_points": 133.9,
+    "top_team": "Two Tight End Sets",
+    "week": 1
+  },
+  "2": {
+    "generated_at": "2026-09-06T14:44:12+00:00",
+    "is_demo": true,
+    "league": "Demo League",
+    "matchups": 5,
+    "season": 2026,
+    "top_points": 129.9,
+    "top_team": "Certified Flex Enjoyers",
+    "week": 2
+  }
+}

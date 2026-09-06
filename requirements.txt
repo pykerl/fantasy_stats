@@ -1,0 +1,8 @@
+requests>=2.31
+PyYAML>=6.0
+beautifulsoup4>=4.12
+lxml>=5.0
+numpy>=1.26
+rapidfuzz>=3.6
+yahoo_fantasy_api>=2.9
+yahoo_oauth>=2.0

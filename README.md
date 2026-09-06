@@ -1,2 +1,157 @@
 # fantasy_stats
-Pull fantasy stats weekly for teams to compare projections
+
+A weekly fantasy football projection engine that aggregates player projections
+from multiple providers (including betting-market implied points), simulates
+every matchup in a Yahoo league, and publishes the results as a GitHub Pages
+site with a hype-heavy weekly column.
+
+## What it does
+
+1. **Aggregates projections** from Sleeper, ESPN, FantasyPros, CBS, and Vegas
+   player props. Every source that publishes raw stat lines is **re-scored under
+   your league's own scoring rules** — a half-PPR league never silently inherits
+   a site's full-PPR totals.
+2. **Prices the betting markets.** Player props are de-vigged (American odds →
+   implied probabilities, normalized to sum to 1) and turned into an expected
+   stat line, giving a fifth projection sourced from people with money at risk.
+3. **Simulates every matchup** 10,000 times, drawing each starter from
+   `Normal(mean, sigma)` truncated at zero, with a positive correlation between
+   starters who share an NFL team.
+4. **Writes the column** — spreads, win probabilities, Love/Hate picks, upset
+   alerts and a boom-bust index, wrapped in an affectionate homage to the
+   Matthew Berry weekly-column voice.
+5. **Publishes to GitHub Pages** as a static site in `docs/`.
+
+## Quick start
+
+```bash
+pip install -r requirements.txt
+python -m src.run --week 1
+```
+
+With no credentials configured this runs in **demo mode**: real projections,
+real Vegas math, real simulation, but a synthetic ten-team league snake-drafted
+from the week's projections. Output lands in `output/week_1.md` and `docs/`.
+
+Open `docs/index.html` in a browser to preview the site locally.
+
+## Configuration
+
+`config.yaml` holds everything non-secret — league id, source weights,
+positional variance priors, simulation settings. Secrets are read from the
+environment only; the file merely names the variables to read.
+
+Put a real league id in `config.local.yaml` (gitignored) if you would rather not
+commit it:
+
+```yaml
+yahoo:
+  league_id: "461.l.123456"
+```
+
+### Credentials
+
+| Variable | Needed for | Where to get it |
+| --- | --- | --- |
+| `YAHOO_CONSUMER_KEY` / `YAHOO_CONSUMER_SECRET` | Real rosters, lineups, matchups and league scoring | [developer.yahoo.com/apps](https://developer.yahoo.com/apps/) — create an app with Fantasy Sports **read** permission and redirect URI `oob` |
+| `ODDS_API_KEY` | Vegas implied points | [the-odds-api.com](https://the-odds-api.com/) — free tier is 500 requests/month |
+| `ANTHROPIC_API_KEY` | The `--llm` column | [console.anthropic.com](https://console.anthropic.com/) |
+| `FANTASYPROS_API_KEY` | Full FantasyPros coverage (optional) | FantasyPros API access — without it the public page exposes only ~10 players per position |
+
+### Yahoo one-time setup
+
+```bash
+export YAHOO_CONSUMER_KEY=...
+export YAHOO_CONSUMER_SECRET=...
+python -m src.run --auth          # opens the browser flow, writes oauth2.json
+python -m src.run --list-leagues  # prints your league keys
+```
+
+Then put the league key in `config.yaml` (or `config.local.yaml`) and run
+normally. `oauth2.json` is gitignored — it is a live credential.
+
+## CLI
+
+```
+python -m src.run --week 3              # project week 3
+python -m src.run                       # project the current week
+python -m src.run --week 3 --refresh    # bust the cache and refetch
+python -m src.run --week 3 --llm        # write the column with Claude
+python -m src.run --sources sleeper,espn --no-site
+python -m src.run --auth                # Yahoo OAuth setup
+python -m src.run --list-leagues        # print your Yahoo league keys
+```
+
+Every source fails soft: if one is down, the run proceeds with the rest and the
+report's Source Report Card says what was missing.
+
+## Publishing
+
+The `Weekly projections` workflow runs every Tuesday at 13:00 UTC and can also
+be triggered by hand from the Actions tab (with an optional week override). It
+regenerates the site, commits `docs/` and `output/`, and deploys Pages.
+
+To enable it:
+
+1. **Settings → Pages → Source: GitHub Actions.**
+2. **Settings → Secrets and variables → Actions**, add the secrets you have:
+   `YAHOO_CONSUMER_KEY`, `YAHOO_CONSUMER_SECRET`, `YAHOO_OAUTH_JSON` (the whole
+   contents of your local `oauth2.json`), `ODDS_API_KEY`, `ANTHROPIC_API_KEY`,
+   `FANTASYPROS_API_KEY`.
+3. Run the workflow once by hand to confirm it publishes.
+
+Any secret you omit degrades gracefully — no Yahoo means demo mode, no Odds API
+means four sources instead of five.
+
+## Layout
+
+```
+config.yaml            league id, weights, variance priors, sim settings
+src/
+  sources/             one module per projection provider
+    sleeper.py         free, no auth; the canonical player-id spine
+    espn.py            public league-defaults endpoint
+    fantasypros.py     ~100-analyst consensus (down-weighted for overlap)
+    cbs.py             fourth independent source, defensively scraped
+    vegas.py           The Odds API player props, de-vigged
+  yahoo_league.py      scoring settings, rosters, lineups, matchups
+  player_matching.py   cross-source id resolution
+  aggregate.py         consensus projections + sigma
+  simulate.py          Monte Carlo matchup sim
+  report.py            the weekly column
+  site.py              static site generator for GitHub Pages
+  run.py               CLI
+data/cache/            cached raw pulls, timestamped
+output/week_{N}.md     the weekly report
+docs/                  the published site
+tests/                 scoring, de-vig, matching, aggregation, simulation
+```
+
+## Notes on the sources
+
+- **Sleeper** publishes raw stat projections and is the canonical join key.
+- **ESPN**'s raw stat ids were validated against ESPN's own point totals
+  (median absolute difference of 0.003 across skill positions).
+- **FantasyPros** truncates its public projection table to roughly ten players
+  per position for anonymous visitors; set `FANTASYPROS_API_KEY` for full
+  coverage. It is down-weighted by default because it already aggregates
+  analysts who overlap the other sources.
+- **CBS** serves season-long totals under the weekly URL until a week's
+  projections publish. The scraper detects this via the games-played column and
+  skips rather than feeding season totals into a weekly consensus.
+- **Vegas** props are cached hard — the free tier is 500 requests/month.
+
+## Tests
+
+```bash
+python -m pytest tests/ -q
+```
+
+Covers league scoring math, de-vig math, player matching, consensus/sigma
+building, and the simulation's statistical properties.
+
+## Disclaimer
+
+An affectionate homage, not affiliated with or endorsed by Matthew Berry, Yahoo,
+ESPN, CBS, FantasyPros, or Sleeper. Projection data is scraped from public pages
+for personal league use.
