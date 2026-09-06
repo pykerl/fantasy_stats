@@ -7,6 +7,7 @@ with an optional `--llm` path that hands the same data to Claude.
 """
 from __future__ import annotations
 
+import collections
 import logging
 import random
 from dataclasses import dataclass, field
@@ -65,20 +66,22 @@ SEGUES = [
     "Point being: {matchup}, and I have feelings.",
 ]
 
-SELF_DEPRECATION = [
-    "I know, I know — I'm the guy who told you to bench him last week. Nobody listens to me anyway.",
-    "Last week I called this exact kind of game 'a lock.' It was not a lock. Locks have tumblers. This had vibes.",
-    "You should know my track record here is roughly that of a coin that has been dropped several times.",
-    "I was wrong about this player in August, September, and — let me check my notes — yes, also right now, probably.",
-    "My model and I have an arrangement: it does the math, I take the blame.",
-    "Every year I say I've learned. Every year the tape says otherwise.",
-]
+class Deck:
+    """Deals lines without replacement, so a bank of eight does not serve the
+    same joke three times in one issue. Reshuffles only once exhausted."""
 
-NOT_THAT = [
-    "It's not that I don't believe in {team}. It's just that {problem}.",
-    "It's not that {team} is bad. It's just that {problem}, and math is a cruel and literal science.",
-    "It's not that I'm rooting against {team}. It's just that {problem} and I have eyes.",
-]
+    def __init__(self, items, rng: random.Random) -> None:
+        self._items = list(items)
+        self.size = len(self._items)
+        self._rng = rng
+        self._pile: list = []
+
+    def deal(self):
+        if not self._pile:
+            self._pile = list(self._items)
+            self._rng.shuffle(self._pile)
+        return self._pile.pop()
+
 
 SPREAD_LINES = [
     "{favorite} is favored by {spread:.1f} with a {win:.0%} win probability, which sounds decisive until you notice the margin swings {boom:.1f} points either way.",
@@ -86,12 +89,37 @@ SPREAD_LINES = [
     "{spread:.1f} points separates these two on paper. Ten thousand simulations later, {favorite} takes it {win:.0%} of the time.",
     "{favorite} by {spread:.1f}, {win:.0%} to win, and a margin that has been as generous as +{p90:.0f} and as cruel as {p10:.0f} depending on which simulation you'd like to believe.",
     "Call it {favorite} by {spread:.1f}. The win probability says {win:.0%}. The boom-bust index says {boom:.1f} and the boom-bust index has never once apologized.",
+    "{favorite} by {spread:.1f}. I ran this ten thousand times and {underdog} won {lose:.0%} of them, which is either comforting or terrifying depending on which side of it you're sitting.",
+    "The spread here is {spread:.1f} in favour of {favorite}, a number I would describe as confident rather than convincing.",
+    "{favorite} {win:.0%}, {underdog} {lose:.0%}. Two teams separated by {spread:.1f} points and roughly one running back's Sunday afternoon.",
 ]
 
 COIN_FLIP_LINES = [
     "This is a coin flip wearing a spread. {favorite} is nominally favored by {spread:.1f}, which is within the rounding error of my own competence.",
     "{favorite} by {spread:.1f} is not a prediction, it's a shrug with a decimal point. Genuinely too close to call.",
     "The model gives {favorite} a {win:.0%} edge here, which is the statistical equivalent of 'sure, why not.'",
+    "{spread:.1f} points. That's the whole edge. That's one screen pass and a favourable spot of the ball.",
+    "I have {favorite} at {win:.0%} and I want you to understand how little that means. Flip a coin, then feel bad about it either way.",
+]
+
+SELF_DEPRECATION = [
+    "I know, I know — I'm the guy who told you to bench him last week. Nobody listens to me anyway.",
+    "Last week I called this exact kind of game 'a lock.' It was not a lock. Locks have tumblers. This had vibes.",
+    "You should know my track record here is roughly that of a coin that has been dropped several times.",
+    "I was wrong about this player in August, September, and — let me check my notes — yes, also right now, probably.",
+    "My model and I have an arrangement: it does the math, I take the blame.",
+    "Every year I say I've learned. Every year the tape says otherwise.",
+    "I want to be clear that I have been paid exactly nothing for these opinions, and my subscribers would tell you I have been overpaid.",
+    "Take this with the seriousness it deserves, which is to say roughly the amount you'd give a horoscope in an airline magazine.",
+    "I have been doing this long enough to know better and short enough to keep doing it anyway.",
+    "There is a version of this column where I'm right about everything. It is not this one. It has never been this one.",
+]
+
+NOT_THAT = [
+    "It's not that I don't believe in {team}. It's just that {problem}.",
+    "It's not that {team} is bad. It's just that {problem}, and math is a cruel and literal science.",
+    "It's not that I'm rooting against {team}. It's just that {problem} and I have eyes.",
+    "It's not that {team} can't win this. It's just that {problem}, which is a bold way to enter a Sunday.",
 ]
 
 POP_CULTURE = [
@@ -102,6 +130,11 @@ POP_CULTURE = [
     "Somewhere between 'Gangnam Style' and 'planking' on the confidence spectrum.",
     "This is the roster construction equivalent of buying a selfie stick in 2014. Bold then. Bold now.",
     "I haven't been this unsure about an outcome since the Snyder Cut discourse.",
+    "This roster is the fantasy football answer to a Blockbuster late fee: technically survivable, emotionally not.",
+    "It has the swagger of a man still using a BlackBerry in 2013 and the results to match.",
+    "This is 'nobody tell him the Harlem Shake is over' energy.",
+    "The whole thing feels like an Angry Birds sequel — familiar, confident, and about four years past the moment.",
+    "I rate this lineup somewhere between a Fitbit and a Segway on the scale of ideas that seemed great at the time.",
 ]
 
 CLOSERS = [
@@ -110,8 +143,9 @@ CLOSERS = [
     "Truthfully? The best part of this whole thing isn't the trophy, it's that someone texts you at 1 p.m. on a Sunday for no reason at all. Cherish the stupid league. Alright, I'm out.",
     "Real talk for one sentence: the standings will be forgotten and the group chat will not. Play the games, talk the trash, be kind on Tuesday. Okay, that's enough of that. Goodnight.",
     "I'll say the earnest part quickly so we can both pretend it didn't happen: this league is one of the good ones. Now go start somebody you shouldn't. Bye.",
+    "Last sincere thing and then I'll stop: a league that survives a decade of bad drafts and worse trades is a rare thing. Yours has. Go be insufferable about a win. Bye.",
+    "Genuinely, for one line: the projections are a hobby, the group chat is the point. Take care of each other and absolutely none of your kickers. See you next week.",
 ]
-
 
 @dataclass
 class LoveHate:
@@ -170,7 +204,7 @@ def _positional_baseline(starters: list[StarterProjection]) -> dict[str, float]:
     return baseline
 
 
-def pick_love_hate(matchup: MatchupSim, rng: random.Random) -> LoveHate:
+def pick_love_hate(matchup: MatchupSim, rng: random.Random, decks: dict | None = None) -> LoveHate:
     """Love = beats his position's bar with the sources (and market) agreeing.
     Hate  = wide provider disagreement, ugly props, or a broken lineup slot."""
     all_starters = matchup.home.starters + matchup.away.starters
@@ -216,40 +250,63 @@ def pick_love_hate(matchup: MatchupSim, rng: random.Random) -> LoveHate:
 
     return LoveHate(
         love=love,
-        love_reason=_love_reason(love),
+        love_reason=_love_reason(love, decks),
         hate=hate,
-        hate_reason=_hate_reason(hate) if hate else "",
+        hate_reason=_hate_reason(hate, decks) if hate else "",
     )
 
 
-def _love_reason(s: StarterProjection) -> str:
+LOVE_FRAMES = [
+    "{points:.1f} projected{agreement}{market}",
+    "the sources have him at {points:.1f}{agreement}{market}",
+    "{points:.1f} points{market}{agreement}",
+    "projects for {points:.1f}{agreement}{market}",
+]
+
+HATE_FRAMES = [
+    "{reason}",
+    "and it is not personal, it is arithmetic: {reason}",
+    "{reason}, which is more uncertainty than a starting spot should carry",
+    "{reason}. Start him anyway and I will pretend I said nothing",
+]
+
+
+def _love_reason(s: StarterProjection, decks: dict | None = None) -> str:
     """Say why the model likes him, without claiming agreement that isn't there."""
     p = s.projection
-    bits = [f"{p.consensus:.1f} projected"]
-    if p.source_count > 1:
-        tight = p.spread <= max(2.0, p.consensus * 0.15)
-        if tight:
-            bits.append(f"and all {p.source_count} sources land within {p.spread:.1f} points of each other")
-        else:
-            bits.append(f"the highest of any {p.position} in this matchup across {p.source_count} sources")
+    tight = p.source_count > 1 and p.spread <= max(2.0, p.consensus * 0.15)
+    if p.source_count <= 1:
+        agreement = ""
+    elif tight:
+        agreement = f", with all {p.source_count} sources inside {p.spread:.1f} points of each other"
+    else:
+        agreement = f", the best {p.position} in this matchup across {p.source_count} sources"
+
+    market = ""
     if p.vegas_delta is not None:
         direction = "above" if p.vegas_delta >= 0 else "below"
-        bits.append(f"with Vegas {abs(p.vegas_delta):.1f} points {direction} the consensus")
-    return ", ".join(bits)
+        market = f", and Vegas has him {abs(p.vegas_delta):.1f} {direction} that"
+
+    frame = decks["love"].deal() if decks else LOVE_FRAMES[0]
+    return frame.format(points=p.consensus, agreement=agreement, market=market)
 
 
-def _hate_reason(s: StarterProjection) -> str:
+def _hate_reason(s: StarterProjection, decks: dict | None = None) -> str:
     p = s.projection
     if s.problem:
         return s.problem
+
     bits = []
     if p.spread > 0:
-        bits.append(f"a {p.spread:.1f}-point spread between the highest and lowest source")
+        bits.append(f"{p.spread:.1f} points between his highest and lowest projection")
     if p.vegas_delta is not None and p.vegas_delta < 0:
-        bits.append(f"props {abs(p.vegas_delta):.1f} points under the consensus")
+        bits.append(f"props {abs(p.vegas_delta):.1f} under the consensus")
     if not bits:
         bits.append(f"a {p.sigma:.1f}-point standard deviation on a {p.consensus:.1f}-point projection")
-    return "; ".join(bits)
+    reason = " and ".join(bits)
+
+    frame = decks["hate"].deal() if decks else HATE_FRAMES[0]
+    return frame.format(reason=reason)
 
 
 def build_context(
@@ -264,6 +321,17 @@ def build_context(
     schedule_known: bool = True,
 ) -> ReportContext:
     rng = random.Random(seed if seed is not None else week * 7919)
+    slate = build_slate(sim)
+    decks = {
+        "spread": Deck(SPREAD_LINES, rng),
+        "coin": Deck(COIN_FLIP_LINES, rng),
+        "self": Deck(SELF_DEPRECATION, rng),
+        "pop": Deck(POP_CULTURE, rng),
+        "not_that": Deck(NOT_THAT, rng),
+        "love": Deck(LOVE_FRAMES, rng),
+        "hate": Deck(HATE_FRAMES, rng),
+        "standings": Deck(STANDINGS_LINES, rng),
+    }
 
     # Without the real schedule every matchup number — spread, win probability,
     # the Love/Hate picks that are chosen within a matchup — describes a game
@@ -271,13 +339,13 @@ def build_context(
     narratives = []
     if schedule_known:
         for matchup in sim.matchups:
-            picks = pick_love_hate(matchup, rng)
+            picks = pick_love_hate(matchup, rng, decks)
             narratives.append(
                 MatchupNarrative(
                     sim=matchup,
                     picks=picks,
-                    riff=_riff(matchup, picks, rng),
-                    standings_line=_standings_line(matchup),
+                    riff=_riff(matchup, picks, slate, decks, rng),
+                    standings_line=_standings_line(matchup, decks),
                 )
             )
 
@@ -315,49 +383,341 @@ def _td_leaders(sim: LeagueSim) -> list[tuple[str, float]]:
     return out[:5]
 
 
-def _riff(matchup: MatchupSim, picks: LoveHate, rng: random.Random) -> str:
-    favorite = matchup.favorite
-    underdog = matchup.underdog
-    bank = COIN_FLIP_LINES if matchup.is_coin_flip else SPREAD_LINES
-    lines = [
-        rng.choice(bank).format(
-            favorite=favorite.team.name,
-            spread=abs(matchup.spread),
-            win=matchup.favorite_win_probability,
-            boom=matchup.boom_bust,
-            p90=matchup.favorite_margin_p90,
-            p10=matchup.favorite_margin_p10,
-        )
+def _pick(decks: dict, key: str, options: list[str], rng: random.Random) -> str:
+    """Choose among a beat's variants without repeating one within an issue.
+
+    Deals an *index*, never the string. A beat's options are rebuilt with this
+    matchup's own numbers on every call, so a deck of the strings themselves
+    would hand the first matchup's sentences — names, teams and all — to every
+    later matchup.
+    """
+    deck = decks.get(key)
+    if deck is None or deck.size != len(options):
+        deck = decks[key] = Deck(range(len(options)), rng)
+    return options[deck.deal()]
+
+
+def _subject(starter: StarterProjection) -> str:
+    """How to name a starter in prose. A team defence is a plural thing that
+    takes an article: "the Vikings", not "Vikings"."""
+    projection = starter.projection
+    if projection and projection.position == "DEF":
+        return f"the {projection.name.split()[-1]}"
+    return starter.name
+
+
+def _pronoun(starter: StarterProjection) -> str:
+    projection = starter.projection
+    return "them" if projection and projection.position == "DEF" else "him"
+
+
+ORDINALS = {1: "highest", 2: "second-highest", 3: "third-highest", 4: "fourth-highest", 5: "fifth-highest"}
+
+
+@dataclass
+class Slate:
+    """League-wide facts a riff can cite, so the specifics differ every time.
+
+    The spec asks for oddly specific stat-drops ("third-highest implied TD
+    probability on the slate. Third! I counted."). Those only work if they are
+    true, so they are computed once across every starter in the league.
+    """
+
+    position_rank: dict[str, int] = field(default_factory=dict)
+    position_total: dict[str, int] = field(default_factory=dict)
+    vegas_rank: dict[str, int] = field(default_factory=dict)
+    spread_rank: dict[str, int] = field(default_factory=dict)
+
+
+def build_slate(sim: LeagueSim) -> Slate:
+    starters = [s for team in sim.teams for s in team.starters if s.projection]
+    slate = Slate()
+
+    by_position: dict[str, list] = {}
+    for starter in starters:
+        by_position.setdefault(starter.projection.position, []).append(starter)
+    for position, group in by_position.items():
+        group.sort(key=lambda s: -s.projection.consensus)
+        slate.position_total[position] = len(group)
+        for index, starter in enumerate(group, start=1):
+            slate.position_rank[starter.projection.player_id] = index
+
+    priced = [s for s in starters if s.projection.vegas_points is not None]
+    priced.sort(key=lambda s: -s.projection.vegas_points)
+    for index, starter in enumerate(priced, start=1):
+        slate.vegas_rank[starter.projection.player_id] = index
+
+    spread_sorted = sorted(starters, key=lambda s: -s.projection.spread)
+    for index, starter in enumerate(spread_sorted, start=1):
+        slate.spread_rank[starter.projection.player_id] = index
+    return slate
+
+
+# --------------------------------------------------------------------------
+# Beats. Each returns a sentence or None when this matchup gives it nothing to
+# say, so the riff is assembled from whatever is actually true rather than
+# marching through the same five slots every time.
+# --------------------------------------------------------------------------
+
+
+def _beat_stack(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    """Two starters on the same NFL team boom and bust together."""
+    for team in (m.favorite, m.underdog):
+        groups: dict[str, list] = {}
+        for starter in team.starters:
+            if starter.projection and starter.slot.team:
+                groups.setdefault(starter.slot.team, []).append(starter)
+        stacks = [(nfl, g) for nfl, g in groups.items() if len(g) >= 2]
+        if not stacks:
+            continue
+        nfl, group = max(stacks, key=lambda item: sum(s.mean for s in item[1]))
+        names = " and ".join(s.name for s in sorted(group, key=lambda s: -s.mean)[:2])
+        points = sum(s.mean for s in group)
+        return _pick(decks, "stack", [
+            f"{team.team.name} is running {names} out of the same {nfl} offence, which is "
+            f"{points:.1f} points that all rise or fall on one game script. That is not a lineup, "
+            f"that is a parlay.",
+            f"Worth noting that {team.team.name} has {names} stacked on {nfl}. When it works it "
+            f"works twice; when it doesn't, neither do they.",
+            f"{names} both play for {nfl}, so {team.team.name} has quietly bet {points:.1f} points "
+            f"on a single coaching staff having a good afternoon.",
+        ], rng)
+    return None
+
+
+def _beat_slate_rank(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    """A starter who ranks near the top of the whole league at his position."""
+    best = None
+    for starter in m.home.starters + m.away.starters:
+        if not starter.projection:
+            continue
+        rank = slate.position_rank.get(starter.projection.player_id)
+        if rank and rank <= 3 and (best is None or rank < best[0]):
+            best = (rank, starter)
+    if best is None:
+        return None
+    rank, starter = best
+    who = _subject(starter)
+    position = starter.projection.position
+    total = slate.position_total.get(position, 0)
+    word = ORDINALS.get(rank, f"{rank}th-highest")
+    return _pick(decks, "slate_rank", [
+        f"{who} is the {word}-projected {position} of the {total} starting in this "
+        f"league this week. {rank}! I counted.",
+        f"Somebody should mention that {who} grades out as the {word} {position} on the "
+        f"entire slate. Out of {total}. I checked twice because I didn't believe it either.",
+        f"{who}: {word} {position} among all {total} starters this week. I have a "
+        f"spreadsheet and everything.",
+        f"Of every {position} starting anywhere in this league, {who} is the {word}. "
+        f"That is {total} players and he is at the front of them.",
+        f"Among the league's {total} starting {position}s, {who} comes in at number {rank}. "
+        f"I did not expect to be typing that sentence this week either.",
+        f"{who} comes in {word} of {total} at the position. I mention it because nobody "
+        f"else is going to.",
+    ], rng)
+
+
+def _beat_vegas_gap(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    """Where the betting market and the projection sites disagree most."""
+    candidates = [
+        s for s in m.home.starters + m.away.starters
+        if s.projection and s.projection.vegas_delta is not None and abs(s.projection.vegas_delta) >= 2.0
     ]
+    if not candidates:
+        return None
+    starter = max(candidates, key=lambda s: abs(s.projection.vegas_delta))
+    who = _subject(starter)
+    them = _pronoun(starter)
+    delta = starter.projection.vegas_delta
+    if delta > 0:
+        return _pick(decks, "vegas_up", [
+            f"Vegas likes {who} {delta:.1f} points more than the projection sites do, and "
+            f"Vegas is the only one of them with money at risk.",
+            f"The betting markets have {who} {delta:.1f} points clear of the consensus. "
+            f"Somebody is wrong and it is historically not the sportsbooks.",
+            f"{who} is priced {delta:.1f} points above where the projections have {them}. "
+            f"When the books and the spreadsheets disagree I know which one pays rent.",
+            f"There is {delta:.1f} points of daylight between what Vegas thinks of {who} "
+            f"and what the sites do, and only one of those opinions settles up on Monday.",
+        ], rng)
+    return _pick(decks, "vegas_down", [
+        f"The props have {who} {abs(delta):.1f} points below where the sites have him, "
+        f"which is the market politely declining to participate.",
+        f"Vegas is {abs(delta):.1f} points under the consensus on {who}. Books rarely "
+        f"leave money on a table by accident.",
+        f"Every projection site is {abs(delta):.1f} points more excited about {who} than "
+        f"the people taking bets on {them} are. Draw your own conclusion; mine is unprintable.",
+        f"{who}'s props come in {abs(delta):.1f} under his consensus. The market has "
+        f"seen something the spreadsheets haven't, or it is wrong. It usually isn't.",
+        f"Somebody should ask why {who} is priced {abs(delta):.1f} points below what the "
+        f"sites expect. I have a guess and it is not a fun one.",
+    ], rng)
 
-    problems = favorite.problems + underdog.problems
-    if problems:
-        broken = problems[0]
-        team = favorite if broken in favorite.problems else underdog
-        lines.append(rng.choice(NOT_THAT).format(team=team.team.name, problem=f"{broken.name} is {broken.problem}"))
-    else:
-        lines.append(rng.choice(SELF_DEPRECATION))
 
-    if matchup.is_upset_alert and not matchup.is_coin_flip:
-        lines.append(
-            f"Upset alert: {underdog.team.name} wins this {matchup.underdog_win_probability:.0%} "
-            f"of the time, which is far too often for anyone to feel comfortable."
-        )
-    if picks.love and picks.love.projection:
-        lines.append(
-            f"The model's favorite thing on the board here is {picks.love.name} — {picks.love_reason}."
-        )
-    lines.append(rng.choice(POP_CULTURE))
-    return " ".join(lines)
+def _beat_disagreement(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    """The starter the sources cannot agree on at all."""
+    candidates = [s for s in m.home.starters + m.away.starters if s.projection and s.projection.spread >= 4.0]
+    if not candidates:
+        return None
+    starter = max(candidates, key=lambda s: s.projection.spread)
+    who = _subject(starter)
+    p = starter.projection
+    rank = slate.spread_rank.get(p.player_id)
+    tail = f" — the {ORDINALS.get(rank, str(rank) + 'th-highest')} disagreement on the slate" if rank and rank <= 3 else ""
+    return _pick(decks, "disagreement", [
+        f"The sources cannot agree on {who}: {p.spread:.1f} points between the most and "
+        f"least optimistic of them{tail}. Somebody is going to look silly and it might be me.",
+        f"{who} has a {p.spread:.1f}-point gap between his highest and lowest projection"
+        f"{tail}. Four sources, four opinions, one very confused football player.",
+        f"Nobody can place {who}. The projections are {p.spread:.1f} points apart{tail}, "
+        f"which is less a forecast than a group argument.",
+        f"There is a {p.spread:.1f}-point disagreement about {who}{tail}. Pick a source, "
+        f"pick a feeling, live with it.",
+        f"{who} is the week's Rorschach test: {p.spread:.1f} points between the most and "
+        f"least hopeful projection{tail}.",
+    ], rng)
 
 
-def _standings_line(matchup: MatchupSim) -> str:
+def _beat_top_heavy(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    """A team leaning on one or two players."""
+    for team in (m.favorite, m.underdog):
+        real = sorted([s for s in team.starters if s.projection], key=lambda s: -s.mean)
+        if len(real) < 3 or team.mean <= 0:
+            continue
+        share = (real[0].mean + real[1].mean) / team.mean
+        if share >= 0.36:
+            return _pick(decks, "top_heavy", [
+                f"{real[0].name} and {real[1].name} are {share:.0%} of {team.team.name}'s "
+                f"projection between them. That is not depth, that is a two-man rope bridge.",
+                f"{share:.0%} of {team.team.name}'s points are projected to come from two players. "
+                f"I admire the conviction and fear the bye weeks.",
+                f"{team.team.name} is asking {real[0].name} and {real[1].name} to carry {share:.0%} "
+                f"of the load. That is a lot of eggs and a conspicuously small basket.",
+                f"Take {real[0].name} and {real[1].name} off {team.team.name} and you remove "
+                f"{share:.0%} of the projection. Nobody plan a Sunday around the other six.",
+                f"{share:.0%} of {team.team.name}'s week rests on two players, which is either "
+                f"decisive roster-building or a single hamstring away from a rebuild.",
+            ], rng)
+    return None
+
+
+def _beat_margin(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    return _pick(decks, "margin", [
+        f"The middle eighty per cent of outcomes here runs from {m.favorite_margin_p10:+.0f} to "
+        f"{m.favorite_margin_p90:+.0f} for {m.favorite.team.name}, which is a polite way of saying "
+        f"nobody knows anything.",
+        f"Simulated ten thousand times, this lands anywhere between {m.favorite_margin_p10:+.0f} and "
+        f"{m.favorite_margin_p90:+.0f}. Bring a helmet.",
+    ], rng)
+
+
+def _beat_problem(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    problems = m.favorite.problems + m.underdog.problems
+    if not problems:
+        return None
+    broken = problems[0]
+    team = m.favorite if broken in m.favorite.problems else m.underdog
+    return decks["not_that"].deal().format(team=team.team.name, problem=f"{broken.name} is {broken.problem}")
+
+
+def _beat_self(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    return decks["self"].deal()
+
+
+def _beat_pop(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    return decks["pop"].deal()
+
+
+def _beat_upset(m: MatchupSim, slate: Slate, decks: dict, rng: random.Random) -> str | None:
+    if not m.is_upset_alert or m.is_coin_flip:
+        return None
+    return _pick(decks, "upset", [
+        f"Upset alert: {m.underdog.team.name} wins this {m.underdog_win_probability:.0%} of the "
+        f"time, which is far too often for anyone to feel comfortable.",
+        f"{m.underdog.team.name} takes this {m.underdog_win_probability:.0%} of the time. That is "
+        f"not a prediction, it is a warning.",
+    ], rng)
+
+
+# Ordered by how much each depends on this particular matchup's data — the
+# data-driven beats are preferred, and the generic banks fill in behind them.
+BEATS = [
+    _beat_problem,
+    _beat_slate_rank,
+    _beat_vegas_gap,
+    _beat_stack,
+    _beat_disagreement,
+    _beat_top_heavy,
+    _beat_upset,
+    _beat_margin,
+    _beat_self,
+    _beat_pop,
+]
+
+
+def _riff(matchup: MatchupSim, picks: LoveHate, slate: Slate, decks: dict, rng: random.Random) -> str:
+    """Compose the paragraph from beats that are actually true of this matchup.
+
+    The opening frames the spread; after that the beats are drawn from whatever
+    the data supports and shuffled, so neither the wording nor the shape of the
+    paragraph repeats down the page. The Love pick is deliberately not restated
+    here — its own line follows immediately below.
+    """
+    bank = decks["coin"] if matchup.is_coin_flip else decks["spread"]
+    opening = bank.deal().format(
+        favorite=matchup.favorite.team.name,
+        underdog=matchup.underdog.team.name,
+        spread=abs(matchup.spread),
+        win=matchup.favorite_win_probability,
+        lose=matchup.underdog_win_probability,
+        boom=matchup.boom_bust,
+        p90=matchup.favorite_margin_p90,
+        p10=matchup.favorite_margin_p10,
+    )
+
+    usage = decks.setdefault("_usage", collections.Counter())
+    candidates = []
+    for index, beat in enumerate(BEATS):
+        line = beat(matchup, slate, decks, rng)
+        if line:
+            candidates.append((beat.__name__, index, line))
+
+    # Favour angles this issue has not leaned on yet, then the more
+    # data-specific beats, then chance. Without this, the two or three beats
+    # that fire for every matchup would carry every paragraph on the page.
+    candidates.sort(key=lambda c: (usage[c[0]], c[1], rng.random()))
+    chosen = candidates[: rng.choice([2, 3, 3, 4])]
+    for name, _, _ in chosen:
+        usage[name] += 1
+
+    lines = [line for _, _, line in chosen]
+    rng.shuffle(lines)
+    return " ".join([opening, *lines])
+
+
+# Two different outcomes are being described, so each needs its own record:
+# `fav_*` is the chalk result, `dog_*` is the upset. Sharing one pair produced
+# lines like "0-0 team at 1-1", which is not a thing that can happen.
+STANDINGS_LINES = [
+    "chalk sends {favorite} to {fav_w}-{fav_l} and drops {underdog} to {dog_lost_w}-{dog_lost_l}; the upset flips both and makes the middle of this table completely unreadable.",
+    "win and {favorite} sit at {fav_w}-{fav_l}. Lose and {underdog} climb to {dog_won_w}-{dog_won_l} and this whole standings page needs rereading.",
+    "{favorite} at {fav_w}-{fav_l} is the tidy outcome. {underdog} at {dog_won_w}-{dog_won_l} is the one that ruins somebody's tiebreaker in December.",
+    "the expected result puts {favorite} on {fav_w}-{fav_l}; the other one puts {underdog} on {dog_won_w}-{dog_won_l} and me back at the drawing board.",
+    "{favorite} to {fav_w}-{fav_l}, or {underdog} to {dog_won_w}-{dog_won_l} and a group chat that never lets it go.",
+    "{favorite} are {fav_w}-{fav_l} if this goes to form and {fav_lost_w}-{fav_lost_l} if it doesn't, and I have been wrong about which often enough to hedge.",
+]
+
+
+def _standings_line(matchup: MatchupSim, decks: dict | None = None) -> str:
     favorite, underdog = matchup.favorite, matchup.underdog
-    return (
-        f"Standings implication: chalk sends {favorite.team.name} to "
-        f"{favorite.team.wins + 1}-{favorite.team.losses} and drops {underdog.team.name} to "
-        f"{underdog.team.wins}-{underdog.team.losses + 1}; the upset flips both and makes the "
-        f"middle of this table completely unreadable."
+    frame = decks["standings"].deal() if decks else STANDINGS_LINES[0]
+    return "Standings implication: " + frame.format(
+        favorite=favorite.team.name,
+        underdog=underdog.team.name,
+        fav_w=favorite.team.wins + 1, fav_l=favorite.team.losses,
+        fav_lost_w=favorite.team.wins, fav_lost_l=favorite.team.losses + 1,
+        dog_won_w=underdog.team.wins + 1, dog_won_l=underdog.team.losses,
+        dog_lost_w=underdog.team.wins, dog_lost_l=underdog.team.losses + 1,
     )
 
 
