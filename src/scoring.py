@@ -35,6 +35,22 @@ DEFAULT_SCORING: dict[str, float] = {
     "fgm_0_39": 3.0,
     "fgm_40_49": 4.0,
     "fgm_50p": 5.0,
+    # Team defense. Points allowed is a tier, not a rate, so it is scored via
+    # mutually-exclusive bucket flags (Sleeper publishes exactly these) rather
+    # than multiplying the raw points-allowed figure by anything.
+    "def_sack": 1.0,
+    "def_int": 2.0,
+    "def_fum_rec": 2.0,
+    "def_td": 6.0,
+    "def_safe": 2.0,
+    "def_blk": 2.0,
+    "def_pa_0": 10.0,
+    "def_pa_1_6": 7.0,
+    "def_pa_7_13": 4.0,
+    "def_pa_14_20": 1.0,
+    "def_pa_21_27": 0.0,
+    "def_pa_28_34": -1.0,
+    "def_pa_35p": -4.0,
 }
 
 # Sources bucket made field goals differently: Sleeper/Yahoo split 0-19/20-29/30-39,

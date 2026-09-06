@@ -17,7 +17,7 @@ from .sources.espn import ESPNSource
 from .sources.fantasypros import FantasyProsSource
 from .sources.sleeper import SleeperSource, fetch_player_master
 from .sources.vegas import VegasSource
-from .yahoo_league import League, load_league
+from .yahoo_league import League, build_demo_league, load_league
 
 log = logging.getLogger(__name__)
 
@@ -57,9 +57,9 @@ def run_week(
     index = _build_index(config, session, refresh)
     source_projections, source_status = _load_sources(config, session, week, season, refresh, only_sources)
 
-    # Scoring rules come from the league, but the demo league drafts from
-    # already-scored projections — so load the league first for its scoring,
-    # aggregate under those rules, then fill demo rosters from the result.
+    # Scoring rules come from the league, but rosters are only fillable once
+    # projections exist — so load the league for its scoring first, aggregate
+    # under those rules, then set lineups from the result.
     league = load_league(config, week, refresh=refresh)
 
     projections = aggregate(
@@ -70,15 +70,8 @@ def run_week(
         config.get_path("positional_cv") or {},
     )
 
-    if league.is_demo:
-        from .yahoo_league import build_demo_league  # noqa: PLC0415
-
-        notes = list(league.notes)
-        league = build_demo_league(sorted(projections.values(), key=lambda p: -p.consensus), week)
-        for note in league.notes:
-            if note not in notes:
-                notes.append(note)
-        league.notes = notes
+    if league.needs_lineups:
+        league = _fill_lineups(league, projections, week, index)
 
     sim = simulate_league(
         league,
@@ -120,6 +113,24 @@ def run_week(
         markdown=markdown,
         source_status=source_status,
     )
+
+
+def _fill_lineups(league: League, projections, week: int, index) -> League:
+    """Set starting lineups now that every player has a league-scored projection."""
+    notes = list(league.notes)
+    if league.manual is not None:
+        from .manual_league import build_league  # noqa: PLC0415
+
+        points = {pid: p.consensus for pid, p in projections.items()}
+        filled = build_league(league.manual, week, index, points)
+    else:
+        filled = build_demo_league(sorted(projections.values(), key=lambda p: -p.consensus), week)
+
+    for note in filled.notes:
+        if note not in notes:
+            notes.append(note)
+    filled.notes = notes
+    return filled
 
 
 def _build_index(config: Config, session, refresh: bool) -> MatchIndex:

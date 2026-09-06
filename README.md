@@ -35,6 +35,48 @@ from the week's projections. Output lands in `output/week_1.md` and `docs/`.
 
 Open `docs/index.html` in a browser to preview the site locally.
 
+## No Yahoo API key yet? Keep the rosters yourself
+
+Yahoo takes a week or two to approve API access. Until then, `league.yaml`
+holds your league by hand and everything else works unchanged — real
+projections, real Vegas math, real simulation, real matchups.
+
+```bash
+python -m src.run --init-league   # writes league.yaml (skip; one is committed)
+# edit league.yaml: your teams, your rosters
+python -m src.run --check-league  # confirms every name resolves
+python -m src.run --week 1
+```
+
+You enter **player names only**. Position and NFL team are looked up from
+Sleeper, so `Josh Allen` is enough, and a defense can be written any of the ways
+you would naturally write it — `Denver Broncos`, `Broncos`, `Broncos D/ST`, or
+`DEN`. Scoring comes from a preset (`ppr`, `half_ppr`, `standard`) plus any
+overrides your league needs.
+
+`--check-league` is the important one. It prints every roster, flags any name it
+cannot match, and suggests the spelling it thinks you meant:
+
+```
+Team One: 10 players (1 K, 1 QB, 3 RB, 3 WR)
+  UNMATCHED  Brok Bowerz  did you mean: Brock Bowers (TE, LV)?
+  NO PLAYER for the TE slot
+```
+
+### Lineups
+
+You enter each roster **once**. Every week the engine starts whichever legal
+lineup projects highest, so the file does not need touching between weeks. That
+is a genuine modelling difference from Yahoo, and the report says so: it means a
+manager's actual lineup mistake will not show up. To model a real lineup, pin it
+with a `starters:` list on that team.
+
+### Switching to Yahoo later
+
+Put your league key in `config.yaml` under `yahoo.league_id` and Yahoo takes
+over automatically — `league.yaml` is ignored, not deleted. `league_source` in
+`config.yaml` forces the issue either way (`auto`, `yahoo`, `manual`).
+
 ## Configuration
 
 `config.yaml` holds everything non-secret — league id, source weights,
@@ -80,6 +122,8 @@ python -m src.run --week 3 --llm        # write the column with Claude
 python -m src.run --sources sleeper,espn --no-site
 python -m src.run --auth                # Yahoo OAuth setup
 python -m src.run --list-leagues        # print your Yahoo league keys
+python -m src.run --init-league         # scaffold league.yaml
+python -m src.run --check-league        # validate league.yaml and every roster name
 ```
 
 Every source fails soft: if one is down, the run proceeds with the rest and the
@@ -107,6 +151,7 @@ means four sources instead of five.
 
 ```
 config.yaml            league id, weights, variance priors, sim settings
+league.yaml            hand-maintained rosters, used when Yahoo is unavailable
 src/
   sources/             one module per projection provider
     sleeper.py         free, no auth; the canonical player-id spine
@@ -115,6 +160,7 @@ src/
     cbs.py             fourth independent source, defensively scraped
     vegas.py           The Odds API player props, de-vigged
   yahoo_league.py      scoring settings, rosters, lineups, matchups
+  manual_league.py     the hand-maintained league file and lineup solver
   player_matching.py   cross-source id resolution
   aggregate.py         consensus projections + sigma
   simulate.py          Monte Carlo matchup sim
@@ -148,7 +194,8 @@ python -m pytest tests/ -q
 ```
 
 Covers league scoring math, de-vig math, player matching, consensus/sigma
-building, and the simulation's statistical properties.
+building, the simulation's statistical properties, and the league file (parsing,
+validation, and a brute-force check that the lineup solver is optimal).
 
 ## Disclaimer
 

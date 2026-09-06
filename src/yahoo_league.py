@@ -66,21 +66,71 @@ class League:
     matchups: list[Matchup]
     is_demo: bool = False
     notes: list[str] = field(default_factory=list)
+    # Set when the league came from a hand-maintained file whose lineups are
+    # chosen from projections, so the pipeline knows to fill them later.
+    manual: object | None = None
+
+    @property
+    def needs_lineups(self) -> bool:
+        return self.is_demo or self.manual is not None
 
 
 def load_league(config, week: int, refresh: bool = False) -> League:
-    """Load the real Yahoo league, or an empty demo shell if credentials are missing.
+    """Resolve the league, in order of fidelity: Yahoo, then a hand-maintained
+    league file, then a synthetic demo league.
 
-    The caller fills demo rosters via `build_demo_league` once projections have
+    Rosters are returned unfilled; the caller sets lineups once projections have
     been scored under the league's rules.
     """
+    source = str(config.get_path("league_source", "auto")).lower()
+
+    if source in {"auto", "yahoo"}:
+        try:
+            return _load_yahoo(config, week)
+        except Exception as exc:  # noqa: BLE001 - fail soft, the report says so
+            if source == "yahoo":
+                raise
+            yahoo_error = str(exc)
+            log.info("Yahoo unavailable (%s); trying the league file", yahoo_error)
+    else:
+        yahoo_error = ""
+
+    if source in {"auto", "manual", "file"}:
+        league = _load_manual(config, week)
+        if league is not None:
+            return league
+
+    log.warning("no Yahoo credentials and no usable league file; using the demo league")
+    league = build_demo_league([], week)
+    if yahoo_error:
+        league.notes.append(f"Yahoo league unavailable: {yahoo_error}")
+    return league
+
+
+def _load_manual(config, week: int) -> League | None:
+    """Load the hand-maintained league file, if there is a usable one."""
+    from .manual_league import LeagueFileError, league_file_path, load_manual_league  # noqa: PLC0415
+
+    path = league_file_path(config)
+    if not path.exists():
+        log.info("no league file at %s", path.name)
+        return None
     try:
-        return _load_yahoo(config, week)
-    except Exception as exc:  # noqa: BLE001 - fail soft, the report says so
-        log.warning("Yahoo league unavailable (%s); using demo league", exc)
-        league = build_demo_league([], week)
-        league.notes.append(f"Yahoo league unavailable: {exc}")
-        return league
+        manual = load_manual_league(path)
+    except LeagueFileError as exc:
+        log.error("league file %s is unusable: %s", path.name, exc)
+        return None
+
+    log.info("loaded %d teams from %s", len(manual.teams), path.name)
+    # Teams and matchups are filled in once projections exist.
+    return League(
+        name=manual.name,
+        scoring=manual.scoring,
+        teams=[],
+        matchups=[],
+        is_demo=False,
+        manual=manual,
+    )
 
 
 def _load_yahoo(config, week: int) -> League:

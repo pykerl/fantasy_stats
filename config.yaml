@@ -5,6 +5,13 @@
 
 season: 2026
 
+# Where team rosters and matchups come from:
+#   auto   - use Yahoo if it is configured, else the league file, else a demo league
+#   yahoo  - Yahoo only (fail loudly if it is unavailable)
+#   manual - always use the league file, even if Yahoo is configured
+league_source: auto
+league_file: league.yaml
+
 yahoo:
   # Your Yahoo fantasy league id, e.g. "449.l.123456" or just "123456".
   league_id: ""

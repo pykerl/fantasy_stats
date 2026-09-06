@@ -42,6 +42,9 @@ NAME_ALIASES = {
 # Team defenses are named a dozen ways; normalize to the team abbreviation.
 _DST_TOKENS = ("d/st", "dst", "defense", "def", "d st")
 
+# Tokens that decorate a defense name without identifying the team.
+_DST_WORDS = {"d", "st", "dst", "def", "defense", "defence", "dst", "team"}
+
 
 def normalize_team(team: str | None) -> str:
     if not team:
@@ -146,16 +149,63 @@ class MatchIndex:
                 if ref.team == tm:
                     return ref
 
+        # A bare team identifier ("Broncos", "Denver", "DEN") is how people
+        # write a defense when they are not thinking about it. Try that before
+        # the fuzzy matcher, which would happily match "DEN" to a person.
+        if pos in {"", "DEF"}:
+            defense = self._resolve_defense(name, tm)
+            if defense is not None:
+                return defense
+            if self._looks_like_a_team(key):
+                # Ambiguous ("New York") or unknown — never fuzzy a team name
+                # onto a human being.
+                self.unmatched.append(f"{name} ({pos or '?'}/{tm or '?'})")
+                return None
+
         return self._fuzzy(key, pos, tm, name)
 
-    def _resolve_defense(self, name: str, team: str) -> PlayerRef | None:
-        # Sleeper uses the team abbreviation as the player_id for DEF.
-        if team and team in self.players:
-            return self.players[team]
-        low = normalize_name(name)
+    def _looks_like_a_team(self, key: str) -> bool:
+        """True when every word of the name belongs to some NFL team's name."""
+        tokens = [t for t in key.split() if t not in _DST_WORDS]
+        if not tokens:
+            return False
+        vocabulary: set[str] = set()
         for ref in self.players.values():
-            if ref.position == "DEF" and (ref.key in low or low in ref.key):
-                return ref
+            if ref.position == "DEF":
+                vocabulary.update(ref.key.split())
+                vocabulary.add(ref.player_id.lower())
+        return all(token in vocabulary for token in tokens)
+
+    def _resolve_defense(self, name: str, team: str) -> PlayerRef | None:
+        """Resolve a team defense from any of the ways people write one.
+
+        'Denver Broncos', 'Broncos', 'Broncos D/ST', 'Denver', and 'DEN' all
+        have to land on the same unit. Sleeper uses the team abbreviation as
+        the player_id for DEF, so that is the fast path.
+        """
+        if team and team in self.players and self.players[team].position == "DEF":
+            return self.players[team]
+
+        tokens = [t for t in normalize_name(name).split() if t not in _DST_WORDS]
+        if not tokens:
+            return self.players.get(team) if team else None
+
+        # A bare abbreviation ("DEN", "SF") is the id itself.
+        if len(tokens) == 1:
+            abbreviation = normalize_team(tokens[0].upper())
+            candidate = self.players.get(abbreviation)
+            if candidate is not None and candidate.position == "DEF":
+                return candidate
+
+        defenses = [r for r in self.players.values() if r.position == "DEF"]
+        wanted = set(tokens)
+        matches = [r for r in defenses if wanted <= set(r.key.split())]
+        if len(matches) == 1:
+            return matches[0]
+        if len(matches) > 1:
+            # "New York" is genuinely ambiguous; make the caller disambiguate.
+            log.debug("defense name %r matches %d teams", name, len(matches))
+            return None
         return None
 
     def _fuzzy(self, key: str, pos: str, team: str, original: str) -> PlayerRef | None:
