@@ -44,6 +44,12 @@ odds_api:
     - player_anytime_td
   # Skip the pull entirely if the cached file is younger than this.
   cache_ttl_hours: 24
+  # The Odds API bills one credit per market per region for EACH event priced,
+  # so a pull costs (games in the week) x (markets) — about 96 on a full NFL
+  # Sunday with the six markets above. The events endpoint itself is free but
+  # lists the whole season, so events are filtered to the target week first.
+  # This cap is a backstop against pricing a whole season by accident.
+  max_events_per_pull: 20
 
 anthropic:
   key_env: ANTHROPIC_API_KEY

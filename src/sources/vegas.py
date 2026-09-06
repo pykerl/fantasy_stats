@@ -12,6 +12,7 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 
 from .base import Projection, Source
 
@@ -34,6 +35,17 @@ MARKET_STATS = {
 # A player with fewer than this many resolved markets is flagged partial so the
 # consensus does not treat thin Vegas coverage as a low projection.
 MIN_MARKETS_FOR_FULL = 2
+
+# The events endpoint is free but returns the WHOLE SEASON's schedule, while
+# each event-odds call is billed one credit per market per region. Pulling every
+# event returned would cost 272 x 6 = 1632 credits against a 500/month free
+# tier, so events are filtered to the target week before anything is fetched.
+SEASON_STATE_URL = "https://api.sleeper.app/v1/state/nfl"
+
+# An NFL week starts Tuesday and its Monday-night game kicks off after midnight
+# UTC, so the window runs eight days from the Tuesday anchor. The next week's
+# Thursday game is nine days out and stays excluded.
+WEEK_WINDOW_DAYS = 8
 
 
 def american_to_probability(odds: float) -> float:
@@ -87,6 +99,63 @@ def expected_from_line(line: float, p_over: float) -> float:
     return float(line) * (1.0 + (p_over - 0.5) * 0.5)
 
 
+def _quota_remaining(response) -> int | None:
+    try:
+        return int(response.headers.get("x-requests-remaining", ""))
+    except (TypeError, ValueError):
+        return None
+
+
+def season_start(season: int, session=None) -> datetime | None:
+    """The season's start date, from Sleeper's state endpoint."""
+    import requests  # noqa: PLC0415
+
+    try:
+        getter = session.get if session is not None else requests.get
+        state = getter(SEASON_STATE_URL, timeout=15).json()
+        raw = state.get("season_start_date")
+        if not raw:
+            return None
+        return datetime.fromisoformat(str(raw)).replace(tzinfo=timezone.utc)
+    except Exception as exc:  # noqa: BLE001 - fall back to a now-relative window
+        log.warning("could not read the season start date (%s)", exc)
+        return None
+
+
+def week_window(week: int, season: int, session=None) -> tuple[datetime, datetime]:
+    """The UTC window containing week `week`'s games."""
+    start = season_start(season, session)
+    if start is None:
+        now = datetime.now(timezone.utc)
+        log.warning("using a now-relative window for week %d", week)
+        return now, now + timedelta(days=WEEK_WINDOW_DAYS)
+    # Anchor on the Tuesday before the season's first game.
+    anchor = start - timedelta(days=1) + timedelta(days=7 * (week - 1))
+    return anchor, anchor + timedelta(days=WEEK_WINDOW_DAYS)
+
+
+def filter_events_to_week(events: list, week: int, season: int, session=None) -> list:
+    """Keep only the events kicking off inside the target week.
+
+    The events endpoint returns the entire season, and every event we then price
+    costs credits, so this filter is what keeps a weekly pull affordable.
+    """
+    begin, end = week_window(week, season, session)
+    kept = []
+    for event in events:
+        raw = event.get("commence_time")
+        if not raw:
+            continue
+        try:
+            kickoff = datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if begin <= kickoff < end:
+            kept.append(event)
+    log.debug("week %d window %s to %s kept %d of %d events", week, begin, end, len(kept), len(events))
+    return kept
+
+
 @dataclass
 class PropLine:
     line: float | None
@@ -106,11 +175,39 @@ class VegasSource(Source):
         markets = self.config.get_path("odds_api.markets") or list(MARKET_STATS)
         regions = self.config.get_path("odds_api.regions", "us")
         bookmakers = self.config.get_path("odds_api.bookmakers") or []
+        max_events = int(self.config.get_path("odds_api.max_events_per_pull", 20))
 
-        events = self.get(
-            EVENTS_URL, params={"apiKey": api_key, "regions": regions}
-        ).json()
-        log.info("odds api: %d upcoming events", len(events))
+        response = self.get(EVENTS_URL, params={"apiKey": api_key, "regions": regions})
+        all_events = response.json()
+        remaining = _quota_remaining(response)
+
+        events = filter_events_to_week(all_events, week, season, self.session)
+        if not events:
+            raise RuntimeError(
+                f"no games found in week {week}'s date window "
+                f"(the events endpoint returned {len(all_events)} events across the season)"
+            )
+
+        # One credit per market per region, per event.
+        cost = len(events) * len(markets)
+        log.info(
+            "odds api: %d of %d events are in week %d; fetching %d markets each "
+            "(estimated %d credits, %s remaining)",
+            len(events), len(all_events), week, len(markets), cost,
+            remaining if remaining is not None else "unknown",
+        )
+
+        if len(events) > max_events:
+            raise RuntimeError(
+                f"week {week} matched {len(events)} events, more than "
+                f"odds_api.max_events_per_pull ({max_events}). That would cost {cost} "
+                "credits. Raise the cap deliberately if this is right."
+            )
+        if remaining is not None and remaining < cost:
+            raise RuntimeError(
+                f"pull needs about {cost} credits but only {remaining} remain this month. "
+                "Reduce odds_api.markets or wait for the quota to reset."
+            )
 
         odds = []
         for event in events:
@@ -123,11 +220,14 @@ class VegasSource(Source):
             if bookmakers:
                 params["bookmakers"] = ",".join(bookmakers)
             try:
-                odds.append(self.get(EVENT_ODDS_URL.format(event_id=event["id"]), params=params).json())
+                event_response = self.get(EVENT_ODDS_URL.format(event_id=event["id"]), params=params)
+                odds.append(event_response.json())
+                remaining = _quota_remaining(event_response) or remaining
             except Exception as exc:  # noqa: BLE001 - one dead game must not kill the pull
                 log.warning("odds api: event %s failed: %s", event.get("id"), exc)
             time.sleep(0.2)  # be polite to a free tier
-        return {"fetched_at": time.time(), "events": odds}
+        log.info("odds api: pulled %d events, %s credits remaining", len(odds), remaining)
+        return {"fetched_at": time.time(), "week": week, "events": odds}
 
     def parse(self, payload) -> list[Projection]:
         players: dict[str, dict] = {}
