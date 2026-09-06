@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import logging
 
+from ..scoring import derive_fg_yards
 from .base import Projection, Source
 
 log = logging.getLogger(__name__)
@@ -58,6 +59,10 @@ class ESPNSource(Source):
         out: list[Projection] = []
         for entry in payload.get("players", []):
             stats = {STAT_IDS[k]: float(v) for k, v in (entry.get("stats") or {}).items() if k in STAT_IDS}
+            if entry.get("position") == "K":
+                # ESPN publishes made-FG buckets but not total yardage, which
+                # distance-scored leagues need. Estimated from bucket midpoints.
+                stats = derive_fg_yards(stats)
             if not stats and entry.get("points") is None:
                 continue
             out.append(

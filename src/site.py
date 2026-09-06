@@ -173,13 +173,13 @@ def _matchup_card(m: MatchupSim, volatile_cut: float) -> str:
 <article class="card">
   <div class="card-tags">{upset}{volatile}</div>
   <div class="teams">
-    <div class="team {'lead' if m.home_win_probability >= 0.5 else ''}">
+    <div class="team team-home {'lead' if m.home_win_probability >= 0.5 else ''}">
       <span class="team-name">{html.escape(m.home.team.name)}</span>
       <span class="team-score">{m.home.mean:.1f}</span>
       <span class="team-meta">&sigma; {m.home.sigma:.1f} · {html.escape(m.home.team.record)}</span>
     </div>
     <div class="vs">vs</div>
-    <div class="team {'lead' if m.home_win_probability < 0.5 else ''}">
+    <div class="team team-away {'lead' if m.home_win_probability < 0.5 else ''}">
       <span class="team-name">{html.escape(m.away.team.name)}</span>
       <span class="team-score">{m.away.mean:.1f}</span>
       <span class="team-meta">&sigma; {m.away.sigma:.1f} · {html.escape(m.away.team.record)}</span>
@@ -404,14 +404,20 @@ body {
 .tag-upset { background: var(--accent-soft); color: var(--accent); }
 .tag-volatile { background: transparent; color: var(--warn); border: 1px solid var(--warn); }
 .tag-flip { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-.teams { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 10px; }
-.team { display: flex; flex-direction: column; }
-.team:last-child { text-align: right; align-items: flex-end; }
-.team-name { font-weight: 700; font-size: 15px; }
-.team-score { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+/* Both sides share one grid so the two scores sit on the same row no matter
+   how many lines a team name wraps to. `display: contents` lifts each team's
+   spans into the shared grid; the rows below place them. */
+.teams { display: grid; grid-template-columns: 1fr auto 1fr; column-gap: 10px; align-items: end; }
+.team { display: contents; }
+.team-home > * { grid-column: 1; }
+.team-away > * { grid-column: 3; text-align: right; }
+.team-name { grid-row: 1; font-weight: 700; font-size: 15px; align-self: end; }
+.team-score { grid-row: 2; }
+.team-meta { grid-row: 3; }
+.team-score { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
 .team.lead .team-score { color: var(--lead); }
 .team-meta { font-size: 12px; color: var(--muted); }
-.vs { color: var(--muted); font-size: 12px; align-self: center; }
+.vs { grid-column: 2; grid-row: 2; color: var(--muted); font-size: 12px; align-self: center; }
 .winbar {
   height: 8px;
   background: var(--border);
@@ -499,8 +505,8 @@ footer {
 .disclaimer { font-size: 12px; }
 .empty { color: var(--muted); }
 @media (max-width: 560px) {
-  .teams { grid-template-columns: 1fr; }
-  .team:last-child { text-align: left; align-items: flex-start; }
-  .vs { padding-top: 0; }
+  .teams { grid-template-columns: 1fr auto; }
+  .team-away > * { grid-column: 2; }
+  .vs { display: none; }
 }
 """

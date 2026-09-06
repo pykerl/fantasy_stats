@@ -1,82 +1,118 @@
 # The Talented Mr. Roto-ish Weekly
-### Week 1, 2026 — The Sunday Scaries Invitational
+### Week 1, 2026 — Philly_VZW
 
-There is a man in my neighborhood who mows his lawn diagonally. Not once — every week, diagonally, with the confidence of someone who has run the numbers. I've never spoken to him. I think about him constantly. He is, in my mind, the platonic ideal of the manager who starts a backup tight end and is somehow right.
+I found a receipt in an old jacket from a restaurant that closed in 2019. Two entrees, one dessert, and a tip I'd describe as 'aspirational.' I have no memory of this meal. I have, however, retained perfect recall of every waiver claim I've ever lost. The brain is a magnificent and deeply unserious organ.
 
-Point being: Pancake Blocks vs. The Kicker Truthers, and I have feelings.
+Which brings us, somehow, to Eagles2 vs. Deck s Destroyers.
 
 ---
 
 ## The Slate
 
-### Two Tight End Sets at Sunday Scaries
+### The Chickens at Parita's Pleasant Team
 
-**Sunday Scaries by 13.3** · Two Tight End Sets 105.1 (31%) at Sunday Scaries 118.4 (69%) · boom-bust index 26.6
+**Parita's Pleasant Team by 8.5** · The Chickens 87.0 (35%) at Parita's Pleasant Team 95.5 (65%) · boom-bust index 22.8
 
-Sunday Scaries by 13.3, 69% to win, and a margin that has been as generous as +48 and as cruel as -21 depending on which simulation you'd like to believe. Last week I called this exact kind of game 'a lock.' It was not a lock. Locks have tumblers. This had vibes. The model's favorite thing on the board here is Jahmyr Gibbs — 19.0 projected, the highest of any RB in this matchup across 3 sources. It's giving 'checking Foursquare to see who's the mayor of a Chipotle.'
+Parita's Pleasant Team by 8.5, 65% to win, and a margin that has been as generous as +38 and as cruel as -21 depending on which simulation you'd like to believe. Last week I called this exact kind of game 'a lock.' It was not a lock. Locks have tumblers. This had vibes. The model's favorite thing on the board here is Bijan Robinson — 18.5 projected, and all 3 sources land within 1.5 points of each other. It's giving 'checking Foursquare to see who's the mayor of a Chipotle.'
 
-**LOVE:** Jahmyr Gibbs (RB, DET) — 19.0 projected, the highest of any RB in this matchup across 3 sources.
-
-**HATE:** Patrick Mahomes (QB, KC) — a 4.0-point spread between the highest and lowest source.
-
-*Standings implication: chalk sends Sunday Scaries to 1-0 and drops Two Tight End Sets to 2-3; the upset flips both and makes the middle of this table completely unreadable.*
-
-### The Autodrafters at Fourth and Inches
-
-**The Autodrafters by 10.3** · The Autodrafters 129.5 (64%) at Fourth and Inches 119.2 (36%) · boom-bust index 29.5
-
-The Autodrafters by 10.3, 64% to win, and a margin that has been as generous as +48 and as cruel as -28 depending on which simulation you'd like to believe. I was wrong about this player in August, September, and — let me check my notes — yes, also right now, probably. The model's favorite thing on the board here is Trey McBride — 11.7 projected, and all 3 sources land within 1.3 points of each other. This is the fantasy equivalent of insisting the last season of Lost 'made sense if you think about it.'
-
-**LOVE:** Trey McBride (TE, ARI) — 11.7 projected, and all 3 sources land within 1.3 points of each other.
+**LOVE:** Bijan Robinson (RB, ATL) — 18.5 projected, and all 3 sources land within 1.5 points of each other.
 
 **HATE:** Jahmyr Gibbs (RB, DET) — a 4.7-point spread between the highest and lowest source.
 
-*Standings implication: chalk sends The Autodrafters to 2-1 and drops Fourth and Inches to 2-3; the upset flips both and makes the middle of this table completely unreadable.*
+*Standings implication: chalk sends Parita's Pleasant Team to 1-0 and drops The Chickens to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
 
-### Regression Candidates at Bye Week Believers
+### Man Coverage Brandon at Krista's Team
 
-**Bye Week Believers by 5.8** · Regression Candidates 100.1 (41%) at Bye Week Believers 105.9 (59%) · boom-bust index 25.3
+**Man Coverage Brandon by 3.9** · Man Coverage Brandon 96.6 (56%) at Krista's Team 92.7 (44%) · boom-bust index 23.5
 
-Bye Week Believers is favored by 5.8 with a 59% win probability, which sounds decisive until you notice the margin swings 25.3 points either way. You should know my track record here is roughly that of a coin that has been dropped several times. Upset alert: Regression Candidates wins this 41% of the time, which is far too often for anyone to feel comfortable. The model's favorite thing on the board here is Chase Brown — 15.1 projected, and all 3 sources land within 1.1 points of each other. This is a Google+ invite of a roster and I mean that with love.
+Man Coverage Brandon by 3.9 is not a prediction, it's a shrug with a decimal point. Genuinely too close to call. I was wrong about this player in August, September, and — let me check my notes — yes, also right now, probably. The model's favorite thing on the board here is Jonathan Taylor — 17.2 projected, and all 3 sources land within 1.2 points of each other. This is the fantasy equivalent of insisting the last season of Lost 'made sense if you think about it.'
 
-**LOVE:** Chase Brown (RB, CIN) — 15.1 projected, and all 3 sources land within 1.1 points of each other.
+**LOVE:** Jonathan Taylor (RB, IND) — 17.2 projected, and all 3 sources land within 1.2 points of each other.
 
-**HATE:** Saquon Barkley (RB, PHI) — a 5.9-point spread between the highest and lowest source.
+**HATE:** Xavier Worthy (WR, KC) — a 6.1-point spread between the highest and lowest source.
 
-*Standings implication: chalk sends Bye Week Believers to 3-1 and drops Regression Candidates to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
+*Standings implication: chalk sends Man Coverage Brandon to 1-0 and drops Krista's Team to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
 
-### The Kicker Truthers at Pancake Blocks
+### Nitya's Definitive Team at The Fangfather
 
-**Pancake Blocks by 2.4** · The Kicker Truthers 106.2 (46%) at Pancake Blocks 108.6 (54%) · boom-bust index 26.7
+**Nitya's Definitive Team by 11.8** · Nitya's Definitive Team 94.3 (70%) at The Fangfather 82.4 (30%) · boom-bust index 23.0
 
-The model gives Pancake Blocks a 54% edge here, which is the statistical equivalent of 'sure, why not.' My model and I have an arrangement: it does the math, I take the blame. The model's favorite thing on the board here is Bijan Robinson — 18.5 projected, and all 3 sources land within 1.5 points of each other. I haven't been this unsure about an outcome since the Snyder Cut discourse.
+Nitya's Definitive Team is favored by 11.8 with a 70% win probability, which sounds decisive until you notice the margin swings 23.0 points either way. You should know my track record here is roughly that of a coin that has been dropped several times. The model's favorite thing on the board here is Christian McCaffrey — 17.0 projected, the highest of any RB in this matchup across 3 sources. This is a Google+ invite of a roster and I mean that with love.
 
-**LOVE:** Bijan Robinson (RB, ATL) — 18.5 projected, and all 3 sources land within 1.5 points of each other.
+**LOVE:** Christian McCaffrey (RB, SF) — 17.0 projected, the highest of any RB in this matchup across 3 sources.
 
-**HATE:** Alvin Kamara (RB, NO) — a 10.8-point spread between the highest and lowest source.
+**HATE:** Malik Nabers (WR, NYG) — a 4.5-point spread between the highest and lowest source.
 
-*Standings implication: chalk sends Pancake Blocks to 3-2 and drops The Kicker Truthers to 1-2; the upset flips both and makes the middle of this table completely unreadable.*
+*Standings implication: chalk sends Nitya's Definitive Team to 1-0 and drops The Fangfather to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
 
-### Waiver Wire Warriors at Certified Flex Enjoyers
+### Pending Update at CROWN ME THE CHAMP!!
 
-**Waiver Wire Warriors by 26.9** · Waiver Wire Warriors 130.6 (83%) at Certified Flex Enjoyers 103.7 (17%) · boom-bust index 27.3
+**CROWN ME THE CHAMP!! by 4.8** · Pending Update 89.8 (42%) at CROWN ME THE CHAMP!! 94.6 (58%) · boom-bust index 23.1
 
-Call it Waiver Wire Warriors by 26.9. The win probability says 83%. The boom-bust index says 27.3 and the boom-bust index has never once apologized. Every year I say I've learned. Every year the tape says otherwise. The model's favorite thing on the board here is Bijan Robinson — 18.5 projected, and all 3 sources land within 1.5 points of each other. Somewhere between 'Gangnam Style' and 'planking' on the confidence spectrum.
+Call it CROWN ME THE CHAMP!! by 4.8. The win probability says 58%. The boom-bust index says 23.1 and the boom-bust index has never once apologized. My model and I have an arrangement: it does the math, I take the blame. Upset alert: Pending Update wins this 42% of the time, which is far too often for anyone to feel comfortable. The model's favorite thing on the board here is Ja'Marr Chase — 16.4 projected, and all 3 sources land within 0.1 points of each other. This is the roster construction equivalent of buying a selfie stick in 2014. Bold then. Bold now.
 
-**LOVE:** Bijan Robinson (RB, ATL) — 18.5 projected, and all 3 sources land within 1.5 points of each other.
+**LOVE:** Ja'Marr Chase (WR, CIN) — 16.4 projected, and all 3 sources land within 0.1 points of each other.
 
-**HATE:** Saquon Barkley (RB, PHI) — a 5.9-point spread between the highest and lowest source.
+**HATE:** Lamar Jackson (QB, BAL) — a 3.1-point spread between the highest and lowest source.
 
-*Standings implication: chalk sends Waiver Wire Warriors to 2-2 and drops Certified Flex Enjoyers to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
+*Standings implication: chalk sends CROWN ME THE CHAMP!! to 1-0 and drops Pending Update to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
+
+### Deck s Destroyers at Eagles2
+
+**Deck s Destroyers by 0.9** · Deck s Destroyers 88.7 (52%) at Eagles2 87.8 (48%) · boom-bust index 23.0
+
+The model gives Deck s Destroyers a 52% edge here, which is the statistical equivalent of 'sure, why not.' Last week I called this exact kind of game 'a lock.' It was not a lock. Locks have tumblers. This had vibes. The model's favorite thing on the board here is Jaxon Smith-Njigba — 14.5 projected, the highest of any WR in this matchup across 3 sources. I haven't been this unsure about an outcome since the Snyder Cut discourse.
+
+**LOVE:** Jaxon Smith-Njigba (WR, SEA) — 14.5 projected, the highest of any WR in this matchup across 3 sources.
+
+**HATE:** Bucky Irving (RB, TB) — a 4.7-point spread between the highest and lowest source.
+
+*Standings implication: chalk sends Deck s Destroyers to 1-0 and drops Eagles2 to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
+
+### Hickey's Brawlers at pyk's picks
+
+**pyk's picks by 14.0** · Hickey's Brawlers 80.5 (27%) at pyk's picks 94.5 (73%) · boom-bust index 23.2
+
+Call it pyk's picks by 14.0. The win probability says 73%. The boom-bust index says 23.2 and the boom-bust index has never once apologized. I know, I know — I'm the guy who told you to bench him last week. Nobody listens to me anyway. The model's favorite thing on the board here is Saquon Barkley — 16.1 projected, the highest of any RB in this matchup across 3 sources. This is a Google+ invite of a roster and I mean that with love.
+
+**LOVE:** Saquon Barkley (RB, PHI) — 16.1 projected, the highest of any RB in this matchup across 3 sources.
+
+**HATE:** MarShawn Lloyd (RB, GB) — a 9.9-point spread between the highest and lowest source.
+
+*Standings implication: chalk sends pyk's picks to 1-0 and drops Hickey's Brawlers to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
+
+### Mad Dawgs at Scott's Stars
+
+**Scott's Stars by 6.1** · Mad Dawgs 86.7 (39%) at Scott's Stars 92.8 (61%) · boom-bust index 23.2
+
+6.1 points separates these two on paper. Ten thousand simulations later, Scott's Stars takes it 61% of the time. My model and I have an arrangement: it does the math, I take the blame. The model's favorite thing on the board here is CeeDee Lamb — 14.6 projected, and all 3 sources land within 1.3 points of each other. This is the roster construction equivalent of buying a selfie stick in 2014. Bold then. Bold now.
+
+**LOVE:** CeeDee Lamb (WR, DAL) — 14.6 projected, and all 3 sources land within 1.3 points of each other.
+
+**HATE:** Cam Skattebo (RB, NYG) — a 7.6-point spread between the highest and lowest source.
+
+*Standings implication: chalk sends Scott's Stars to 1-0 and drops Mad Dawgs to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
+
+### jeffin's Unrivaled Team at Michael’s Blitz
+
+**Michael’s Blitz by 1.4** · jeffin's Unrivaled Team 89.1 (47%) at Michael’s Blitz 90.6 (53%) · boom-bust index 22.3
+
+The model gives Michael’s Blitz a 53% edge here, which is the statistical equivalent of 'sure, why not.' I know, I know — I'm the guy who told you to bench him last week. Nobody listens to me anyway. The model's favorite thing on the board here is Justin Jefferson — 14.8 projected, the highest of any WR in this matchup across 3 sources. It's giving 'checking Foursquare to see who's the mayor of a Chipotle.'
+
+**LOVE:** Justin Jefferson (WR, MIN) — 14.8 projected, the highest of any WR in this matchup across 3 sources.
+
+**HATE:** Tyler Warren (TE, IND) — a 3.3-point spread between the highest and lowest source.
+
+*Standings implication: chalk sends Michael’s Blitz to 1-0 and drops jeffin's Unrivaled Team to 0-1; the upset flips both and makes the middle of this table completely unreadable.*
 
 ---
 
 ## League Power Notes
 
-- **Favorite of the week:** Waiver Wire Warriors, 130.6 projected points.
-- **Projected top scorer:** Lamar Jackson (QB, BAL) at 24.6.
-- **Volatility watch:** The Autodrafters carries a 22.0-point standard deviation. The boom-bust index does not care about your feelings.
-- **Upset alerts (2):** Regression Candidates (41%), The Kicker Truthers (46%).
+- **Favorite of the week:** Man Coverage Brandon, 96.6 projected points.
+- **Projected top scorer:** Jalen Hurts (QB, PHI) at 20.8.
+- **Volatility watch:** Krista's Team carries a 17.0-point standard deviation. The boom-bust index does not care about your feelings.
+- **Upset alerts (4):** Krista's Team (44%), Pending Update (42%), Eagles2 (48%), jeffin's Unrivaled Team (47%).
 
 ## Source Report Card
 
@@ -89,7 +125,8 @@ Call it Waiver Wire Warriors by 26.9. The win probability says 83%. The boom-bus
 | vegas | unavailable — no Odds API key: set the environment variable named by odds_api.key_env |
 
 > Lineups are projected optimal lineups, not the lineups managers have actually set — a real lineup mistake will not show up here. Pin a team's `starters:` in league.yaml to model an actual lineup.
+> No `schedule:` in the league file, so teams were paired in listed order.
 
 ---
 
-Look — the projections are just numbers, and the numbers are wrong more than I'd like. But twelve people showing up every Sunday to argue about a backup tight end is a genuinely good way to stay in each other's lives. Don't take that for granted. Okay bye.
+Truthfully? The best part of this whole thing isn't the trophy, it's that someone texts you at 1 p.m. on a Sunday for no reason at all. Cherish the stupid league. Alright, I'm out.

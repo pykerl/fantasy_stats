@@ -53,11 +53,51 @@ DEFAULT_SCORING: dict[str, float] = {
     "def_pa_35p": -4.0,
 }
 
+# Canonical stat keys the engine understands. Used to warn on typos in a
+# league file's scoring overrides rather than silently scoring nothing.
+KNOWN_STATS: frozenset[str] = frozenset(DEFAULT_SCORING) | frozenset({
+    "pass_att", "pass_cmp", "pass_inc",
+    "rush_att", "rec_tgt",
+    "fum", "ret_td", "fum_ret_td",
+    "fgm_yd", "xpm_miss",
+    "fgmiss_0_19", "fgmiss_20_29", "fgmiss_30_39", "fgmiss_40_49", "fgmiss_50p",
+    "def_ff", "def_blk", "def_ret_td", "def_xp_ret", "def_pa", "def_yds_allow",
+})
+
 # Sources bucket made field goals differently: Sleeper/Yahoo split 0-19/20-29/30-39,
 # ESPN reports a single 0-39 bucket. `fgm_0_39` is derived from the league's
 # sub-bucket values so either shape scores correctly; a source must never
 # provide both shapes or the kick would be counted twice.
 _FG_SUB_BUCKETS = ("fgm_0_19", "fgm_20_29", "fgm_30_39")
+
+# Some leagues score field goals by total distance ("10 yards per point")
+# rather than by distance bucket. Sources that publish made-FG buckets but not
+# total yardage get an estimate from these bucket midpoints.
+FG_BUCKET_MIDPOINTS = {
+    "fgm_0_19": 18.0,
+    "fgm_20_29": 25.0,
+    "fgm_30_39": 35.0,
+    "fgm_0_39": 31.0,
+    "fgm_40_49": 45.0,
+    "fgm_50p": 53.0,
+}
+
+
+def derive_fg_yards(stats: dict[str, float]) -> dict[str, float]:
+    """Estimate total made-FG yardage from distance buckets.
+
+    Only used when a source does not publish the figure directly (Sleeper does,
+    as `fgm_yds`; ESPN does not). Leaves the stat line alone otherwise.
+    """
+    if stats.get("fgm_yd"):
+        return stats
+    total = sum(
+        stats.get(bucket, 0.0) * midpoint
+        for bucket, midpoint in FG_BUCKET_MIDPOINTS.items()
+    )
+    if total:
+        stats["fgm_yd"] = round(total, 2)
+    return stats
 
 # Yahoo publishes stat categories with human names; we key off the name rather
 # than the numeric stat_id because Yahoo's ids differ between offense/kicker/DEF

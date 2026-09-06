@@ -68,11 +68,35 @@ def test_presets_differ_only_in_reception_value():
     assert SCORING_PRESETS["standard"]["rec"] == 0.0
 
 
-def test_defense_scoring_is_present_in_every_preset():
-    """Team defenses used to score ~0 because these keys were missing."""
-    for preset in SCORING_PRESETS.values():
+def test_defense_scoring_is_present_in_every_scoring_preset():
+    """Team defenses used to score ~0 because these keys were missing.
+
+    `none` is excluded deliberately: it scores nothing so that a league file can
+    transcribe a Yahoo settings page exactly, without preset values leaking in.
+    """
+    for name, preset in SCORING_PRESETS.items():
+        if name == "none":
+            continue
         assert preset["def_sack"] > 0
         assert preset["def_pa_0"] > preset["def_pa_7_13"] > preset["def_pa_28_34"]
+
+
+def test_the_none_preset_scores_nothing_on_its_own():
+    assert SCORING_PRESETS["none"] == {}
+
+
+def test_none_preset_yields_exactly_the_overrides(tmp_path):
+    data = {**MINIMAL, "scoring": {"preset": "none", "overrides": {"rec": 0.5, "pass_td": 4}}}
+    scoring = load_manual_league(write(tmp_path, data)).scoring
+    assert scoring == {"rec": 0.5, "pass_td": 4.0}
+
+
+def test_distance_scored_field_goals_are_expressible(tmp_path):
+    """Some leagues score FGs by total yardage rather than by distance bucket."""
+    data = {**MINIMAL, "scoring": {"preset": "none", "overrides": {"fgm_yd": 0.1, "xpm": 1}}}
+    scoring = load_manual_league(write(tmp_path, data)).scoring
+    assert scoring["fgm_yd"] == 0.1
+    assert "fgm_0_19" not in scoring  # no bucket scoring to double-count against
 
 
 def test_records_parse_from_a_list_or_a_string(tmp_path):

@@ -15,7 +15,7 @@ from pathlib import Path
 import yaml
 
 from .config import ROOT
-from .scoring import DEFAULT_SCORING, derive_fg_buckets
+from .scoring import DEFAULT_SCORING, KNOWN_STATS, derive_fg_buckets
 from .yahoo_league import League, Matchup, RosterSlot, Team, _pair_sequentially
 
 log = logging.getLogger(__name__)
@@ -47,6 +47,10 @@ SCORING_PRESETS: dict[str, dict[str, float]] = {
     "ppr": dict(DEFAULT_SCORING),
     "half_ppr": {**DEFAULT_SCORING, "rec": 0.5},
     "standard": {**DEFAULT_SCORING, "rec": 0.0},
+    # Score nothing by default, so `overrides` can transcribe a league's Yahoo
+    # settings page exactly. Anything not listed is worth zero, which is the
+    # only safe reading of a rule the league does not have.
+    "none": {},
 }
 
 
@@ -217,12 +221,13 @@ def _parse_scoring(block) -> dict[str, float]:
     overrides = block.get("overrides") or {}
     if not isinstance(overrides, dict):
         raise LeagueFileError("`scoring.overrides` must be a mapping of stat key to points")
-    unknown = [k for k in overrides if k not in DEFAULT_SCORING and not k.startswith(("def_", "fgm_", "xpm"))]
+    unknown = sorted(k for k in overrides if k not in KNOWN_STATS)
     if unknown:
         log.warning(
             "scoring overrides use stat keys the engine does not score: %s. "
-            "See src/scoring.py for the canonical key names.",
-            ", ".join(sorted(unknown)),
+            "They will have no effect — see KNOWN_STATS in src/scoring.py for the "
+            "canonical names.",
+            ", ".join(unknown),
         )
     for key, value in overrides.items():
         try:

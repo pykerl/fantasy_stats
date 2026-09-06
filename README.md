@@ -35,6 +35,38 @@ from the week's projections. Output lands in `output/week_1.md` and `docs/`.
 
 Open `docs/index.html` in a browser to preview the site locally.
 
+## Importing a Yahoo league export
+
+Yahoo can export the draft board and the settings page to a spreadsheet before
+API access is approved. `tools/import_yahoo_export.py` turns that workbook into
+`league.yaml`, transcribing every scoring rule exactly:
+
+```bash
+python tools/import_yahoo_export.py path/to/export.xlsx
+python -m src.run --check-league
+```
+
+The workbook needs two sheets: **Draft and Waivers**
+(`Round | Pick | Player (Team - Position) | Fantasy Team Name`) and **League
+Settings** (`Setting | Value`, the settings page verbatim). Re-run it after each
+re-export as waivers accumulate.
+
+Two things the export does not carry, both of which the importer flags:
+
+- **Drops.** Rosters are the union of drafted and added players, so a team that
+  added without a recorded drop carries an extra bench player. Bench players
+  never score, so this does not affect any projection.
+- **The schedule.** Without it, teams are paired in draft order, which is not
+  who actually plays whom. The importer writes a commented-out schedule block
+  pre-filled with your real team names — uncomment it and fill in the pairings.
+  Every other number is unaffected, and the report says the pairings are
+  placeholders until you do.
+
+Scoring is written with `preset: none`, meaning nothing scores unless it is
+listed, so the overrides are the league's complete rule set rather than a diff
+against an assumed default. That matters for leagues that score unusually —
+field goals by total distance, say, rather than by distance bucket.
+
 ## No Yahoo API key yet? Keep the rosters yourself
 
 Yahoo takes a week or two to approve API access. Until then, `league.yaml`
@@ -152,6 +184,8 @@ means four sources instead of five.
 ```
 config.yaml            league id, weights, variance priors, sim settings
 league.yaml            hand-maintained rosters, used when Yahoo is unavailable
+tools/
+  import_yahoo_export.py   build league.yaml from a Yahoo export workbook
 src/
   sources/             one module per projection provider
     sleeper.py         free, no auth; the canonical player-id spine

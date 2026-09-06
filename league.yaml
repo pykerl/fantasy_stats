@@ -1,241 +1,385 @@
-# Your league, maintained by hand.
+# Philly_VZW — generated from the Yahoo league export.
 #
-# This is the fallback for when the Yahoo API is not available. Once your Yahoo
-# key arrives, put the league key in config.yaml under `yahoo.league_id` and
-# this file is ignored automatically — nothing here needs deleting. To force one
-# or the other, set `league_source: yahoo` or `league_source: manual` in
-# config.yaml (the default, `auto`, prefers Yahoo and falls back to here).
+# Regenerate after each re-export:
+#     python tools/import_yahoo_export.py <export.xlsx>
 #
-# You only enter PLAYER NAMES. Position and NFL team are looked up from Sleeper,
-# so "Josh Allen" is enough, and team defenses accept any of "Denver Broncos",
-# "Broncos", "Broncos D/ST" or "DEN".
+# Yahoo league id : 779718
+# Scoring type    : Head-to-Head
+# Roster          : QB, WR, RB, TE, W/R/T, W/R/T, K, DEF, BN, BN, BN, BN, BN, IR, IR
+# Playoffs        : 8 teams - Week 15, 16 and 17 (ends Monday, Jan 4)
 #
-# After editing, check every name resolves before you rely on it:
+# Rosters are the union of draft picks and waiver additions in the export.
+# Yahoo's export does not record drops, so a team that added a player without a
+# recorded drop carries an extra bench player here. That does not affect
+# scoring — bench players never count — but it does mean the bench is not
+# guaranteed to match Yahoo exactly.
 #
-#     python -m src.run --check-league
-#
-# It prints each roster, flags anything it cannot match, and suggests the
-# spelling it thinks you meant.
-#
-# ---------------------------------------------------------------------------
-# THE TEAMS AND ROSTERS BELOW ARE PLACEHOLDERS. Replace them with your league.
-# ---------------------------------------------------------------------------
+# `scoring.preset: none` means nothing scores unless it is listed below, so
+# these overrides are the league's complete rule set, transcribed from the
+# settings page.
 
 league:
-  # Shown as the league name on the published site.
-  name: The Sunday Scaries Invitational
-  # Your starting lineup, one entry per slot; repeat a slot to start several.
-  # Valid: QB RB WR TE K DEF, plus flex slots
-  #   W/R  W/T  R/T  W/R/T (or FLEX)  Q/W/R/T (or SUPERFLEX)
+  name: Philly_VZW
   roster_positions:
   - QB
-  - RB
-  - RB
   - WR
-  - WR
+  - RB
   - TE
+  - W/R/T
   - W/R/T
   - K
   - DEF
 scoring:
-  # One of: ppr, half_ppr, standard
-  preset: half_ppr
-  # Anything your league scores differently. Stat key names are in
-  # src/scoring.py — pass_yd, rush_td, rec, def_sack, def_pa_0, and so on.
+  preset: none
   overrides:
-    pass_td: 6
-# Each team needs a name and a roster. `manager` and `record` are optional;
-# `record` accepts [wins, losses] or "2-1".
-#
-# By default the engine starts whichever legal lineup projects highest. To
-# model the lineup a manager ACTUALLY set — mistakes included — add a
-# `starters:` list in the same order as roster_positions above:
-#
-#     starters: [Josh Allen, Bijan Robinson, Chase Brown, Ja'Marr Chase,
-#                Puka Nacua, Brock Bowers, Jaxon Smith-Njigba,
-#                Brandon Aubrey, Denver Broncos]
+    def_blk: 2.0
+    def_fum_rec: 2.0
+    def_int: 2.0
+    def_pa_0: 8.0
+    def_pa_14_20: 2.0
+    def_pa_1_6: 6.0
+    def_pa_21_27: 0.0
+    def_pa_28_34: -2.0
+    def_pa_35p: -4.0
+    def_pa_7_13: 4.0
+    def_ret_td: 6.0
+    def_sack: 1.0
+    def_safe: 2.0
+    def_td: 6.0
+    def_xp_ret: 2.0
+    fgm_yd: 0.1
+    fgmiss_0_19: -3.0
+    fgmiss_20_29: -2.0
+    fgmiss_30_39: -1.0
+    fum_lost: -2.0
+    fum_ret_td: 6.0
+    pass_2pt: 2.0
+    pass_int: -2.0
+    pass_td: 4.0
+    pass_yd: 0.04
+    rec: 0.5
+    rec_2pt: 2.0
+    rec_td: 6.0
+    rec_yd: 0.1
+    ret_td: 6.0
+    rush_2pt: 2.0
+    rush_td: 6.0
+    rush_yd: 0.1
+    xpm: 1.0
+    xpm_miss: -1.0
 teams:
-- name: Waiver Wire Warriors
-  manager: Manager 1
+- name: Parita's Pleasant Team
   record:
-  - 1
-  - 2
+  - 0
+  - 0
+  roster:
+  - Jahmyr Gibbs
+  - Tee Higgins
+  - Javonte Williams
+  - Mike Evans
+  - Tucker Kraft
+  - Kyler Murray
+  - Texans
+  - Kyle Monangai
+  - Romeo Doubs
+  - Jason Myers
+  - Tyjae Spears
+  - Greg Dulcich
+  - Jacoby Brissett
+- name: The Chickens
+  record:
+  - 0
+  - 0
+  roster:
+  - Bijan Robinson
+  - Kyren Williams
+  - Rashee Rice
+  - Courtland Sutton
+  - Trevor Lawrence
+  - Isaiah Likely
+  - Chris Godwin Jr.
+  - Rachaad White
+  - Patriots
+  - Jordyn Tyson
+  - Kaelon Black
+  - Cam Ward
+  - Chase McLaughlin
+- name: Krista's Team
+  record:
+  - 0
+  - 0
+  roster:
+  - Puka Nacua
+  - Jeremiyah Love
+  - D'Andre Swift
+  - Caleb Williams
+  - Sam LaPorta
+  - J.K. Dobbins
+  - Rams
+  - Chris Boswell
+  - Xavier Worthy
+  - Tre Tucker
+  - Alvin Kamara
+  - Pat Freiermuth
+  - Emmett Johnson
+- name: Man Coverage Brandon
+  record:
+  - 0
+  - 0
+  roster:
+  - Jonathan Taylor
+  - Trey McBride
+  - Zay Flowers
+  - Jayden Daniels
+  - Jaylen Warren
+  - Rico Dowdle
+  - Alec Pierce
+  - Seahawks
+  - Kenny Gainwell
+  - Khalil Shakir
+  - Malachi Fields
+  - Kenyon Sadiq
+  - Jake Bates
+- name: The Fangfather
+  record:
+  - 0
+  - 0
   roster:
   - Josh Allen
-  - Baker Mayfield
-  - Bijan Robinson
-  - Saquon Barkley
-  - Kyren Williams
-  - Ja'Marr Chase
-  - Justin Jefferson
-  - CeeDee Lamb
-  - Brock Bowers
-  - Brandon Aubrey
-  - Denver Broncos
-- name: The Autodrafters
-  manager: Manager 2
-  record:
-  - 1
-  - 1
-  roster:
-  - Lamar Jackson
-  - Jayden Daniels
-  - Jahmyr Gibbs
-  - De'Von Achane
-  - David Montgomery
-  - Puka Nacua
-  - Amon-Ra St. Brown
-  - Nico Collins
-  - Trey McBride
-  - Cameron Dicker
-  - Philadelphia Eagles
-- name: Fourth and Inches
-  manager: Manager 3
-  record:
-  - 2
-  - 2
-  roster:
-  - Jalen Hurts
-  - Justin Herbert
-  - Christian McCaffrey
-  - Jonathan Taylor
-  - Alvin Kamara
-  - Malik Nabers
-  - Brian Thomas Jr.
-  - Drake London
+  - Travis Etienne Jr.
+  - DJ Moore
   - George Kittle
-  - Chris Boswell
-  - Baltimore Ravens
-- name: Sunday Scaries
-  manager: Manager 4
+  - Christian Watson
+  - Jonathon Brooks
+  - Chuba Hubbard
+  - Wan'Dale Robinson
+  - Chris Rodriguez Jr.
+  - Sam Darnold
+  - Chig Okonkwo
+  - Eddy Pineiro
+  - Cowboys
+- name: Nitya's Definitive Team
   record:
   - 0
   - 0
   roster:
-  - Joe Burrow
-  - Bo Nix
-  - Derrick Henry
+  - Christian McCaffrey
+  - Malik Nabers
+  - DeVonta Smith
+  - Jadarian Price
+  - Bhayshul Tuten
+  - Matthew Stafford
+  - Michael Wilson
+  - Jake Ferguson
   - Josh Jacobs
-  - Tony Pollard
-  - A.J. Brown
-  - Jaxon Smith-Njigba
-  - Tee Higgins
-  - Sam LaPorta
-  - Jake Bates
-  - Houston Texans
-- name: Bye Week Believers
-  manager: Manager 5
+  - Rashid Shaheed
+  - Ja'Kobi Lane
+  - Cairo Santos
+  - Chargers
+- name: CROWN ME THE CHAMP!!
   record:
-  - 2
-  - 1
+  - 0
+  - 0
   roster:
-  - Patrick Mahomes
-  - Brock Purdy
-  - Kenneth Walker III
-  - Chase Brown
-  - Rhamondre Stevenson
+  - Ja'Marr Chase
+  - Chris Olave
+  - Lamar Jackson
   - Davante Adams
-  - Terry McLaurin
+  - Rhamondre Stevenson
+  - Blake Corum
+  - Josh Downs
+  - Mike Washington Jr.
+  - Mark Andrews
+  - Jaguars
+  - Ka'imi Fairbairn
+  - Dontayvion Wicks
+  - Buccaneers
+- name: Pending Update
+  record:
+  - 0
+  - 0
+  roster:
+  - Amon-Ra St. Brown
+  - Ashton Jeanty
+  - Breece Hall
+  - Rome Odunze
+  - Justin Herbert
+  - Dalton Kincaid
+  - Quentin Johnston
+  - Makai Lemon
+  - Aaron Jones Sr.
+  - Terrance Ferguson
+  - Daniel Jones
+  - Will Reichard
+  - Chiefs
+- name: Eagles2
+  record:
+  - 0
+  - 0
+  roster:
+  - Jaxon Smith-Njigba
+  - Omarion Hampton
+  - Jaylen Waddle
+  - Jameson Williams
+  - Harold Fannin Jr.
+  - Bo Nix
+  - Jacory Croskey-Merritt
+  - KC Concepcion
+  - Jalen Coker
+  - Dalton Schultz
+  - C.J. Stroud
+  - Tyler Loop
+  - Packers
+- name: Deck s Destroyers
+  record:
+  - 0
+  - 0
+  roster:
+  - James Cook III
+  - George Pickens
+  - Garrett Wilson
+  - Bucky Irving
+  - Dak Prescott
+  - Brian Thomas Jr.
+  - Juwan Johnson
+  - Patrick Mahomes
+  - Ray Davis
+  - Tank Bigsby
+  - AJ Barner
+  - Bills
+  - Evan McPherson
+- name: pyk's picks
+  record:
+  - 0
+  - 0
+  roster:
+  - Saquon Barkley
+  - A.J. Brown
+  - Ladd McConkey
+  - Drake Maye
+  - Tony Pollard
   - DK Metcalf
   - Travis Kelce
-  - Harrison Butker
-  - Pittsburgh Steelers
-- name: Pancake Blocks
-  manager: Manager 6
+  - Jordan Mason
+  - Woody Marks
+  - Vikings
+  - Deebo Samuel Sr.
+  - Zach Charbonnet
+  - Keenan Allen
+  - Spencer Shrader
+- name: Hickey's Brawlers
   record:
-  - 2
-  - 2
+  - 0
+  - 0
   roster:
+  - Kenneth Walker III
+  - Nico Collins
+  - Colston Loveland
+  - Terry McLaurin
+  - MarShawn Lloyd
+  - Jaxson Dart
+  - De'Zhaun Stribling
+  - Stefon Diggs
+  - Ravens
   - Baker Mayfield
-  - Josh Allen
-  - James Cook
-  - Breece Hall
-  - Aaron Jones
-  - Garrett Wilson
-  - Mike Evans
-  - Zay Flowers
-  - Mark Andrews
-  - Jason Myers
-  - Minnesota Vikings
-- name: Certified Flex Enjoyers
-  manager: Manager 7
-  record:
-  - 0
-  - 0
-  roster:
-  - Jayden Daniels
-  - Lamar Jackson
-  - Bucky Irving
-  - Kyren Williams
-  - Travis Etienne
-  - Courtland Sutton
-  - Jaylen Waddle
-  - Marvin Harrison Jr.
+  - Jonah Coleman
+  - Cam Little
   - T.J. Hockenson
-  - Ka'imi Fairbairn
-  - Buffalo Bills
-- name: The Kicker Truthers
-  manager: Manager 8
-  record:
-  - 1
-  - 1
-  roster:
-  - Justin Herbert
-  - Jalen Hurts
-  - David Montgomery
-  - Alvin Kamara
-  - Bijan Robinson
-  - Rashee Rice
-  - Chris Olave
-  - DJ Moore
-  - David Njoku
-  - Younghoe Koo
-  - Green Bay Packers
-- name: Regression Candidates
-  manager: Manager 9
+- name: Scott's Stars
   record:
   - 0
   - 0
   roster:
-  - Bo Nix
+  - CeeDee Lamb
+  - Brock Bowers
   - Joe Burrow
-  - Tony Pollard
-  - Rhamondre Stevenson
-  - Saquon Barkley
-  - Jerry Jeudy
-  - Xavier Worthy
-  - Ladd McConkey
-  - Evan Engram
-  - Tyler Bass
-  - Detroit Lions
-- name: Two Tight End Sets
-  manager: Manager 10
+  - Quinshon Judkins
+  - TreVeyon Henderson
+  - Carnell Tate
+  - RJ Harvey
+  - Michael Pittman Jr.
+  - Tyler Allgeier
+  - Jakobi Meyers
+  - Bryce Young
+  - Steelers
+  - Andy Borregales
+  - Tank Dell
+- name: Mad Dawgs
   record:
-  - 2
-  - 2
+  - 0
+  - 0
   roster:
+  - Jalen Hurts
+  - De'Von Achane
+  - David Montgomery
+  - Cam Skattebo
+  - Parker Washington
+  - Dallas Goedert
+  - Eagles
+  - Matthew Golden
+  - Hunter Henry
+  - Tyler Shough
+  - Lions
+  - Harrison Mevis
+  - Kayshon Boutte
+- name: Michael’s Blitz
+  record:
+  - 0
+  - 0
+  roster:
+  - Chase Brown
+  - Drake London
+  - Tetairoa McMillan
+  - Tyler Warren
+  - Jared Goff
+  - Marvin Harrison Jr.
+  - Broncos
+  - Brandon Aubrey
+  - Jordan Love
+  - Brian Robinson
+  - Denzel Boston
+  - Adonai Mitchell
+  - Oronde Gadsden
+  - Christian Kirk
+- name: jeffin's Unrivaled Team
+  record:
+  - 0
+  - 0
+  roster:
+  - Justin Jefferson
+  - Derrick Henry
+  - Emeka Egbuka
+  - Luther Burden III
+  - Kyle Pitts Sr.
   - Brock Purdy
-  - Patrick Mahomes
-  - Aaron Jones
-  - Travis Etienne
-  - Jahmyr Gibbs
-  - Jameson Williams
-  - Rome Odunze
-  - Khalil Shakir
-  - Dalton Kincaid
-  - Wil Lutz
-  - Seattle Seahawks
-# Who plays whom each week, as [home team, away team]. Optional — without a
-# week's entry, teams are paired in the order listed above.
-schedule:
-  1:
-  - - Sunday Scaries
-    - Two Tight End Sets
-  - - Fourth and Inches
-    - The Autodrafters
-  - - Bye Week Believers
-    - Regression Candidates
-  - - Pancake Blocks
-    - The Kicker Truthers
-  - - Certified Flex Enjoyers
-    - Waiver Wire Warriors
+  - Jayden Reed
+  - Jordan Addison
+  - Keaton Mitchell
+  - Malik Willis
+  - Brenton Strange
+  - Cameron Dicker
+  - Bengals
+
+# ---------------------------------------------------------------------------
+# NO SCHEDULE IN THE EXPORT.
+#
+# Yahoo's export does not include the matchup schedule, so until you fill this
+# in the engine pairs teams in the order above — which is NOT who actually
+# plays whom. Every other number (projections, spreads, win probabilities) is
+# correct; only the pairings are placeholders, and the report says so.
+#
+# Uncomment and set each week's matchups as [home, away]:
+# ---------------------------------------------------------------------------
+#
+# schedule:
+#   1:
+#     - ["Parita's Pleasant Team", "The Chickens"]
+#     - ["Krista's Team", "Man Coverage Brandon"]
+#     - ["The Fangfather", "Nitya's Definitive Team"]
+#     - ["CROWN ME THE CHAMP!!", "Pending Update"]
+#     - ["Eagles2", "Deck s Destroyers"]
+#     - ["pyk's picks", "Hickey's Brawlers"]
+#     - ["Scott's Stars", "Mad Dawgs"]
+#     - ["Michael’s Blitz", "jeffin's Unrivaled Team"]
+#   2:
+#     - [...]
