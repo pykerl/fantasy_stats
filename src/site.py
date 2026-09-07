@@ -89,8 +89,12 @@ def _week_data(result) -> dict:
                 "team": t.team.name,
                 "record": t.team.record,
                 "projected": round(t.mean, 2),
+                "median": t.median,
+                "q1_p25": t.q1,
+                "q3_p75": t.q3,
                 "floor_p10": t.floor,
                 "ceiling_p90": t.ceiling,
+                "swing_p10_p90": t.swing,
                 "sigma": round(t.sigma, 2),
             }
             for rank, t in enumerate(sorted(result.sim.teams, key=lambda x: -x.mean), start=1)
@@ -135,6 +139,8 @@ def _render_week_page(site: dict, result, archive: dict, is_index: bool = False)
             "The projections, the Vegas math and the simulation are real; the league is not.</div>"
         )
 
+    body.append(_render_executive(sim))
+    body.append(_render_box_plot(sim))
     body.append(_render_power_rankings(sim))
     if result.league.schedule_known:
         body.append(_render_scoreboard(sim))
@@ -229,6 +235,128 @@ def _matchup_card(m: MatchupSim, volatile_cut: float) -> str:
 </article>"""
 
 
+def _render_executive(sim: LeagueSim) -> str:
+    """The one thing to take away, before any table.
+
+    Exactly one hero figure, with a single supporting tile behind it.
+    """
+    teams = sorted(sim.teams, key=lambda t: -t.mean)
+    gap = teams[0].mean - teams[-1].mean
+    swings = sorted(t.swing for t in teams)
+    middle = len(swings) // 2
+    typical = swings[middle] if len(swings) % 2 else (swings[middle - 1] + swings[middle]) / 2
+    ratio = typical / gap if gap else 0.0
+    contenders = sum(1 for t in teams if t.ceiling >= teams[0].mean)
+
+    return f"""
+<section class="exec">
+  <div class="exec-hero">
+    <span class="exec-label">Noise beats standings</span>
+    <span class="exec-figure">{ratio:.1f}&times;</span>
+    <p class="exec-sub">A typical team's score swings <strong>{typical:.0f} points</strong> in a
+    single week, while only <strong>{gap:.1f} points</strong> separate the top of the table from
+    the bottom. The spread within any one team dwarfs the differences between them.</p>
+  </div>
+  <div class="exec-tile">
+    <span class="exec-label">Everyone is live</span>
+    <span class="exec-tile-figure">{contenders} of {len(teams)}</span>
+    <p class="exec-sub">teams have a realistic ceiling above the highest projected score on the
+    board. On a one-week sample, almost nobody is out of it.</p>
+  </div>
+</section>"""
+
+
+# Plot geometry. A fixed viewBox keeps the marks crisp; the container scrolls
+# rather than shrinking the labels past legibility on a phone.
+BOX_ROW_H = 26
+BOX_LEFT = 176
+BOX_RIGHT = 726
+BOX_TOP = 16
+BOX_AXIS_H = 34
+
+
+def _nice_domain(low: float, high: float, step: int = 10) -> tuple[int, int]:
+    return int(low // step * step), int(-(-high // step) * step)
+
+
+def _render_box_plot(sim: LeagueSim) -> str:
+    """One box per team: the whole league's variance in a single chart.
+
+    Box is the interquartile range, whiskers reach the 10th and 90th
+    percentiles, the tick is the median. One hue — every box is the same kind of
+    thing, so colour carries no extra meaning and there is nothing to legend.
+    """
+    teams = sorted(sim.teams, key=lambda t: -t.median)
+    if not teams:
+        return ""
+
+    low, high = _nice_domain(min(t.floor for t in teams), max(t.ceiling for t in teams))
+    span = (high - low) or 1
+    plot_w = BOX_RIGHT - BOX_LEFT
+    height = BOX_TOP + len(teams) * BOX_ROW_H + BOX_AXIS_H
+
+    def x(value: float) -> float:
+        return BOX_LEFT + (value - low) / span * plot_w
+
+    parts: list[str] = []
+
+    # Recessive gridlines: solid hairlines one step off the surface.
+    ticks = list(range(low, high + 1, 10))
+    for tick in ticks:
+        parts.append(
+            f'<line class="bp-grid" x1="{x(tick):.1f}" y1="{BOX_TOP - 6}" '
+            f'x2="{x(tick):.1f}" y2="{BOX_TOP + len(teams) * BOX_ROW_H:.1f}"/>'
+        )
+        parts.append(
+            f'<text class="bp-tick" x="{x(tick):.1f}" '
+            f'y="{BOX_TOP + len(teams) * BOX_ROW_H + 18:.1f}">{tick}</text>'
+        )
+
+    for index, team in enumerate(teams):
+        cy = BOX_TOP + index * BOX_ROW_H + BOX_ROW_H / 2
+        name = html.escape(team.team.name)
+        readout = (
+            f"{team.team.name} · median {team.median:.1f} · "
+            f"middle half {team.q1:.0f}–{team.q3:.0f} · "
+            f"range {team.floor:.0f}–{team.ceiling:.0f} · swing {team.swing:.0f}"
+        )
+        box_x, box_w = x(team.q1), max(x(team.q3) - x(team.q1), 2)
+        parts.append(
+            f'<g class="bp-row" tabindex="0" role="listitem" data-readout="{html.escape(readout)}">'
+            # A hit target the full height of the row, not just the 12px box.
+            f'<rect class="bp-hit" x="{BOX_LEFT - 172}" y="{cy - BOX_ROW_H / 2:.1f}" '
+            f'width="{BOX_RIGHT - BOX_LEFT + 176}" height="{BOX_ROW_H}"/>'
+            f'<text class="bp-name" x="{BOX_LEFT - 12}" y="{cy + 4:.1f}">{name}</text>'
+            f'<line class="bp-whisker" x1="{x(team.floor):.1f}" y1="{cy:.1f}" '
+            f'x2="{x(team.ceiling):.1f}" y2="{cy:.1f}"/>'
+            f'<line class="bp-cap" x1="{x(team.floor):.1f}" y1="{cy - 5:.1f}" '
+            f'x2="{x(team.floor):.1f}" y2="{cy + 5:.1f}"/>'
+            f'<line class="bp-cap" x1="{x(team.ceiling):.1f}" y1="{cy - 5:.1f}" '
+            f'x2="{x(team.ceiling):.1f}" y2="{cy + 5:.1f}"/>'
+            f'<rect class="bp-box" x="{box_x:.1f}" y="{cy - 7:.1f}" '
+            f'width="{box_w:.1f}" height="14" rx="3"/>'
+            f'<line class="bp-median" x1="{x(team.median):.1f}" y1="{cy - 8:.1f}" '
+            f'x2="{x(team.median):.1f}" y2="{cy + 8:.1f}"/>'
+            f"</g>"
+        )
+
+    svg = (
+        f'<svg class="boxplot" viewBox="0 0 {BOX_RIGHT + 14} {height}" '
+        f'role="list" aria-label="Projected score distribution for each team" '
+        f'preserveAspectRatio="xMinYMin meet">{"".join(parts)}</svg>'
+    )
+    return (
+        '<section><h2 class="section-title">Where every team could land</h2>'
+        '<p class="note">Each box is one team\'s 10,000 simulated scores: the bar covers the '
+        'middle half of outcomes, the line through it is the median, and the whiskers reach the '
+        '10th and 90th percentiles. Sorted by median. The boxes overlap almost completely, which '
+        'is the whole point.</p>'
+        f'<div class="scroll bp-wrap">{svg}</div>'
+        '<div class="bp-tip" id="bp-tip" role="status" aria-live="polite" hidden></div>'
+        "</section>"
+    )
+
+
 def _render_power_rankings(sim: LeagueSim) -> str:
     """All teams ranked by projection, with the spread of outcomes behind it.
 
@@ -247,24 +375,14 @@ def _render_power_rankings(sim: LeagueSim) -> str:
 
     rows = []
     for rank, team in enumerate(teams, start=1):
-        left = (team.floor - low) / span * 100
-        width = (team.ceiling - team.floor) / span * 100
-        centre = (team.mean - low) / span * 100
-        label = (
-            f"{team.team.name}: projected {team.mean:.1f}, "
-            f"range {team.floor:.0f} to {team.ceiling:.0f}"
-        )
         rows.append(
             f"<tr><td class='num rank'>{rank}</td>"
             f"<td class='rank-team'>{html.escape(team.team.name)}"
             f"<span class='rank-record'>{html.escape(team.team.record)}</span></td>"
             f"<td class='num strong'>{team.mean:.1f}</td>"
+            f"<td class='num'>{team.median:.1f}</td>"
+            f"<td class='num muted'>{team.q1:.0f}&ndash;{team.q3:.0f}</td>"
             f"<td class='num muted'>{team.floor:.0f}&ndash;{team.ceiling:.0f}</td>"
-            f"<td class='rangecell'>"
-            f"<div class='rangetrack' role='img' aria-label=\"{html.escape(label)}\">"
-            f"<div class='rangebar' style='left:{left:.2f}%;width:{max(width, 0.6):.2f}%'></div>"
-            f"<div class='rangedot' style='left:{centre:.2f}%'></div>"
-            f"</div></td>"
             f"<td class='num muted'>{team.sigma:.1f}</td></tr>"
         )
 
@@ -274,16 +392,14 @@ def _render_power_rankings(sim: LeagueSim) -> str:
         '<section><h2 class="section-title">Power Rankings</h2>'
         '<div class="scroll"><table class="data rankings"><thead><tr>'
         "<th class='num'>#</th><th>Team</th><th class='num'>Proj</th>"
-        "<th class='num'>Range</th>"
-        "<th class='rangehead'>Distribution"
-        f"<span class='rangescale'><span>{low:.0f}</span><span>{high:.0f}</span></span></th>"
-        "<th class='num'>&sigma;</th>"
+        "<th class='num'>Median</th><th class='num'>Middle half</th>"
+        "<th class='num'>Range</th><th class='num'>&sigma;</th>"
         f'</tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
-        f'<p class="note">Ranked by projected points. The bar spans the 10th to 90th '
-        f'percentile of 10,000 simulations and the dot is the projection, all on one '
-        f'shared scale. First to last is {gap:.1f} points, but {overlap} of '
-        f'{len(teams)} teams have a ceiling above the top team\'s projection — on any '
-        f'given week this order means less than it looks.</p></section>'
+        f'<p class="note">Every number behind the chart above, so nothing is reachable only by '
+        f'hovering. Middle half is the 25th to 75th percentile; range is the 10th to 90th. '
+        f'First to last is {gap:.1f} points, yet {overlap} of {len(teams)} teams have a ceiling '
+        f'above the top team\'s projection — on any given week this order means less than it '
+        f'looks.</p></section>'
     )
 
 
@@ -391,6 +507,33 @@ def _page(title: str, heading: str, tagline: str, subtitle: str, body: str) -> s
 <main class="wrap">
 {body}
 </main>
+<script>
+(function () {{
+  var tip = document.getElementById("bp-tip");
+  var wrap = document.querySelector(".bp-wrap");
+  if (!tip || !wrap) return;
+
+  function show(row, clientX) {{
+    // textContent, never innerHTML: team names are user-supplied text.
+    tip.textContent = row.getAttribute("data-readout") || "";
+    tip.hidden = false;
+    var box = wrap.getBoundingClientRect();
+    var rowBox = row.getBoundingClientRect();
+    var x = (clientX === undefined ? rowBox.left + rowBox.width / 2 : clientX) - box.left;
+    tip.style.left = Math.max(4, Math.min(x + 12, box.width - tip.offsetWidth - 4)) + "px";
+    tip.style.top = (rowBox.top - box.top + rowBox.height + 6) + "px";
+  }}
+  function hide() {{ tip.hidden = true; }}
+
+  wrap.querySelectorAll(".bp-row").forEach(function (row) {{
+    row.addEventListener("pointermove", function (e) {{ show(row, e.clientX); }});
+    row.addEventListener("pointerleave", hide);
+    row.addEventListener("focus", function () {{ show(row); }});
+    row.addEventListener("blur", hide);
+  }});
+  wrap.addEventListener("pointerleave", hide);
+}})();
+</script>
 <footer class="wrap">
   <p>Generated {generated} by the fantasy projection engine. Projections are aggregated from
   Sleeper, ESPN, FantasyPros, CBS and betting-market implied points, then simulated 10,000 times
@@ -589,44 +732,7 @@ td.muted { color: var(--muted); }
 .rank-record { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 8px; }
 /* The scale endpoints sit on their own line so they cannot collide with the
    column label, and they align with the track they describe. */
-th.rangehead { min-width: 200px; }
-th.rangehead .rangescale {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: none;
-  padding-top: 2px;
-}
 td.rangecell { width: 40%; min-width: 180px; }
-.rangetrack { position: relative; height: 18px; }
-/* Hairline, solid, one step off the surface — the axis must stay recessive. */
-.rangetrack::before {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: 50%;
-  height: 1px;
-  background: var(--border);
-}
-.rangebar {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 6px;
-  border-radius: 3px;      /* rounded data-ends */
-  background: var(--accent);
-  opacity: 0.35;           /* a wash, so the projection dot reads on top */
-}
-.rangedot {
-  position: absolute;
-  top: 50%;
-  width: 9px; height: 9px;
-  margin-left: -4.5px;
-  transform: translateY(-50%);
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 2px var(--surface);   /* surface ring, not a border */
-}
 .archive { list-style: none; padding: 0; margin: 0; }
 .archive li {
   display: flex;
@@ -646,6 +752,84 @@ footer {
 }
 .disclaimer { font-size: 12px; }
 .empty { color: var(--muted); }
+
+/* Executive summary. One hero figure per view, per the house rules; the second
+   item is a supporting tile, deliberately smaller. */
+.exec {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.exec-hero, .exec-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.exec-hero { border-left: 3px solid var(--accent); }
+.exec-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  font-weight: 700;
+}
+/* Proportional figures: tabular-nums makes a big number look loose. */
+.exec-figure {
+  display: block;
+  font-size: 56px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  margin: 6px 0 4px;
+}
+.exec-tile-figure {
+  display: block;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 700;
+  margin: 6px 0 4px;
+}
+.exec-sub { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+.exec-sub strong { color: var(--text); font-weight: 700; }
+
+/* Box plot. A single hue: every box is the same kind of thing, so there is
+   nothing for colour to distinguish and no legend to draw. */
+.bp-wrap { position: relative; margin-top: 4px; }
+.boxplot { width: 100%; min-width: 620px; height: auto; display: block; }
+.bp-grid { stroke: var(--border); stroke-width: 1; }
+.bp-tick { fill: var(--muted); font-size: 11px; text-anchor: middle; font-variant-numeric: tabular-nums; }
+.bp-name { fill: var(--text); font-size: 12.5px; text-anchor: end; font-weight: 600; }
+.bp-whisker { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; opacity: 0.45; }
+.bp-cap { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; opacity: 0.45; }
+.bp-box { fill: var(--accent); opacity: 0.3; }
+.bp-median { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.bp-hit { fill: transparent; }
+.bp-row { cursor: default; }
+.bp-row:hover .bp-box, .bp-row:focus .bp-box { opacity: 0.55; }
+.bp-row:hover .bp-whisker, .bp-row:focus .bp-whisker,
+.bp-row:hover .bp-cap, .bp-row:focus .bp-cap { opacity: 0.85; }
+.bp-row:focus { outline: none; }
+.bp-row:focus .bp-name { text-decoration: underline; }
+.bp-tip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 12.5px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  max-width: 320px;
+  z-index: 5;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+@media (max-width: 700px) {
+  .exec { grid-template-columns: 1fr; }
+  .exec-figure { font-size: 46px; }
+}
 .pending {
   background: var(--surface);
   border: 1px solid var(--border);

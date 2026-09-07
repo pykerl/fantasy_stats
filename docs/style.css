@@ -183,44 +183,7 @@ td.muted { color: var(--muted); }
 .rank-record { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 8px; }
 /* The scale endpoints sit on their own line so they cannot collide with the
    column label, and they align with the track they describe. */
-th.rangehead { min-width: 200px; }
-th.rangehead .rangescale {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: none;
-  padding-top: 2px;
-}
 td.rangecell { width: 40%; min-width: 180px; }
-.rangetrack { position: relative; height: 18px; }
-/* Hairline, solid, one step off the surface — the axis must stay recessive. */
-.rangetrack::before {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: 50%;
-  height: 1px;
-  background: var(--border);
-}
-.rangebar {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 6px;
-  border-radius: 3px;      /* rounded data-ends */
-  background: var(--accent);
-  opacity: 0.35;           /* a wash, so the projection dot reads on top */
-}
-.rangedot {
-  position: absolute;
-  top: 50%;
-  width: 9px; height: 9px;
-  margin-left: -4.5px;
-  transform: translateY(-50%);
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 2px var(--surface);   /* surface ring, not a border */
-}
 .archive { list-style: none; padding: 0; margin: 0; }
 .archive li {
   display: flex;
@@ -240,6 +203,84 @@ footer {
 }
 .disclaimer { font-size: 12px; }
 .empty { color: var(--muted); }
+
+/* Executive summary. One hero figure per view, per the house rules; the second
+   item is a supporting tile, deliberately smaller. */
+.exec {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.exec-hero, .exec-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.exec-hero { border-left: 3px solid var(--accent); }
+.exec-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  font-weight: 700;
+}
+/* Proportional figures: tabular-nums makes a big number look loose. */
+.exec-figure {
+  display: block;
+  font-size: 56px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  margin: 6px 0 4px;
+}
+.exec-tile-figure {
+  display: block;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 700;
+  margin: 6px 0 4px;
+}
+.exec-sub { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+.exec-sub strong { color: var(--text); font-weight: 700; }
+
+/* Box plot. A single hue: every box is the same kind of thing, so there is
+   nothing for colour to distinguish and no legend to draw. */
+.bp-wrap { position: relative; margin-top: 4px; }
+.boxplot { width: 100%; min-width: 620px; height: auto; display: block; }
+.bp-grid { stroke: var(--border); stroke-width: 1; }
+.bp-tick { fill: var(--muted); font-size: 11px; text-anchor: middle; font-variant-numeric: tabular-nums; }
+.bp-name { fill: var(--text); font-size: 12.5px; text-anchor: end; font-weight: 600; }
+.bp-whisker { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; opacity: 0.45; }
+.bp-cap { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; opacity: 0.45; }
+.bp-box { fill: var(--accent); opacity: 0.3; }
+.bp-median { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.bp-hit { fill: transparent; }
+.bp-row { cursor: default; }
+.bp-row:hover .bp-box, .bp-row:focus .bp-box { opacity: 0.55; }
+.bp-row:hover .bp-whisker, .bp-row:focus .bp-whisker,
+.bp-row:hover .bp-cap, .bp-row:focus .bp-cap { opacity: 0.85; }
+.bp-row:focus { outline: none; }
+.bp-row:focus .bp-name { text-decoration: underline; }
+.bp-tip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 12.5px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  max-width: 320px;
+  z-index: 5;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+@media (max-width: 700px) {
+  .exec { grid-template-columns: 1fr; }
+  .exec-figure { font-size: 46px; }
+}
 .pending {
   background: var(--surface);
   border: 1px solid var(--border);

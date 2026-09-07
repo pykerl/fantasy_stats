@@ -66,6 +66,28 @@ class TeamSim:
         """90th-percentile team score."""
         return round(float(np.percentile(self.scores, 90)), 1) if self.scores is not None and self.scores.size else 0.0
 
+    def percentile(self, q: float) -> float:
+        if self.scores is None or not self.scores.size:
+            return 0.0
+        return round(float(np.percentile(self.scores, q)), 1)
+
+    @property
+    def q1(self) -> float:
+        return self.percentile(25)
+
+    @property
+    def median(self) -> float:
+        return self.percentile(50)
+
+    @property
+    def q3(self) -> float:
+        return self.percentile(75)
+
+    @property
+    def swing(self) -> float:
+        """How far a typical week can move for this team: the p10-p90 width."""
+        return round(self.ceiling - self.floor, 1)
+
     @property
     def problems(self) -> list[StarterProjection]:
         return [s for s in self.starters if s.problem]

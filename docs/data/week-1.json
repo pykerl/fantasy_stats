@@ -3,7 +3,7 @@
   "season": 2026,
   "league": "Philly_VZW",
   "is_demo": false,
-  "generated_at": "2026-09-06T20:24:32+00:00",
+  "generated_at": "2026-09-07T15:05:30+00:00",
   "source_status": {
     "sleeper": "462 projections",
     "espn": "501 projections",
@@ -18,8 +18,12 @@
       "team": "Parita's Pleasant Team",
       "record": "0-0",
       "projected": 94.14,
+      "median": 93.9,
+      "q1_p25": 83.0,
+      "q3_p75": 105.3,
       "floor_p10": 73.2,
       "ceiling_p90": 115.2,
+      "swing_p10_p90": 42.0,
       "sigma": 16.4
     },
     {
@@ -27,8 +31,12 @@
       "team": "CROWN ME THE CHAMP!!",
       "record": "0-0",
       "projected": 93.89,
+      "median": 93.9,
+      "q1_p25": 82.3,
+      "q3_p75": 105.2,
       "floor_p10": 72.5,
       "ceiling_p90": 115.4,
+      "swing_p10_p90": 42.9,
       "sigma": 16.78
     },
     {
@@ -36,8 +44,12 @@
       "team": "Nitya's Definitive Team",
       "record": "0-0",
       "projected": 93.22,
+      "median": 93.1,
+      "q1_p25": 82.2,
+      "q3_p75": 104.1,
       "floor_p10": 72.5,
       "ceiling_p90": 114.0,
+      "swing_p10_p90": 41.5,
       "sigma": 16.15
     },
     {
@@ -45,8 +57,12 @@
       "team": "Scott's Stars",
       "record": "0-0",
       "projected": 91.57,
+      "median": 91.5,
+      "q1_p25": 80.8,
+      "q3_p75": 102.4,
       "floor_p10": 71.4,
       "ceiling_p90": 112.3,
+      "swing_p10_p90": 40.9,
       "sigma": 15.98
     },
     {
@@ -54,8 +70,12 @@
       "team": "The Chickens",
       "record": "0-0",
       "projected": 91.44,
+      "median": 91.3,
+      "q1_p25": 81.0,
+      "q3_p75": 101.7,
       "floor_p10": 71.6,
       "ceiling_p90": 111.3,
+      "swing_p10_p90": 39.7,
       "sigma": 15.48
     },
     {
@@ -63,8 +83,12 @@
       "team": "pyk's picks",
       "record": "0-0",
       "projected": 91.25,
+      "median": 91.1,
+      "q1_p25": 80.2,
+      "q3_p75": 101.9,
       "floor_p10": 70.7,
       "ceiling_p90": 112.4,
+      "swing_p10_p90": 41.7,
       "sigma": 16.2
     },
     {
@@ -72,8 +96,12 @@
       "team": "Man Coverage Brandon",
       "record": "0-0",
       "projected": 90.94,
+      "median": 90.8,
+      "q1_p25": 79.6,
+      "q3_p75": 102.2,
       "floor_p10": 69.6,
       "ceiling_p90": 111.9,
+      "swing_p10_p90": 42.3,
       "sigma": 16.58
     },
     {
@@ -81,8 +109,12 @@
       "team": "Krista's Team",
       "record": "0-0",
       "projected": 90.68,
+      "median": 90.7,
+      "q1_p25": 79.3,
+      "q3_p75": 102.0,
       "floor_p10": 69.5,
       "ceiling_p90": 112.1,
+      "swing_p10_p90": 42.6,
       "sigma": 16.55
     },
     {
@@ -90,8 +122,12 @@
       "team": "Pending Update",
       "record": "0-0",
       "projected": 89.56,
+      "median": 89.4,
+      "q1_p25": 78.9,
+      "q3_p75": 100.1,
       "floor_p10": 69.5,
       "ceiling_p90": 109.4,
+      "swing_p10_p90": 39.9,
       "sigma": 15.55
     },
     {
@@ -99,8 +135,12 @@
       "team": "Michael\u2019s Blitz",
       "record": "0-0",
       "projected": 88.1,
+      "median": 88.0,
+      "q1_p25": 77.6,
+      "q3_p75": 98.4,
       "floor_p10": 68.7,
       "ceiling_p90": 107.9,
+      "swing_p10_p90": 39.2,
       "sigma": 15.38
     },
     {
@@ -108,8 +148,12 @@
       "team": "Mad Dawgs",
       "record": "0-0",
       "projected": 87.0,
+      "median": 86.8,
+      "q1_p25": 75.8,
+      "q3_p75": 98.0,
       "floor_p10": 66.1,
       "ceiling_p90": 108.1,
+      "swing_p10_p90": 42.0,
       "sigma": 16.38
     },
     {
@@ -117,8 +161,12 @@
       "team": "jeffin's Unrivaled Team",
       "record": "0-0",
       "projected": 86.78,
+      "median": 86.5,
+      "q1_p25": 76.5,
+      "q3_p75": 96.9,
       "floor_p10": 67.5,
       "ceiling_p90": 106.3,
+      "swing_p10_p90": 38.8,
       "sigma": 15.13
     },
     {
@@ -126,8 +174,12 @@
       "team": "Deck s Destroyers",
       "record": "0-0",
       "projected": 86.57,
+      "median": 86.6,
+      "q1_p25": 76.1,
+      "q3_p75": 96.8,
       "floor_p10": 66.7,
       "ceiling_p90": 106.5,
+      "swing_p10_p90": 39.8,
       "sigma": 15.44
     },
     {
@@ -135,8 +187,12 @@
       "team": "Hickey's Brawlers",
       "record": "0-0",
       "projected": 85.83,
+      "median": 85.6,
+      "q1_p25": 75.5,
+      "q3_p75": 96.2,
       "floor_p10": 66.2,
       "ceiling_p90": 105.6,
+      "swing_p10_p90": 39.4,
       "sigma": 15.25
     },
     {
@@ -144,8 +200,12 @@
       "team": "Eagles2",
       "record": "0-0",
       "projected": 85.46,
+      "median": 85.5,
+      "q1_p25": 74.6,
+      "q3_p75": 96.1,
       "floor_p10": 65.4,
       "ceiling_p90": 105.7,
+      "swing_p10_p90": 40.3,
       "sigma": 15.79
     },
     {
@@ -153,8 +213,12 @@
       "team": "The Fangfather",
       "record": "0-0",
       "projected": 85.09,
+      "median": 84.9,
+      "q1_p25": 74.6,
+      "q3_p75": 95.4,
       "floor_p10": 65.4,
       "ceiling_p90": 105.0,
+      "swing_p10_p90": 39.6,
       "sigma": 15.46
     }
   ],
