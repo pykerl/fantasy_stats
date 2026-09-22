@@ -10,13 +10,13 @@
     "week": 1
   },
   "2": {
-    "generated_at": "2026-09-06T14:44:12+00:00",
-    "is_demo": true,
-    "league": "Demo League",
-    "matchups": 5,
+    "generated_at": "2026-09-22T17:33:35+00:00",
+    "is_demo": false,
+    "league": "Philly_VZW",
+    "matchups": 8,
     "season": 2026,
-    "top_points": 129.9,
-    "top_team": "Certified Flex Enjoyers",
+    "top_points": 98.9,
+    "top_team": "Parita's Pleasant Team",
     "week": 2
   }
 }
