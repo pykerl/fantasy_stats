@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Permjt Tunnel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+if (window.tailwind) tailwind.config = { theme: { extend: {
+  colors: { navy: '#0A1628', card: '#12233F', line: '#1E3558', volt: '#2E9BFF', ink2: '#9FB3D1', ink3: '#6A80A3' },
+  fontFamily: { sans: ['Inter','system-ui','sans-serif'], mono: ['JetBrains Mono','ui-monospace','monospace'] }
+}}};
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root{
+  --bg:#0A1628; --card:#12233F; --card2:#0F1D35; --line:#1E3558; --line2:#2A4670;
+  --volt:#2E9BFF; --volt-soft:rgba(46,155,255,.14); --ink:#FFFFFF; --ink2:#9FB3D1; --ink3:#6A80A3;
+  --gA:#5CB8FF; --gB:#2A72C8; --gC:#4A5A78;
+  --good:#34D399; --warn:#FBBF24;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink);margin:0}
+body{font-family:Inter,system-ui,sans-serif;font-size:13px;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums}
+
+/* backdrop: grid + glow */
+.backdrop{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.backdrop .grid{position:absolute;inset:-40px;background-image:linear-gradient(rgba(46,155,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(46,155,255,.055) 1px,transparent 1px);background-size:40px 40px;animation:gridDrift 30s linear infinite;mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 80%)}
+.backdrop .glow{position:absolute;width:900px;height:900px;border-radius:50%;filter:blur(120px);opacity:.28}
+.backdrop .g1{background:#1560C0;top:-450px;left:-200px;animation:float1 18s ease-in-out infinite}
+.backdrop .g2{background:#0E7BD8;top:30%;right:-500px;opacity:.16;animation:float2 22s ease-in-out infinite}
+@keyframes gridDrift{to{transform:translate(40px,40px)}}
+@keyframes float1{50%{transform:translate(120px,80px)}}
+@keyframes float2{50%{transform:translate(-100px,-60px)}}
+.app{position:relative;z-index:1}
+
+/* cards */
+.card{background:linear-gradient(180deg,rgba(18,35,63,.96),rgba(15,29,53,.96));border:1px solid var(--line);border-radius:10px;position:relative}
+.card.hov{transition:border-color .25s, transform .25s, box-shadow .25s}
+.card.hov:hover{border-color:var(--line2);box-shadow:0 0 0 1px rgba(46,155,255,.12),0 10px 40px -10px rgba(46,155,255,.25);transform:translateY(-1px)}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);font-weight:600}
+.lbl{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.stat{padding:14px 16px 12px;overflow:hidden}
+.stat .v{font-size:30px;font-weight:700;letter-spacing:-.02em;margin-top:6px;line-height:1.05}
+.stat .sub{color:var(--ink3);font-size:11.5px;margin-top:6px}
+.stat::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--volt),transparent);opacity:.55;animation:scan 4s ease-in-out infinite}
+@keyframes scan{0%,100%{transform:translateX(-60%)}50%{transform:translateX(60%)}}
+.spark{height:28px;margin-top:8px;width:100%}
+
+/* header / nav */
+.topbar{border-bottom:1px solid var(--line);background:rgba(10,22,40,.82);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000}
+.logo-mark{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#0A1628 25%,transparent 26%),repeating-radial-gradient(circle at 50% 50%,var(--volt) 0 1.5px,transparent 1.5px 5px);box-shadow:0 0 18px rgba(46,155,255,.55);animation:pulseMark 3s ease-in-out infinite}
+@keyframes pulseMark{50%{box-shadow:0 0 28px rgba(46,155,255,.9)}}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 rgba(52,211,153,.7);animation:ping 1.8s infinite}
+.live-dot.off{background:var(--warn);animation:none}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}80%,100%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
+.inp{background:#0C1B33;border:1px solid var(--line);color:var(--ink);border-radius:7px;padding:7px 10px;font-size:12.5px;outline:none;transition:border-color .2s, box-shadow .2s}
+.inp:focus{border-color:var(--volt);box-shadow:0 0 0 3px rgba(46,155,255,.18)}
+.inp::placeholder{color:var(--ink3)}
+input[type=date].inp{color-scheme:dark;padding:6px 8px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);background:#10223F;color:var(--ink);border-radius:7px;padding:7px 11px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn:hover{border-color:var(--volt);background:#132B52;box-shadow:0 0 16px -4px rgba(46,155,255,.6)}
+.btn.primary{background:var(--volt);border-color:var(--volt);color:#04101F}
+.btn.primary:hover{background:#56B0FF}
+.btn.sm{padding:4px 8px;font-size:11px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink2);border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .2s}
+.chip:hover{color:var(--ink);border-color:var(--line2)}
+.chip.on{background:var(--volt-soft);border-color:var(--volt);color:#fff;box-shadow:0 0 14px -4px rgba(46,155,255,.8)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tab{position:relative;padding:11px 14px;color:var(--ink2);font-weight:600;font-size:12.5px;cursor:pointer;white-space:nowrap;transition:color .2s;background:none;border:0}
+.tab:hover{color:#fff}
+.tab.on{color:#fff}
+.tab .k{font-family:'JetBrains Mono';font-size:10px;color:var(--ink3);margin-right:6px}
+.tab-ink{position:absolute;bottom:-1px;height:2px;background:var(--volt);box-shadow:0 0 12px var(--volt);transition:left .35s cubic-bezier(.2,.8,.2,1),width .35s cubic-bezier(.2,.8,.2,1);border-radius:2px}
+
+/* ticker */
+.ticker{overflow:hidden;white-space:nowrap;border-bottom:1px solid var(--line);background:rgba(8,18,34,.7);font-size:11.5px;height:28px;line-height:28px;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+.ticker-in{display:inline-block;animation:tick 120s linear infinite;padding-left:100%}
+.ticker:hover .ticker-in{animation-play-state:paused}
+.ticker .it{margin-right:34px;color:var(--ink2)}
+.ticker .it b{color:#fff;font-weight:600}
+.ticker .it .up{color:var(--gA)}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+/* views */
+.view{display:none}
+.view.on{display:block;animation:viewIn .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+.rise{opacity:0;animation:rise .55s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* tables */
+.tbl-wrap{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:12.5px}
+.t th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0;background:#11213C;z-index:1}
+.t th.sort{cursor:pointer;user-select:none}
+.t th.sort:hover{color:#fff}
+.t th.r,.t td.r{text-align:right}
+.t td{padding:8px 10px;border-bottom:1px solid rgba(30,53,88,.6);white-space:nowrap;vertical-align:middle}
+.t tbody tr{transition:background .15s}
+.t tbody tr:hover{background:rgba(46,155,255,.07)}
+.t tbody tr.rise{animation-duration:.45s}
+.link{color:#fff;cursor:pointer;font-weight:600;border-bottom:1px dotted transparent;transition:all .15s}
+.link:hover{color:var(--volt);border-bottom-color:var(--volt)}
+.muted{color:var(--ink3)}
+.ink2{color:var(--ink2)}
+.trunc{max-width:240px;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:bottom}
+
+.grade{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:6px;font-weight:800;font-size:12px;font-family:'JetBrains Mono'}
+.grade.A{background:rgba(92,184,255,.16);color:#8FD0FF;border:1px solid var(--gA);box-shadow:0 0 12px -3px var(--gA)}
+.grade.B{background:rgba(42,114,200,.18);color:#7FAEE8;border:1px solid var(--gB)}
+.grade.C{background:rgba(74,90,120,.2);color:#93A3BF;border:1px solid var(--gC)}
+.scorebar{width:64px;height:5px;background:#0B1A31;border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
+.scorebar i{display:block;height:100%;background:linear-gradient(90deg,#1F62B4,var(--volt));border-radius:3px;transform-origin:left;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}}
+.pill{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:999px;border:1px solid var(--line2);color:var(--ink2);text-transform:capitalize}
+.pill.roofing,.pill.windows,.pill.doors{color:#BFE2FF;border-color:rgba(46,155,255,.5);background:rgba(46,155,255,.08)}
+
+/* bars */
+.hbar{display:grid;grid-template-columns:110px 1fr 70px;gap:10px;align-items:center;padding:5px 0;font-size:12px}
+.hbar .track{height:8px;background:#0B1A31;border-radius:4px;overflow:hidden}
+.hbar .fill{height:100%;background:var(--volt);border-radius:0 4px 4px 0;transform-origin:left;animation:grow 1s cubic-bezier(.2,.8,.2,1) both}
+.hbar:hover .fill{background:#6CC0FF}
+
+#tip{position:fixed;z-index:5000;pointer-events:none;background:#0B1830;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;transition:opacity .12s;max-width:280px}
+#tip.on{opacity:1}
+#tip .h{color:var(--ink3);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+
+/* loader */
+#loader{position:fixed;inset:0;z-index:4000;background:rgba(10,22,40,.92);backdrop-filter:blur(6px);display:grid;place-items:center;transition:opacity .5s}
+#loader.gone{opacity:0;pointer-events:none}
+.tunnel{width:120px;height:120px;position:relative;margin:0 auto 22px}
+.tunnel i{position:absolute;inset:0;border:1.5px solid var(--volt);border-radius:50%;opacity:0;animation:tun 2.4s linear infinite}
+.tunnel i:nth-child(2){animation-delay:.6s}.tunnel i:nth-child(3){animation-delay:1.2s}.tunnel i:nth-child(4){animation-delay:1.8s}
+@keyframes tun{0%{transform:scale(.05);opacity:0}30%{opacity:1}100%{transform:scale(1);opacity:0}}
+.prog{width:280px;height:4px;background:#0B1A31;border-radius:2px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--volt);box-shadow:0 0 10px var(--volt);transition:width .3s}
+
+/* globe */
+#globe{width:100%;height:100%;display:block;cursor:grab}
+#globe:active{cursor:grabbing}
+
+/* map */
+#map{height:calc(100vh - 250px);min-height:480px;border-radius:10px;background:#07111F}
+.leaflet-container{font-family:Inter,sans-serif;background:#07111F}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0F1F3A;color:#fff;border:1px solid var(--line2);box-shadow:0 12px 40px rgba(0,0,0,.6)}
+.leaflet-popup-content{margin:12px 14px;font-size:12.5px;line-height:1.5}
+.leaflet-container a.leaflet-popup-close-button{color:var(--ink2)}
+.leaflet-control-attribution{background:rgba(10,22,40,.8)!important;color:var(--ink3)!important}
+.leaflet-control-attribution a{color:var(--ink2)!important}
+.leaflet-bar a{background:#10223F!important;color:#fff!important;border-color:var(--line)!important}
+.pin{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font:800 9px 'JetBrains Mono';color:#04101F;border:2px solid #0A1628}
+.pin.A{background:var(--gA);box-shadow:0 0 10px var(--gA)}
+.pin.B{background:var(--gB);color:#fff}
+.pin.C{background:var(--gC);color:#fff}
+.clu{border-radius:50%;display:grid;place-items:center;font:700 11px 'JetBrains Mono';color:#fff;background:rgba(18,35,63,.9);border:2px solid;backdrop-filter:blur(2px)}
+.clu.A{border-color:var(--gA);box-shadow:0 0 16px -2px var(--gA)}
+.clu.B{border-color:var(--gB)}
+.clu.C{border-color:var(--gC)}
+
+.kit{background:#0B1A31;border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;font-size:12.5px;line-height:1.6;color:#DCE7F7}
+.empty{padding:40px;text-align:center;color:var(--ink3)}
+.banner{border:1px solid rgba(251,191,36,.4);background:rgba(251,191,36,.07);color:#FDE68A;border-radius:8px;padding:9px 12px;font-size:12px}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#1E3558;border-radius:5px}::-webkit-scrollbar-track{background:transparent}
+@media (max-width:640px){.stat .v{font-size:24px}.hbar{grid-template-columns:84px 1fr 60px}#map{height:65vh}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="backdrop"><div class="grid"></div><div class="glow g1"></div><div class="glow g2"></div></div>
+<div id="tip"></div>
+
+<div id="loader">
+  <div class="text-center px-6">
+    <div class="tunnel"><i></i><i></i><i></i><i></i></div>
+    <div class="text-lg font-bold tracking-tight">Opening the tunnel…</div>
+    <div id="loadMsg" class="muted mt-1 mb-4 mono text-xs">Connecting to Miami-Dade open data</div>
+    <div class="prog mx-auto"><i id="loadBar"></i></div>
+  </div>
+</div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="max-w-[1600px] mx-auto px-4 pt-3 pb-0">
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-3 mr-2">
+          <div class="logo-mark"></div>
+          <div>
+            <div class="font-extrabold tracking-tight text-[15px] leading-none">The Permjt Tunnel</div>
+            <div class="flex items-center gap-1.5 mt-1 text-[11px] muted"><span id="liveDot" class="live-dot"></span><span id="srcLbl" class="mono">Miami-Dade · connecting</span></div>
+          </div>
+        </div>
+        <div class="relative flex-1 min-w-[200px] max-w-[460px]">
+          <svg class="absolute left-2.5 top-1/2 -translate-y-1/2" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6A80A3" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" class="inp w-full pl-8" placeholder="Search contractor, license, or address   ( / )" autocomplete="off">
+        </div>
+        <div class="flex items-center gap-2 ml-auto">
+          <label class="btn" title="Upload a permits CSV">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 20h16"/></svg>Upload CSV
+            <input id="file" type="file" accept=".csv,text/csv" class="hidden">
+          </label>
+          <button id="reload" class="btn" title="Reload live Miami-Dade data">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8m0-5v5h-5"/></svg>Live data
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 mt-3">
+        <span class="lbl mr-1">Issued</span>
+        <input id="dFrom" type="date" class="inp">
+        <span class="muted">→</span>
+        <input id="dTo" type="date" class="inp">
+        <div class="flex gap-1 ml-1" id="presets">
+          <button class="chip" data-d="30">30D</button><button class="chip on" data-d="90">90D</button><button class="chip" data-d="180">180D</button><button class="chip" data-d="365">1Y</button>
+        </div>
+        <span class="w-px h-5 bg-[#1E3558] mx-2 hidden sm:block"></span>
+        <span class="lbl mr-1">Trade</span>
+        <div class="flex flex-wrap gap-1" id="trades"></div>
+        <div id="countLbl" class="ml-auto mono text-[11px] muted"></div>
+      </div>
+      <nav class="tabs mt-2 relative" id="tabs">
+        <button class="tab on" data-v="overview"><span class="k">01</span>Overview</button>
+        <button class="tab" data-v="morning"><span class="k">02</span>Morning List</button>
+        <button class="tab" data-v="installers"><span class="k">03</span>Installers</button>
+        <button class="tab" data-v="dossier"><span class="k">04</span>Dossier</button>
+        <button class="tab" data-v="map"><span class="k">05</span>Map</button>
+        <span class="tab-ink" id="tabInk"></span>
+      </nav>
+    </div>
+  </header>
+  <div class="ticker"><div class="ticker-in" id="ticker"></div></div>
+
+  <main class="max-w-[1600px] mx-auto px-4 py-4">
+    <div id="banner" class="banner mb-3 hidden"></div>
+
+    <!-- OVERVIEW -->
+    <section class="view on" id="v-overview">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="card hov stat rise" style="animation-delay:.02s"><div class="lbl">Total permit value</div><div class="v mono" id="sValue">—</div><div class="sub" id="sValueSub">—</div><svg class="spark" id="spValue" preserveAspectRatio="none"></svg></div>
+        <div class="card hov stat rise" style="animation-delay:.08s"><div class="lbl">Total permits</div><div class="v mono" id="sPermits">—</div><div class="sub" id="sPermitsSub">—</div><svg class="spark" id="spPermits" preserveAspectRatio="none"></svg></div>
+        <div class="card hov stat rise" style="animation-delay:.14s"><div class="lbl">Active contractors</div><div class="v mono" id="sContr">—</div><div class="sub" id="sContrSub">—</div><svg class="spark" id="spContr" preserveAspectRatio="none"></svg></div>
+        <div class="card hov stat rise" style="animation-delay:.2s"><div class="lbl">Avg job value</div><div class="v mono" id="sAvg">—</div><div class="sub" id="sAvgSub">—</div><svg class="spark" id="spAvg" preserveAspectRatio="none"></svg></div>
+      </div>
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-3 mt-3">
+        <div class="card xl:col-span-2 rise" style="animation-delay:.25s">
+          <div class="card-h"><span>Permit density · dotted globe</span><span class="mono normal-case tracking-normal muted text-[11px]">dot size = permits per ~1 km cell · drag to spin</span></div>
+          <div class="relative" style="height:440px"><canvas id="globe"></canvas>
+            <div class="absolute left-4 bottom-3 text-[11px] muted mono" id="globeLeg"></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3">
+          <div class="card rise" style="animation-delay:.3s">
+            <div class="card-h"><span>Trade mix</span><span class="mono normal-case tracking-normal muted text-[11px]">by permit value</span></div>
+            <div class="p-4" id="tradeMix"></div>
+          </div>
+          <div class="card rise flex-1" style="animation-delay:.35s">
+            <div class="card-h"><span id="dailyTitle">Permits per day</span><span class="mono normal-case tracking-normal muted text-[11px]" id="dailySub"></span></div>
+            <div class="p-3"><svg id="daily" width="100%" height="170"></svg></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
+        <div class="card rise" style="animation-delay:.4s"><div class="card-h"><span>Biggest jobs in range</span><span class="muted mono normal-case tracking-normal text-[11px]">by job value</span></div><div class="tbl-wrap" id="bigJobs"></div></div>
+        <div class="card rise" style="animation-delay:.45s"><div class="card-h"><span>Hottest installers</span><button class="btn sm" data-goto="installers">Leaderboard →</button></div><div class="tbl-wrap" id="hotInst"></div></div>
+      </div>
+    </section>
+
+    <!-- MORNING LIST -->
+    <section class="view" id="v-morning">
+      <div class="flex flex-wrap items-end justify-between gap-3 mb-3">
+        <div>
+          <div class="text-2xl font-extrabold tracking-tight">Your morning list</div>
+          <div class="muted mt-1">Top 25 leads — each contractor's best permit, ranked by lead score = job value 40% · recency 30% · contractor volume 20% · trade match 10%. <span id="mlDate" class="mono"></span></div>
+        </div>
+        <button id="exportMl" class="btn primary"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 4v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg>Export CSV</button>
+      </div>
+      <div class="card"><div class="tbl-wrap" id="mlTable"></div></div>
+      <div class="muted text-[11px] mt-2">Grades: <span class="grade A" style="width:18px;height:18px;font-size:10px">A</span> score ≥ 75 · <span class="grade B" style="width:18px;height:18px;font-size:10px">B</span> 55–74 · <span class="grade C" style="width:18px;height:18px;font-size:10px">C</span> &lt; 55. Value and volume are scored as percentiles within the selected range.</div>
+    </section>
+
+    <!-- INSTALLERS -->
+    <section class="view" id="v-installers">
+      <div class="flex flex-wrap items-end justify-between gap-3 mb-3">
+        <div>
+          <div class="text-2xl font-extrabold tracking-tight">Installer leaderboard</div>
+          <div class="muted mt-1">Busiest contractors first. Trade filter narrows to permits of that trade. <span id="instCount" class="mono"></span></div>
+        </div>
+        <div class="flex flex-wrap gap-1" id="trades2"></div>
+      </div>
+      <div class="card"><div class="tbl-wrap" id="instTable"></div></div>
+      <div class="text-center mt-3"><button id="instMore" class="btn hidden">Show more</button></div>
+    </section>
+
+    <!-- DOSSIER -->
+    <section class="view" id="v-dossier"><div id="dossier"></div></section>
+
+    <!-- MAP -->
+    <section class="view" id="v-map">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <div class="text-[12px] muted"><span id="mapCount" class="mono"></span></div>
+        <div class="flex items-center gap-3 text-[11.5px] ink2">
+          <span class="flex items-center gap-1.5"><span class="pin A" style="width:14px;height:14px;font-size:7px">A</span>Grade A</span>
+          <span class="flex items-center gap-1.5"><span class="pin B" style="width:14px;height:14px;font-size:7px">B</span>Grade B</span>
+          <span class="flex items-center gap-1.5"><span class="pin C" style="width:14px;height:14px;font-size:7px">C</span>Grade C</span>
+          <span class="muted">· clusters take their best grade</span>
+        </div>
+      </div>
+      <div class="card p-1"><div id="map"></div></div>
+    </section>
+  </main>
+  <footer class="max-w-[1600px] mx-auto px-4 pb-6 text-[11px] muted">Source: <a class="link" style="font-weight:500" href="https://gis-mdc.opendata.arcgis.com/" target="_blank" rel="noopener">Miami-Dade County Open Data</a> — Building Permits Issued (2 previous years to present). Locations are approximate: Miami-Dade street-grid estimate, then zip centroid, then city centroid.</footer>
+</div>
+
+<script>
+(() => {
+'use strict';
+/* ================= constants ================= */
+const SERVICE = 'https://services.arcgis.com/8Pc9XBTAsYuxx9Ny/arcgis/rest/services/miamidade_permit_data/FeatureServer/0/query';
+const FIELDS = 'PermitNumber,PermitIssuedDate,ContractorName,ContractorNumber,ContractorPhone,EstimatedValue,PropertyAddress,City,PermitType,ApplicationTypeDescription,CategoryDescription1,DetailDescriptionComments,LastApprovedInspDate,CoCcDate,ResidentialCommercial';
+const ZIPS = {33010:[25.8332,-80.2787],33012:[25.8661,-80.3011],33013:[25.8622,-80.2697],33014:[25.9046,-80.3021],33015:[25.9406,-80.3174],33016:[25.8938,-80.3301],33018:[25.9124,-80.3931],33019:[26.0276,-80.1202],33020:[26.0192,-80.1529],33021:[26.0231,-80.1865],33022:[26.0138,-80.1441],33023:[25.9885,-80.2125],33024:[26.0264,-80.2446],33025:[25.9882,-80.2814],33026:[26.0262,-80.2960],33027:[25.9881,-80.3404],33028:[26.0147,-80.3402],33029:[25.9923,-80.3942],33030:[25.4858,-80.5082],33031:[25.5250,-80.5009],33032:[25.5311,-80.3912],33033:[25.4789,-80.4091],33034:[25.4722,-80.7733],33035:[25.4223,-80.3999],33036:[24.9019,-80.6990],33037:[25.2258,-80.4143],33039:[25.4980,-80.3982],33040:[24.5446,-81.9217],33042:[24.6653,-81.5031],33043:[24.6697,-81.2608],33050:[24.7499,-80.9866],33051:[24.7234,-81.0216],33054:[25.9080,-80.2575],33055:[25.9485,-80.2789],33056:[25.9489,-80.2436],33060:[26.2347,-80.1211],33062:[26.2411,-80.0912],33063:[26.2519,-80.2089],33064:[26.2778,-80.1153],33065:[26.2745,-80.2604],33066:[26.2529,-80.1704],33067:[26.3059,-80.2264],33068:[26.2164,-80.2140],33069:[26.2358,-80.1571],33070:[25.0110,-80.5293],33071:[26.2458,-80.2674],33073:[26.2982,-80.1821],33076:[26.3193,-80.2718],33101:[25.7798,-80.1988],33109:[25.7612,-80.1308],33122:[25.8050,-80.3151],33125:[25.7838,-80.2363],33126:[25.7795,-80.2996],33127:[25.8135,-80.2044],33128:[25.7768,-80.2034],33129:[25.7549,-80.1985],33130:[25.7685,-80.2034],33131:[25.7655,-80.1843],33132:[25.7766,-80.1732],33133:[25.7315,-80.2338],33134:[25.7533,-80.2704],33135:[25.7666,-80.2350],33136:[25.7872,-80.2053],33137:[25.8109,-80.1669],33138:[25.8538,-80.1780],33139:[25.7794,-80.1516],33140:[25.8169,-80.1357],33141:[25.8510,-80.1386],33142:[25.8063,-80.2554],33143:[25.7025,-80.2986],33144:[25.7635,-80.3127],33145:[25.7532,-80.2345],33146:[25.7208,-80.2726],33147:[25.8512,-80.2388],33149:[25.7144,-80.1636],33150:[25.8522,-80.2072],33154:[25.8859,-80.1322],33155:[25.7378,-80.3112],33156:[25.6682,-80.2970],33157:[25.6075,-80.3433],33158:[25.6388,-80.3113],33160:[25.9335,-80.1353],33161:[25.8935,-80.1833],33162:[25.9286,-80.1792],33165:[25.7343,-80.3583],33166:[25.8249,-80.3107],33167:[25.8845,-80.2360],33168:[25.8929,-80.2091],33169:[25.9431,-80.2147],33170:[25.5583,-80.4496],33172:[25.7867,-80.3649],33173:[25.7023,-80.3575],33174:[25.7620,-80.3595],33175:[25.7366,-80.4068],33176:[25.6584,-80.3609],33177:[25.5988,-80.4065],33178:[25.8355,-80.4225],33179:[25.9576,-80.1800],33180:[25.9621,-80.1409],33181:[25.8977,-80.1511],33182:[25.7825,-80.4014],33183:[25.7006,-80.4057],33184:[25.7597,-80.4065],33185:[25.7305,-80.4543],33186:[25.6544,-80.4122],33187:[25.5274,-80.5998],33189:[25.5731,-80.3390],33190:[25.5569,-80.3499],33193:[25.7054,-80.4708],33194:[25.7141,-80.5835],33196:[25.6484,-80.5547]};
+const CITIES = {'MIAMI':[25.7743,-80.1937],'MIAMI BEACH':[25.7907,-80.1300],'HIALEAH':[25.8576,-80.2781],'HIALEAH GARDENS':[25.8651,-80.3245],'HOMESTEAD':[25.4687,-80.4776],'FLORIDA CITY':[25.4479,-80.4792],'CORAL GABLES':[25.7215,-80.2684],'DORAL':[25.8195,-80.3553],'MIAMI GARDENS':[25.9420,-80.2456],'NORTH MIAMI':[25.8901,-80.1867],'NORTH MIAMI BEACH':[25.9331,-80.1625],'AVENTURA':[25.9565,-80.1392],'SUNNY ISLES BEACH':[25.9429,-80.1234],'MIAMI LAKES':[25.9087,-80.3087],'PALMETTO BAY':[25.6218,-80.3248],'CUTLER BAY':[25.5808,-80.3468],'PINECREST':[25.6671,-80.3081],'SOUTH MIAMI':[25.7076,-80.2934],'SWEETWATER':[25.7634,-80.3731],'KEY BISCAYNE':[25.6937,-80.1626],'MIAMI SPRINGS':[25.8223,-80.2895],'OPA-LOCKA':[25.9023,-80.2503],'OPA LOCKA':[25.9023,-80.2503],'MEDLEY':[25.8406,-80.3265],'BAL HARBOUR':[25.8918,-80.1270],'SURFSIDE':[25.8784,-80.1256],'BAY HARBOR ISLANDS':[25.8876,-80.1311],'NORTH BAY VILLAGE':[25.8462,-80.1540],'EL PORTAL':[25.8554,-80.1934],'MIAMI SHORES':[25.8631,-80.1928],'BISCAYNE PARK':[25.8823,-80.1807],'WEST MIAMI':[25.7587,-80.2956],'VIRGINIA GARDENS':[25.8101,-80.3023],'GOLDEN BEACH':[25.9651,-80.1206],'INDIAN CREEK':[25.8773,-80.1379],'KENDALL':[25.6793,-80.3173]};
+// well-known named streets / neighborhoods (approximate)
+const NAMED = [[/COLLINS AVE/,[25.8150,-80.1223]],[/HARDING AVE/,[25.8830,-80.1230]],[/FISHER ISLAND/,[25.7600,-80.1420]],[/LINCOLN RD/,[25.7905,-80.1390]],[/BISCAYNE BLVD/,[25.8300,-80.1880]],[/BRICKELL/,[25.7617,-80.1918]],[/CORAL WAY/,[25.7500,-80.2900]],[/KENDALL DR/,[25.6875,-80.3900]],[/QUAIL ROOST/,[25.5920,-80.3700]],[/CORAL REEF/,[25.6225,-80.3800]],[/KILLIAN/,[25.6730,-80.3700]],[/MILLER DR/,[25.7160,-80.3700]],[/BIRD RD/,[25.7330,-80.3400]],[/TAMIAMI|W FLAGLER/,[25.7620,-80.3300]],[/NORMANDY|RUE /,[25.8570,-80.1310]],[/KEY BISCAYNE|CRANDON|HARBOR DR/,[25.6937,-80.1626]],[/GRIFFING/,[25.8660,-80.1550]],[/ANTILLA|SARRIA|OBISPO|MENORES|ALHAMBRA|MIRACLE MILE|GRANADA|SEVILLA|MINORCA|ALMERIA|VALENCIA|ANDALUSIA|MALAGA|CORAL GABLES|CAMINO REAL|ARAGON|ZAMORA|PONCE DE LEON/,[25.7215,-80.2684]],[/PARK AVE|INDIAN CREEK|PINE TREE/,[25.8200,-80.1250]],[/OCEAN DR|WASHINGTON AVE|ALTON RD|MERIDIAN|MICHIGAN AVE|JEFFERSON AVE|PENNSYLVANIA/,[25.7850,-80.1350]]];
+const COUNTY = [25.62,-80.40];
+const TRADES = [['all','All'],['roofing','Roofing'],['windows','Windows'],['doors','Doors'],['general','General'],['other','Other']];
+const TRADE_LABEL = {roofing:'Roofing',windows:'Windows',doors:'Doors',general:'General',other:'Other'};
+const DAY = 864e5;
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+/* ================= helpers ================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dash = v => (v == null || v === '' || (typeof v === 'number' && !isFinite(v))) ? '—' : esc(v);
+const clamp = (x,a,b) => Math.max(a, Math.min(b, x));
+function fmtMoney(n){
+  if (n == null || !isFinite(n)) return '—';
+  const a = Math.abs(n), s = n < 0 ? '-' : '';
+  if (a >= 1e9) return s + '$' + (a/1e9).toFixed(1) + 'B';
+  if (a >= 1e6) return s + '$' + (a/1e6).toFixed(1) + 'M';
+  if (a >= 1e3) return s + '$' + (a/1e3).toFixed(1) + 'K';
+  return s + '$' + Math.round(a).toLocaleString();
+}
+const fmtInt = n => (n == null || !isFinite(n)) ? '—' : Math.round(n).toLocaleString();
+const fmtDate = d => (d instanceof Date && !isNaN(d)) ? `${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}` : '—';
+const isoDay = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const TODAY = startOfDay(new Date());
+const daysSince = d => d ? Math.max(0, Math.round((TODAY - startOfDay(d)) / DAY)) : null;
+function parseDate(v){
+  if (v == null || v === '') return null;
+  if (typeof v === 'number') { const d = new Date(v > 1e11 ? v : v * 1000); return isNaN(d) ? null : d; }
+  const s = String(v).trim(); let m;
+  if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return new Date(+m[1], +m[2]-1, +m[3]);
+  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/))) { let y = +m[3]; if (y < 100) y += 2000; return new Date(y, +m[1]-1, +m[2]); }
+  if (/^\d{10,13}$/.test(s)) return parseDate(+s);
+  const d = new Date(s); return isNaN(d) ? null : d;
+}
+function parseMoney(v){
+  if (v == null || v === '') return null;
+  if (typeof v === 'number') return isFinite(v) && v >= 0 ? v : null;
+  const s = String(v).replace(/[$,\s]/g,''); if (!s) return null;
+  const n = parseFloat(s); return isFinite(n) && n >= 0 ? n : null;
+}
+function hash(s){ let h = 2166136261; s = String(s); for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967296; }
+function upperBound(arr, x){ let lo=0, hi=arr.length; while(lo<hi){ const m=(lo+hi)>>1; if(arr[m]<=x) lo=m+1; else hi=m; } return lo; }
+const titleCase = s => String(s||'').toLowerCase().replace(/\b([a-z])/g, c => c.toUpperCase()).replace(/\b(Llc|Inc|Corp|Co|Pa|Usa|Lc|Ii|Iii)\b/g, w => w.toUpperCase());
+const cleanTxt = s => s == null ? '' : String(s).replace(/\\,/g, ',').replace(/\s+/g,' ').trim();
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+
+/* ================= tooltip ================= */
+const tip = $('#tip');
+function showTip(html, x, y){ tip.innerHTML = html; tip.classList.add('on'); const r = tip.getBoundingClientRect(); let L = x + 14, T = y + 14; if (L + r.width > innerWidth - 8) L = x - r.width - 14; if (T + r.height > innerHeight - 8) T = y - r.height - 14; tip.style.left = L + 'px'; tip.style.top = T + 'px'; }
+const hideTip = () => tip.classList.remove('on');
+
+/* ================= count-up ================= */
+function countUp(el, to, fmt, dur = 1200){
+  if (!el) return;
+  const from = parseFloat(el.dataset.v || '0') || 0; el.dataset.v = to;
+  if (!isFinite(to)) { el.textContent = '—'; return; }
+  const t0 = performance.now(); cancelAnimationFrame(el._raf);
+  const step = now => { const k = clamp((now - t0) / dur, 0, 1); const e = 1 - Math.pow(2, -10 * k); el.textContent = fmt(from + (to - from) * (k === 1 ? 1 : e)); if (k < 1) el._raf = requestAnimationFrame(step); };
+  el._raf = requestAnimationFrame(step);
+}
+
+/* ================= trade classification ================= */
+function classify(workType, permitType, appType, desc){
+  const t = `${workType} ${appType} ${desc}`.toUpperCase(); const pt = String(permitType||'').toUpperCase();
+  if (/^(ELEC|PLUM|MECH|FIRE|MELE|MPLU|MMEC|MFIR)$/.test(pt)) return 'other';
+  if (/ROOF|SHINGLE|\bSBS\b|SINGLE PLY|LOW SLOPE|GRAVEL|TPO\b/.test(t)) return 'roofing';
+  if (/WINDOW|SHUTR|SHUTTER|GLAZ|STOREFRONT|CURTAIN WALL|IMPACT GLASS/.test(t)) return 'windows';
+  if (/DOOR|GARAGE & INDUS|SLIDING GLASS/.test(t)) return 'doors';
+  if (/^(ELEC|PLUM|MECH|FIRE|MELE|MPLU|MMEC|MFIR)$/.test(pt)) return 'other';
+  if (/ELECTRIC|PLUMB|MECHANIC|A\/C|HVAC|SPRINKLER|FIRE ALARM|POOL|FENCE|DEMOLI|SIGN|SOLAR|PAVING|RE-SURFAC|GAS FITTING|LOW VOLT/.test(t)) return 'other';
+  if (/GENERAL|BUILDING|BLDR|NEW CONST|ADDITION|ALTER|REMODEL|RENOVAT|MISCELL|REPAIR|INTERIOR|STRUCT|CONCRETE|SLAB/.test(t) || /^(BLDG|MBLD|ZIPS)$/.test(pt)) return 'general';
+  return 'other';
+}
+
+/* ================= geocoding (grid → zip → named → city) ================= */
+const ORIGIN = [25.7743, -80.1937];
+const TYPE_OFF = {ST:0,STREET:0,TER:.5,TERR:.5,LN:.5,DR:.5,AVE:0,AV:0,AVENUE:0,CT:.33,PL:.66,RD:.5,WAY:.5,PATH:.5,TRL:.5,CIR:.5};
+const EW_TYPES = /^(ST|STREET|TER|TERR|LN|DR|WAY|CIR)$/; // east-west roads
+function inCounty(lat, lng){ return lat > 25.1 && lat < 26.0 && lng > -80.95 && lng < -80.05; }
+function latFor(q, n){ return q[0] === 'N' ? ORIGIN[0] + n * 0.00092 : ORIGIN[0] - n * 0.00098; }
+function lngFor(q, n){ return q[1] === 'W' ? ORIGIN[1] - n * 0.001634 : ORIGIN[1] + n * 0.001634; }
+function gridGeo(addr){
+  const a = String(addr||'').toUpperCase().replace(/\s+/g,' ').trim(); if (!a) return null;
+  let m = a.match(/^(\d+)[A-Z]?\s+(NW|NE|SW|SE)\s+(\d+|MIAMI)\s+(ST|STREET|TER|TERR|LN|DR|AVE|AV|AVENUE|CT|PL|RD|WAY|PATH|TRL|CIR)\b/);
+  if (m) {
+    const house = +m[1] / 100, q = m[2], n = (m[3] === 'MIAMI' ? 0 : +m[3]) + (TYPE_OFF[m[4]] || 0);
+    let lat, lng;
+    if (EW_TYPES.test(m[4])) { lat = latFor(q, n); lng = lngFor(q, house); }
+    else { lng = lngFor(q, n); lat = latFor(q, house); }
+    if (inCounty(lat, lng)) return [lat, lng, 'grid'];
+  }
+  if ((m = a.match(/^(\d+)[A-Z]?\s+([EW])\s+FLAGLER/))) { const lng = lngFor('S'+m[2], +m[1]/100); if (inCounty(ORIGIN[0], lng)) return [ORIGIN[0], lng, 'grid']; }
+  // Hialeah grid (W/E prefix, no quadrant)
+  if ((m = a.match(/^(\d+)[A-Z]?\s+([EW])\s+(\d+)\s+(ST|TER|LN|DR|AVE|CT|PL|WAY)\b/))) {
+    const house = +m[1]/100, n = +m[3] + (TYPE_OFF[m[4]]||0), sgn = m[2] === 'W' ? -1 : 1;
+    const hlat = k => 25.8175 + k * 0.00095, hlng = k => -80.2785 + sgn * k * 0.001634;
+    const [lat, lng] = /^(ST|TER|LN|DR|WAY)$/.test(m[4]) ? [hlat(n), hlng(house)] : [hlat(house), hlng(n)];
+    if (inCounty(lat, lng)) return [lat, lng, 'grid'];
+  }
+  return null;
+}
+function locate(p, lat, lng){
+  lat = parseFloat(lat); lng = parseFloat(lng);
+  if (isFinite(lat) && isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && (lat !== 0 || lng !== 0)) { p.lat = lat; p.lng = lng; p.geo = 'exact'; return; }
+  const g = gridGeo(p.address); if (g) { const j = hash(p.id + 'g'); p.lat = g[0] + (j - .5) * .0006; p.lng = g[1] + (hash(p.id+'h') - .5) * .0006; p.geo = 'grid'; return; }
+  let c = null, geo = 'county';
+  const z = String(p.zip || '').match(/\d{5}/);
+  if (z && ZIPS[z[0]]) { c = ZIPS[z[0]]; geo = 'zip'; }
+  if (!c) { const A = String(p.address||'').toUpperCase(); for (const [rx, ll] of NAMED) if (rx.test(A)) { c = ll; geo = 'street'; break; } }
+  if (!c && p.city && CITIES[String(p.city).toUpperCase().trim()] && String(p.city).toUpperCase().trim() !== 'MIAMI') { c = CITIES[String(p.city).toUpperCase().trim()]; geo = 'city'; }
+  if (!c) { c = COUNTY; geo = 'county'; }
+  const r = geo === 'zip' ? .012 : geo === 'street' ? .01 : geo === 'city' ? .02 : .09;
+  const ang = hash(p.id + 'a') * Math.PI * 2, rad = Math.sqrt(hash(p.id + 'r')) * r;
+  p.lat = c[0] + Math.sin(ang) * rad; p.lng = c[1] + Math.cos(ang) * rad * 1.1; p.geo = geo;
+}
+
+/* ================= normalization ================= */
+const ALIASES = {
+  id:['permit_id','permitid','permitnumber','permitno','permit','permitnum','id','processnumber'],
+  date:['issue_date','issuedate','permitissueddate','issueddate','dateissued','issued','date'],
+  contractor:['contractor_name','contractorname','contractor','company','businessname'],
+  license:['license_number','licensenumber','license','licenseno','contractornumber','contractorlicense','lic'],
+  value:['job_value','jobvalue','estimatedvalue','value','valuation','estimatedcost','cost','jobcost'],
+  address:['address','propertyaddress','siteaddress','location','streetaddress'],
+  city:['city','propertycity','municipality'],
+  zip:['zip','zipcode','zip_code','postalcode','propertyzip'],
+  work:['work_type','worktype','categorydescription1','workdescription','type','permittypedescription','description'],
+  status:['status','permitstatus','currentstatus'],
+  lat:['lat','latitude','y','ycoord'], lng:['lng','lon','long','longitude','x','xcoord'],
+  phone:['phone','contractorphone'], ptype:['permittype','permit_type'], app:['applicationtypedescription','apptype'], desc:['detaildescriptioncomments','comments','scope']
+};
+const normKey = k => String(k||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+function makeResolver(headers){
+  const map = {}; const nk = headers.map(h => [h, normKey(h)]);
+  for (const [field, al] of Object.entries(ALIASES)) { for (const a of al) { const hit = nk.find(([,n]) => n === normKey(a)); if (hit) { map[field] = hit[0]; break; } } }
+  return map;
+}
+function normalize(row, R, idx){
+  try {
+    const g = f => { const k = R[f]; if (!k) return null; const v = row[k]; if (v == null) return null; const s = typeof v === 'string' ? v.trim() : v; return s === '' ? null : s; };
+    const workRaw = cleanTxt(g('work')) || cleanTxt(g('app')) || '';
+    const p = {
+      id: cleanTxt(g('id')) || ('row-' + idx),
+      date: parseDate(g('date')),
+      contractor: cleanTxt(g('contractor')) || null,
+      license: cleanTxt(g('license')) || null,
+      value: parseMoney(g('value')),
+      address: cleanTxt(g('address')) || null,
+      city: cleanTxt(g('city')) || null,
+      zip: cleanTxt(g('zip')) || null,
+      workType: workRaw || null,
+      status: cleanTxt(g('status')) || null,
+      phone: cleanTxt(g('phone')) || null,
+    };
+    if (p.value != null && p.value > 1e9) { p.value = null; p.valueJunk = true; }
+    if (p.contractor && /^(NOT LISTED|NONE|N\/A|OWNER|OWNER BUILDER|-)$/i.test(p.contractor)) p.contractor = null;
+    p.trade = classify(workRaw, g('ptype'), cleanTxt(g('app')), cleanTxt(g('desc')));
+    locate(p, g('lat'), g('lng'));
+    p.key = p.license ? 'L:' + p.license.toUpperCase() : (p.contractor ? 'N:' + p.contractor.toUpperCase() : null);
+    return p;
+  } catch (e) { return null; }
+}
+function normalizeLive(a, idx){
+  const status = a.CoCcDate ? 'Finaled (CO/CC)' : a.LastApprovedInspDate ? 'Inspections underway' : 'Issued';
+  const row = Object.assign({}, a, { status, work_type: cleanTxt(a.CategoryDescription1) || cleanTxt(a.ApplicationTypeDescription) });
+  return normalize(row, LIVE_R, idx);
+}
+const LIVE_R = { id:'PermitNumber', date:'PermitIssuedDate', contractor:'ContractorName', license:'ContractorNumber', value:'EstimatedValue', address:'PropertyAddress', city:'City', work:'work_type', status:'status', phone:'ContractorPhone', ptype:'PermitType', app:'ApplicationTypeDescription', desc:'DetailDescriptionComments' };
+
+/* ================= state ================= */
+const S = {
+  all: [], source: 'live', loadedFrom: null, from: null, to: null, trade: 'all', q: '',
+  base: [], view: [], contractors: new Map(), scored: [], view_name: 'overview', dossierKey: null, instLimit: 100, instSort: {k:'count', d:-1}, dirty: {}
+};
+
+/* ================= loading ================= */
+const loader = $('#loader');
+function setLoad(msg, pct){ $('#loadMsg').textContent = msg; if (pct != null) $('#loadBar').style.width = clamp(pct,0,100) + '%'; }
+function showLoader(){ loader.classList.remove('gone'); }
+function hideLoader(){ loader.classList.add('gone'); }
+function banner(html){ const b = $('#banner'); if (!html) { b.classList.add('hidden'); return; } b.innerHTML = html; b.classList.remove('hidden'); }
+
+async function fetchJSON(url, tries = 3){
+  for (let i = 0; i < tries; i++) {
+    try { const r = await fetch(url); if (!r.ok) throw new Error('HTTP ' + r.status); const j = await r.json(); if (j.error) throw new Error(j.error.message || 'query error'); return j; }
+    catch (e) { if (i === tries - 1) throw e; await new Promise(res => setTimeout(res, 600 * (i + 1))); }
+  }
+}
+async function loadLive(fromDate, toDate, append){
+  const where = `PermitIssuedDate >= DATE '${isoDay(fromDate)}'` + (toDate ? ` AND PermitIssuedDate < DATE '${isoDay(toDate)}'` : '');
+  const qs = p => SERVICE + '?' + new URLSearchParams(Object.assign({ where, f: 'json' }, p)).toString();
+  setLoad('Counting permits since ' + fmtDate(fromDate) + '…', 4);
+  const cnt = (await fetchJSON(qs({ returnCountOnly: 'true' }))).count || 0;
+  const PAGE = 1000, pages = Math.ceil(cnt / PAGE); let done = 0; const out = [];
+  const jobs = Array.from({length: pages}, (_, i) => i);
+  const worker = async () => { while (jobs.length) { const i = jobs.shift(); const j = await fetchJSON(qs({ outFields: FIELDS, orderByFields: 'ObjectId', resultOffset: i * PAGE, resultRecordCount: PAGE, returnGeometry: 'false' })); (j.features || []).forEach(f => out.push(f.attributes || {})); done++; setLoad(`Pulling permits · ${fmtInt(Math.min(done*PAGE, cnt))} / ${fmtInt(cnt)}`, 6 + 90 * done / Math.max(1,pages)); } };
+  await Promise.all(Array.from({length: Math.min(6, pages)}, worker));
+  const base = append ? S.all.length : 0;
+  const rows = []; out.forEach((a, i) => { const p = normalizeLive(a, base + i); if (p) rows.push(p); });
+  const seen = new Set(append ? S.all.map(p => p.id) : []);
+  const fresh = rows.filter(p => { if (seen.has(p.id)) return false; seen.add(p.id); return true; });
+  S.all = append ? S.all.concat(fresh) : fresh;
+  S.loadedFrom = append ? new Date(Math.min(+S.loadedFrom, +fromDate)) : fromDate;
+  S.source = 'live';
+  const maxD = S.all.reduce((m, p) => p.date && p.date > m ? p.date : m, new Date(0));
+  $('#srcLbl').textContent = `Miami-Dade live · ${fmtInt(S.all.length)} permits · thru ${fmtDate(maxD)}`;
+  $('#liveDot').classList.remove('off');
+}
+async function initLive(){
+  showLoader();
+  try { banner(null); await loadLive(S.from, null, false); }
+  catch (e) {
+    console.error(e); $('#liveDot').classList.add('off'); $('#srcLbl').textContent = 'Live source unreachable';
+    banner(`Couldn't reach Miami-Dade open data (${esc(e.message)}). Upload a permits CSV to keep working — columns like permit_id, issue_date, contractor_name, license_number, job_value, address, city, zip, work_type, status.`);
+  }
+  setLoad('Scoring leads…', 100); recompute(); setTimeout(hideLoader, 250);
+}
+async function ensureRange(){
+  if (S.source !== 'live' || !S.loadedFrom || S.from >= S.loadedFrom) return;
+  showLoader();
+  try { await loadLive(S.from, S.loadedFrom, true); } catch (e) { banner(`Couldn't extend the live window (${esc(e.message)}). Showing what's loaded.`); }
+  hideLoader();
+}
+function loadCSV(file){
+  showLoader(); setLoad('Parsing ' + file.name + '…', 10);
+  let idx = 0; const rows = []; let R = null, bad = 0;
+  try {
+    Papa.parse(file, {
+      header: true, skipEmptyLines: 'greedy', dynamicTyping: false,
+      chunk: res => { if (!R) R = makeResolver(res.meta.fields || []); for (const r of res.data) { const p = normalize(r, R, idx++); if (p) rows.push(p); else bad++; } setLoad(`Parsing · ${fmtInt(idx)} rows`, 10 + Math.min(80, idx / 500)); },
+      complete: () => {
+        if (!rows.length) { hideLoader(); banner('That CSV had no readable permit rows. Check that it has a header row.'); return; }
+        S.all = rows; S.source = 'csv'; S.loadedFrom = null;
+        const dates = rows.map(p => p.date).filter(Boolean).sort((a,b)=>a-b);
+        if (dates.length) { const mx = dates[dates.length-1]; S.to = startOfDay(mx); S.from = new Date(+S.to - 90*DAY); if (S.from < dates[0]) S.from = startOfDay(dates[0]); syncDates(); }
+        $('#srcLbl').textContent = `CSV · ${file.name} · ${fmtInt(rows.length)} rows`; $('#liveDot').classList.add('off');
+        banner(bad ? `Skipped ${fmtInt(bad)} unreadable rows.` : null);
+        const missing = ['contractor','value','date'].filter(f => !R[f]);
+        if (missing.length) banner(`Heads up: couldn't find column(s) for ${missing.join(', ')} — those fields show "—".`);
+        recompute(); setLoad('Done', 100); setTimeout(hideLoader, 200);
+      },
+      error: err => { hideLoader(); banner('Could not parse CSV: ' + esc(err && err.message)); }
+    });
+  } catch (e) { hideLoader(); banner('Could not parse CSV: ' + esc(e.message)); }
+}
+
+/* ================= compute ================= */
+function recompute(){
+  try {
+    const from = S.from ? +S.from : -Infinity, to = S.to ? +S.to + DAY : Infinity;
+    S.base = S.all.filter(p => p.date ? (+p.date >= from && +p.date < to) : S.source === 'csv');
+    // contractor stats on base (all trades)
+    const C = new Map();
+    for (const p of S.base) {
+      if (!p.key) continue;
+      let c = C.get(p.key);
+      if (!c) { c = { key: p.key, names: {}, license: p.license, phone: p.phone, permits: [], count: 0, total: 0, valued: 0, trades: {}, tradeVal: {}, last: null }; C.set(p.key, c); }
+      c.names[p.contractor || '—'] = (c.names[p.contractor || '—'] || 0) + 1;
+      if (!c.license && p.license) c.license = p.license; if (!c.phone && p.phone) c.phone = p.phone;
+      c.permits.push(p); c.count++; if (p.value != null) { c.total += p.value; c.valued++; }
+      c.trades[p.trade] = (c.trades[p.trade] || 0) + 1; c.tradeVal[p.trade] = (c.tradeVal[p.trade] || 0) + (p.value || 0);
+      if (p.date && (!c.last || p.date > c.last)) c.last = p.date;
+    }
+    for (const c of C.values()) { c.name = Object.entries(c.names).sort((a,b)=>b[1]-a[1])[0][0]; c.avg = c.valued ? c.total / c.valued : null; c.permits.sort((a,b)=>(b.date||0)-(a.date||0)); }
+    // contractor grade
+    const counts = [...C.values()].map(c => c.count).sort((a,b)=>a-b), totals = [...C.values()].map(c => c.total).sort((a,b)=>a-b);
+    const ranked = [...C.values()].map(c => { c.volPct = counts.length ? upperBound(counts, c.count) / counts.length : 0; c.comp = .6 * c.volPct + .4 * (totals.length ? upperBound(totals, c.total) / totals.length : 0); return c; }).sort((a,b)=>b.comp-a.comp);
+    ranked.forEach((c, i) => { const q = i / Math.max(1, ranked.length); c.grade = q < .2 ? 'A' : q < .5 ? 'B' : 'C'; });
+    S.contractors = C;
+    // lead scores
+    const vals = S.base.map(p => p.value).filter(v => v != null && v > 0).sort((a,b)=>a-b);
+    const span = Math.max(1, ((S.to ? +S.to : +TODAY) - (S.from ? +S.from : +TODAY - 90*DAY)) / DAY);
+    const tmatch = t => S.trade !== 'all' ? (t === S.trade ? 1 : 0) : ({roofing:1, windows:1, doors:1, general:.5}[t] || 0);
+    for (const p of S.base) {
+      const v = p.value != null && p.value > 0 && vals.length ? upperBound(vals, p.value) / vals.length : 0;
+      const ds = daysSince(p.date); const r = ds == null ? 0 : clamp(1 - ds / (span + Math.max(0, (TODAY - (S.to || TODAY)) / DAY)), 0, 1);
+      const c = p.key ? C.get(p.key) : null; const vol = c ? c.volPct : 0;
+      p.parts = { v, r, c: vol, t: tmatch(p.trade) };
+      p.score = Math.round(100 * (.4 * v + .3 * r + .2 * vol + .1 * p.parts.t));
+      p.grade = p.score >= 75 ? 'A' : p.score >= 55 ? 'B' : 'C';
+    }
+    // view set
+    const q = S.q.toLowerCase().trim();
+    S.view = S.base.filter(p => (S.trade === 'all' || p.trade === S.trade) && (!q || [p.contractor, p.license, p.address].some(f => f && f.toLowerCase().includes(q))));
+    $('#countLbl').textContent = `${fmtInt(S.view.length)} permits in view · ${fmtInt(S.all.length)} loaded`;
+    S.dirty = { overview: 1, morning: 1, installers: 1, dossier: 1, map: 1 };
+    renderTicker();
+    render();
+  } catch (e) { console.error(e); banner('Something went sideways computing that view — showing what we could. (' + esc(e.message) + ')'); }
+}
+function render(){ const v = S.view_name; if (!S.dirty[v]) return; S.dirty[v] = 0; try { ({overview: renderOverview, morning: renderMorning, installers: renderInstallers, dossier: renderDossier, map: renderMap})[v](); } catch (e) { console.error(e); } }
+
+/* ================= ticker ================= */
+function renderTicker(){
+  const items = S.view.filter(p => p.date).sort((a,b)=>b.date-a.date || (b.value||0)-(a.value||0)).slice(0, 40);
+  const html = items.map(p => `<span class="it"><span class="mono muted">${esc(fmtDate(p.date).replace(/, \d{4}/,''))}</span> · <b>${dash(p.contractor ? titleCase(p.contractor) : null)}</b> · ${dash(TRADE_LABEL[p.trade])} · <span class="up mono">${fmtMoney(p.value)}</span> · <span class="muted">${dash(p.address)}</span></span>`).join('');
+  $('#ticker').innerHTML = html || '<span class="it">No permits in range</span>';
+}
+
+/* ================= overview ================= */
+function bucketize(list, days){
+  const from = S.from ? +startOfDay(S.from) : (list.length ? +startOfDay(list.reduce((m,p)=>p.date&&p.date<m?p.date:m, new Date())) : +TODAY);
+  const to = S.to ? +S.to : +TODAY; const nd = Math.max(1, Math.round((to - from) / DAY) + 1);
+  const size = days || (nd > 120 ? 7 : 1); const nb = Math.ceil(nd / size);
+  const B = Array.from({length: nb}, (_, i) => ({ t: new Date(from + i * size * DAY), n: 0, v: 0, cs: new Set() }));
+  for (const p of list) { if (!p.date) continue; const i = Math.floor((+startOfDay(p.date) - from) / DAY / size); if (i >= 0 && i < nb) { B[i].n++; B[i].v += p.value || 0; if (p.key) B[i].cs.add(p.key); } }
+  return { B, size };
+}
+function spark(svg, arr){
+  const el = $(svg); if (!el) return; const W = el.clientWidth || 200, H = 28;
+  if (!arr.length) { el.innerHTML = ''; return; }
+  const mx = Math.max(...arr, 1), n = arr.length;
+  const pts = arr.map((v, i) => [n === 1 ? W/2 : i * (W / (n - 1)), H - 3 - (v / mx) * (H - 6)]);
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const len = W * 2;
+  el.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  el.innerHTML = `<defs><linearGradient id="g${svg.slice(1)}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2E9BFF" stop-opacity=".28"/><stop offset="1" stop-color="#2E9BFF" stop-opacity="0"/></linearGradient></defs>
+    <path d="${d} L ${W} ${H} L 0 ${H} Z" fill="url(#g${svg.slice(1)})" opacity="0"><animate attributeName="opacity" to="1" dur=".8s" begin=".4s" fill="freeze"/></path>
+    <path d="${d}" fill="none" stroke="#2E9BFF" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="${len}" stroke-dashoffset="${len}"><animate attributeName="stroke-dashoffset" to="0" dur="1.3s" fill="freeze" calcMode="spline" keySplines=".2 .8 .2 1" keyTimes="0;1"/></path>`;
+}
+function renderOverview(){
+  const V = S.view; const valued = V.filter(p => p.value != null);
+  const total = valued.reduce((s, p) => s + p.value, 0);
+  const cset = new Set(V.map(p => p.key).filter(Boolean));
+  const rangeTxt = `${fmtDate(S.from)} – ${fmtDate(S.to)}`;
+  countUp($('#sValue'), total, fmtMoney); $('#sValueSub').textContent = `sum of job value · ${rangeTxt}`;
+  countUp($('#sPermits'), V.length, fmtInt); const junk = V.filter(p => p.valueJunk).length;
+  $('#sPermitsSub').textContent = `${fmtInt(V.length - valued.length)} without a job value` + (junk ? ` · ${fmtInt(junk)} implausible (>$1B) ignored` : '');
+  countUp($('#sContr'), cset.size, fmtInt); $('#sContrSub').textContent = `${fmtInt([...cset].filter(k => (S.contractors.get(k)||{}).count >= 5).length)} with 5+ permits`;
+  countUp($('#sAvg'), valued.length ? total / valued.length : NaN, fmtMoney);
+  const med = valued.map(p=>p.value).sort((a,b)=>a-b)[Math.floor(valued.length/2)];
+  $('#sAvgSub').textContent = `median ${fmtMoney(med)}`;
+  const { B, size } = bucketize(V, 7);
+  let cum = 0; spark('#spValue', B.map(b => (cum += b.v)));
+  spark('#spPermits', B.map(b => b.n)); spark('#spContr', B.map(b => b.cs.size)); spark('#spAvg', B.map(b => b.n ? b.v / b.n : 0));
+  // trade mix
+  const tm = {}; for (const p of V) { const t = p.trade; tm[t] = tm[t] || { v: 0, n: 0 }; tm[t].v += p.value || 0; tm[t].n++; }
+  const tl = ['roofing','windows','doors','general','other'].map(t => [t, tm[t] || {v:0,n:0}]);
+  const tmax = Math.max(1, ...tl.map(x => x[1].v));
+  $('#tradeMix').innerHTML = tl.map(([t, o], i) => `<div class="hbar" data-tip="${esc(`<div class='h'>${TRADE_LABEL[t]}</div><b>${fmtMoney(o.v)}</b> across ${fmtInt(o.n)} permits<br><span class='muted'>avg ${fmtMoney(o.n ? o.v/o.n : null)}</span>`)}"><span class="ink2">${TRADE_LABEL[t]}</span><div class="track"><div class="fill" style="width:${(o.v/tmax*100).toFixed(1)}%;animation-delay:${i*.07}s"></div></div><span class="mono r text-right">${fmtMoney(o.v)}</span></div>`).join('');
+  renderDaily(V);
+  // big jobs
+  const big = valued.slice().sort((a,b)=>b.value-a.value).slice(0, 8);
+  $('#bigJobs').innerHTML = big.length ? `<table class="t"><thead><tr><th>Grade</th><th>Contractor</th><th class="r">Value</th><th>Address</th><th>Issued</th></tr></thead><tbody>${big.map((p,i)=>`<tr class="rise" style="animation-delay:${i*.04}s"><td><span class="grade ${p.grade}">${p.grade}</span></td><td>${p.key?`<span class="link" data-dossier="${esc(p.key)}">${dash(titleCase(p.contractor))}</span>`:'—'}</td><td class="r mono">${fmtMoney(p.value)}</td><td class="muted"><span class="trunc">${dash(p.address)}</span></td><td class="mono muted">${fmtDate(p.date)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">No valued permits in range.</div>';
+  const hot = leaderboard(V).slice(0, 8);
+  $('#hotInst').innerHTML = hot.length ? `<table class="t"><thead><tr><th>#</th><th>Contractor</th><th class="r">Permits</th><th class="r">Total</th><th>Grade</th></tr></thead><tbody>${hot.map((c,i)=>`<tr class="rise" style="animation-delay:${i*.04}s"><td class="mono muted">${i+1}</td><td><span class="link" data-dossier="${esc(c.key)}">${dash(titleCase(c.name))}</span></td><td class="r mono">${fmtInt(c.n)}</td><td class="r mono">${fmtMoney(c.v)}</td><td><span class="grade ${c.grade}">${c.grade}</span></td></tr>`).join('')}</tbody></table>` : '<div class="empty">No contractors in range.</div>';
+  buildGlobe(V);
+}
+function renderDaily(V){
+  const svg = $('#daily'); const W = svg.clientWidth || 400, H = 170, pl = 34, pb = 20, pt = 8;
+  const { B, size } = bucketize(V);
+  $('#dailyTitle').textContent = size === 7 ? 'Permits per week' : 'Permits per day';
+  $('#dailySub').textContent = `${fmtInt(V.length)} total`;
+  if (!B.length) { svg.innerHTML = ''; return; }
+  const mx = Math.max(1, ...B.map(b => b.n)); const nice = Math.ceil(mx / 4 / 5) * 5 * 4 || 4;
+  const bw = (W - pl) / B.length; const gap = bw > 6 ? 2 : bw > 3 ? 1 : 0;
+  let g = '';
+  for (let i = 0; i <= 4; i++) { const y = pt + (H - pt - pb) * (1 - i / 4); g += `<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="#1E3558" stroke-width="1" ${i?'stroke-dasharray="2 4"':''}/><text x="${pl-6}" y="${y+3}" fill="#6A80A3" font-size="10" text-anchor="end" font-family="JetBrains Mono">${fmtInt(nice*i/4)}</text>`; }
+  const ticks = Math.min(5, B.length);
+  for (let i = 0; i < ticks; i++) { const k = Math.round(i * (B.length - 1) / Math.max(1, ticks - 1)); const x = i === 0 ? pl : i === ticks - 1 ? W : pl + k * bw + bw / 2; g += `<text x="${x}" y="${H-5}" fill="#6A80A3" font-size="10" text-anchor="${i === 0 ? 'start' : i === ticks - 1 ? 'end' : 'middle'}" font-family="JetBrains Mono">${MON[B[k].t.getMonth()]} ${B[k].t.getDate()}</text>`; }
+  B.forEach((b, i) => { const h = (H - pt - pb) * b.n / nice; const x = pl + i * bw + gap / 2, w = Math.max(1, bw - gap); const y = H - pb - h; const r = Math.min(2, w / 2);
+    g += `<rect class="db" data-i="${i}" x="${x}" y="${H-pb-(H-pt-pb)}" width="${bw}" height="${H-pt-pb}" fill="transparent"/>`;
+    g += `<path d="M${x} ${H-pb} V${y+r} Q${x} ${y} ${x+r} ${y} H${x+w-r} Q${x+w} ${y} ${x+w} ${y+r} V${H-pb} Z" fill="#2E9BFF" opacity=".85" style="transform-origin:${x}px ${H-pb}px;transform:scaleY(0);animation:barUp .7s cubic-bezier(.2,.8,.2,1) ${(i/B.length*.5).toFixed(3)}s forwards" pointer-events="none" data-b="${i}"/>`; });
+  svg.innerHTML = `<style>@keyframes barUp{to{transform:scaleY(1)}}</style>${g}`;
+  svg.onmousemove = e => { const r = svg.getBoundingClientRect(); const i = Math.floor((e.clientX - r.left - pl) / bw); if (i < 0 || i >= B.length) { hideTip(); return; } const b = B[i];
+    svg.querySelectorAll('path[data-b]').forEach(p => p.setAttribute('opacity', +p.dataset.b === i ? '1' : '.45'));
+    showTip(`<div class="h">${size===7?'Week of ':''}${fmtDate(b.t)}</div><b class="mono">${fmtInt(b.n)}</b> permits<br><span class="mono">${fmtMoney(b.v)}</span> <span class="muted">job value</span>`, e.clientX, e.clientY); };
+  svg.onmouseleave = () => { hideTip(); svg.querySelectorAll('path[data-b]').forEach(p => p.setAttribute('opacity', '.85')); };
+}
+
+/* ================= dotted globe ================= */
+const G = { pts: [], dens: [], max: 1, yaw: -0.15, drag: 0, t0: performance.now(), raf: 0, proj: [], hover: null };
+(function initBase(){ const N = 1600, ga = Math.PI * (3 - Math.sqrt(5)); for (let i = 0; i < N; i++) { const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), th = ga * i; G.pts.push([Math.cos(th) * r, y, Math.sin(th) * r]); } })();
+const LAT0 = 25.23, LAT1 = 25.98, LNG0 = -80.87, LNG1 = -80.11, GC = 72, GR = 64, KDEG = 105;
+function buildGlobe(V){
+  const cells = new Map();
+  for (const p of V) { if (p.geo === 'county' || p.lat == null || p.lat < LAT0 || p.lat > LAT1 || p.lng < LNG0 || p.lng > LNG1) continue;
+    const cx = Math.floor((p.lng - LNG0) / (LNG1 - LNG0) * GC), cy = Math.floor((p.lat - LAT0) / (LAT1 - LAT0) * GR); const k = cy * GC + cx;
+    let c = cells.get(k); if (!c) { c = { cx, cy, n: 0, v: 0, top: null }; cells.set(k, c); } c.n++; c.v += p.value || 0; if (!c.top || (p.value||0) > (c.top.value||0)) c.top = p; }
+  G.dens = [...cells.values()].map(c => { const lat = LAT0 + (c.cy + .5) / GR * (LAT1 - LAT0), lng = LNG0 + (c.cx + .5) / GC * (LNG1 - LNG0);
+    const phi = (lat - 25.62) * KDEG * Math.PI / 180, lam = (lng + 80.45) * KDEG * Math.PI / 180 * Math.cos(25.6 * Math.PI/180);
+    return Object.assign(c, { lat, lng, x: Math.cos(phi) * Math.sin(lam), y: Math.sin(phi), z: Math.cos(phi) * Math.cos(lam) }); });
+  G.max = Math.max(1, ...G.dens.map(c => c.n)); G.born = performance.now();
+  $('#globeLeg').innerHTML = `${fmtInt(G.dens.length)} active cells · peak ${fmtInt(G.max)} permits/cell`;
+  if (!G.raf) G.raf = requestAnimationFrame(drawGlobe);
+}
+function drawGlobe(now){
+  G.raf = 0; const cv = $('#globe'); if (!cv || S.view_name !== 'overview') return;
+  const dpr = Math.min(2, devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight;
+  if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+  const R = Math.min(W, H) * .44, cx = W / 2, cy = H / 2 + 4;
+  const t = (now - G.t0) / 1000; const yaw = G.yaw + Math.sin(t * .22) * .42 + G.drag, pitch = -.32 + Math.sin(t * .13) * .06;
+  const cyw = Math.cos(yaw), syw = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const rot = (x, y, z) => { const x1 = x * cyw + z * syw, z1 = -x * syw + z * cyw; const y2 = y * cp - z1 * sp, z2 = y * sp + z1 * cp; return [x1, y2, z2]; };
+  // halo
+  const halo = ctx.createRadialGradient(cx, cy, R * .6, cx, cy, R * 1.35); halo.addColorStop(0, 'rgba(46,155,255,0.10)'); halo.addColorStop(1, 'rgba(46,155,255,0)');
+  ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(cx, cy, R * 1.35, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(46,155,255,.25)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+  // sweep
+  const sweep = (t * .5) % (Math.PI * 2) - Math.PI;
+  ctx.fillStyle = '#6A80A3';
+  for (const [x, y, z] of G.pts) { const [X, Y, Z] = rot(x, y, z); if (Z <= 0) continue; const ang = Math.atan2(X, Z); const s = Math.max(0, 1 - Math.abs(ang - sweep) * 3);
+    ctx.globalAlpha = .1 + Z * .28 + s * .35; ctx.fillRect(cx + X * R - .8, cy - Y * R - .8, 1.6, 1.6); }
+  ctx.globalAlpha = 1;
+  // density
+  const grow = clamp((now - (G.born || 0)) / 1400, 0, 1), ge = 1 - Math.pow(1 - grow, 3);
+  G.proj = [];
+  const vis = [];
+  for (const c of G.dens) { const [X, Y, Z] = rot(c.x, c.y, c.z); if (Z <= 0.02) continue; vis.push([cx + X * R, cy - Y * R, Z, c]); }
+  ctx.globalCompositeOperation = 'lighter';
+  for (const [px, py, Z, c] of vis) { const k = Math.sqrt(c.n / G.max); if (k < .45) continue; ctx.fillStyle = `rgba(46,155,255,${.05 * Z * k})`; ctx.beginPath(); ctx.arc(px, py, (3 + k * 9) * ge, 0, Math.PI * 2); ctx.fill(); }
+  ctx.globalCompositeOperation = 'source-over';
+  for (const [px, py, Z, c] of vis) { const k = Math.sqrt(c.n / G.max);
+    const r = (.7 + k * 3.1) * ge * (.6 + .4 * Z); const hot = G.hover === c;
+    ctx.fillStyle = hot ? '#FFFFFF' : k > .6 ? '#BFE4FF' : k > .35 ? '#6CC0FF' : k > .15 ? '#2E9BFF' : '#2466B8'; ctx.globalAlpha = (.5 + .5 * Z) * (.6 + .4 * k);
+    ctx.beginPath(); ctx.arc(px, py, Math.max(.6, hot ? r + 2 : r), 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+    G.proj.push([px, py, c, r]); }
+  // beacon on the peak cell
+  const peak = G.dens.reduce((m, c) => (!m || c.n > m.n) ? c : m, null);
+  if (peak) { const [X, Y, Z] = rot(peak.x, peak.y, peak.z); if (Z > 0) { const ph = (t % 2) / 2; ctx.strokeStyle = `rgba(143,208,255,${1 - ph})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(cx + X * R, cy - Y * R, 6 + ph * 22, 0, Math.PI * 2); ctx.stroke(); } }
+  G.raf = requestAnimationFrame(drawGlobe);
+}
+(function globeEvents(){
+  const cv = $('#globe'); let down = null;
+  cv.addEventListener('pointerdown', e => { down = { x: e.clientX, d: G.drag }; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointerup', () => down = null);
+  cv.addEventListener('pointermove', e => {
+    if (down) { G.drag = down.d + (e.clientX - down.x) * .006; hideTip(); return; }
+    const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top; let best = null, bd = Infinity;
+    for (const [px, py, c, rr] of G.proj) { const d = (px - mx) ** 2 + (py - my) ** 2; if (d < Math.max(144, (rr + 4) ** 2) && d < bd) { bd = d; best = c; } }
+    G.hover = best;
+    if (best) showTip(`<div class="h">~1 km cell · ${best.lat.toFixed(3)}, ${best.lng.toFixed(3)}</div><b class="mono">${fmtInt(best.n)}</b> permits · <span class="mono">${fmtMoney(best.v)}</span><br><span class="muted">biggest: ${esc(best.top && best.top.address || '—')} (${fmtMoney(best.top && best.top.value)})</span>`, e.clientX, e.clientY); else hideTip();
+  });
+  cv.addEventListener('pointerleave', () => { G.hover = null; hideTip(); });
+})();
+
+/* ================= morning list ================= */
+function morningList(){
+  // one row per contractor (their best permit), so the list is 25 different leads
+  const best = new Map(), more = new Map();
+  for (const p of S.view) { if (!p.contractor || !p.key) continue; more.set(p.key, (more.get(p.key) || 0) + 1); const b = best.get(p.key); if (!b || p.score > b.score || (p.score === b.score && (p.value||0) > (b.value||0))) best.set(p.key, p); }
+  return [...best.values()].sort((a,b) => b.score - a.score || (b.value||0) - (a.value||0)).slice(0, 25).map(p => (p.more = more.get(p.key) - 1, p));
+}
+function renderMorning(){
+  const L = morningList();
+  $('#mlDate').textContent = `· ${fmtDate(TODAY)}`;
+  if (!L.length) { $('#mlTable').innerHTML = '<div class="empty">No leads match these filters. Widen the date range or clear search.</div>'; return; }
+  $('#mlTable').innerHTML = `<table class="t"><thead><tr><th>#</th><th>Grade</th><th>Score</th><th>Contractor</th><th class="r">Job value</th><th>Address</th><th>Work type</th><th class="r">Days since</th><th></th></tr></thead><tbody>${L.map((p, i) => `
+    <tr class="rise" style="animation-delay:${i * .03}s">
+      <td class="mono muted">${String(i+1).padStart(2,'0')}</td>
+      <td><span class="grade ${p.grade}">${p.grade}</span></td>
+      <td class="mono" data-tip="${esc(`<div class='h'>Lead score ${p.score}</div>Job value ${Math.round(p.parts.v*100)} × 40%<br>Recency ${Math.round(p.parts.r*100)} × 30%<br>Contractor volume ${Math.round(p.parts.c*100)} × 20%<br>Trade match ${Math.round(p.parts.t*100)} × 10%`)}">${p.score}<span class="scorebar"><i style="width:${p.score}%;animation-delay:${i*.03}s"></i></span></td>
+      <td><span class="link" data-dossier="${esc(p.key)}">${dash(titleCase(p.contractor))}</span><div class="mono muted text-[10.5px]">${dash(p.license)}${p.more ? ` · <span class="ink2">+${fmtInt(p.more)} more permits</span>` : ''}</div></td>
+      <td class="r mono">${fmtMoney(p.value)}</td>
+      <td><span class="trunc">${dash(p.address)}</span><div class="muted text-[10.5px]">${dash(p.city ? titleCase(p.city) : null)}${p.zip ? ' · ' + esc(p.zip) : ''}</div></td>
+      <td><span class="pill ${p.trade}">${esc(TRADE_LABEL[p.trade])}</span> <span class="muted text-[11px] trunc" style="max-width:170px">${dash(p.workType ? titleCase(p.workType) : null)}</span></td>
+      <td class="r mono">${p.date ? daysSince(p.date) + 'd' : '—'}<div class="muted text-[10.5px]">${fmtDate(p.date)}</div></td>
+      <td><button class="btn sm" data-dossier="${esc(p.key)}">Dossier →</button></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+function exportMorning(){
+  const L = morningList(); if (!L.length) return;
+  const rows = L.map((p, i) => ({ rank: i + 1, grade: p.grade, lead_score: p.score, permit_id: p.id, issue_date: p.date ? isoDay(p.date) : '', contractor_name: p.contractor || '', license_number: p.license || '', phone: p.phone || '', job_value: p.value ?? '', address: p.address || '', city: p.city || '', zip: p.zip || '', work_type: p.workType || '', trade: p.trade, days_since_issue: daysSince(p.date) ?? '', status: p.status || '' }));
+  const blob = new Blob([Papa.unparse(rows)], { type: 'text/csv' }); const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `morning-list-${isoDay(TODAY)}.csv`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ================= installers ================= */
+function leaderboard(V){
+  const M = new Map();
+  for (const p of V) { if (!p.key) continue; let o = M.get(p.key); if (!o) { const c = S.contractors.get(p.key) || {}; o = { key: p.key, name: c.name || p.contractor, license: c.license || p.license, grade: c.grade || 'C', n: 0, v: 0, nv: 0, last: null }; M.set(p.key, o); } o.n++; if (p.value != null) { o.v += p.value; o.nv++; } if (p.date && (!o.last || p.date > o.last)) o.last = p.date; }
+  return [...M.values()].map(o => (o.avg = o.nv ? o.v / o.nv : null, o)).sort((a,b) => b.n - a.n || b.v - a.v);
+}
+function renderInstallers(){
+  let L = leaderboard(S.view); L.forEach((o, i) => o.rank = i + 1);
+  const { k, d } = S.instSort; if (k !== 'count') L.sort((a, b) => { const A = a[k], B = b[k]; if (A == null) return 1; if (B == null) return -1; return (A > B ? 1 : A < B ? -1 : 0) * d; }); else if (d === 1) L.reverse();
+  $('#instCount').textContent = `· ${fmtInt(L.length)} contractors`;
+  const show = L.slice(0, S.instLimit); const mx = Math.max(1, ...L.map(o => o.n));
+  $('#instMore').classList.toggle('hidden', L.length <= S.instLimit);
+  const th = (key, lbl, cls = '') => `<th class="sort ${cls}" data-sort="${key}">${lbl}${S.instSort.k === key ? (S.instSort.d < 0 ? ' ↓' : ' ↑') : ''}</th>`;
+  $('#instTable').innerHTML = show.length ? `<table class="t"><thead><tr>${th('rank','Rank')}${th('name','Name')}${th('license','License')}${th('count','Permits','r')}<th></th>${th('v','Total value','r')}${th('avg','Avg job','r')}${th('grade','Grade')}${th('last','Last permit')}<th></th></tr></thead><tbody>${show.map((o, i) => `
+    <tr class="rise" style="animation-delay:${Math.min(i, 30) * .02}s">
+      <td class="mono muted">${o.rank}</td>
+      <td><span class="link" data-dossier="${esc(o.key)}">${dash(titleCase(o.name))}</span></td>
+      <td class="mono ink2">${dash(o.license)}</td>
+      <td class="r mono">${fmtInt(o.n)}</td>
+      <td style="width:120px"><div class="track" style="height:6px;background:#0B1A31;border-radius:3px;overflow:hidden"><div class="fill" style="height:100%;width:${(o.n/mx*100).toFixed(1)}%;background:#2E9BFF;border-radius:0 3px 3px 0;transform-origin:left;animation:grow .8s cubic-bezier(.2,.8,.2,1) both ${Math.min(i,30)*.02}s"></div></div></td>
+      <td class="r mono">${fmtMoney(o.v)}</td>
+      <td class="r mono">${fmtMoney(o.avg)}</td>
+      <td><span class="grade ${o.grade}">${o.grade}</span></td>
+      <td class="mono muted">${fmtDate(o.last)}</td>
+      <td><button class="btn sm" data-dossier="${esc(o.key)}">Dossier →</button></td>
+    </tr>`).join('')}</tbody></table>` : '<div class="empty">No contractors match these filters.</div>';
+}
+
+/* ================= dossier ================= */
+function outreach(c){
+  const name = titleCase(c.name || 'there'); const recent = c.permits[0] || {};
+  const top = Object.entries(c.trades).sort((a,b)=>b[1]-a[1])[0]; const topTrade = top ? top[0] : 'general';
+  const tl = { roofing: 'roofing', windows: 'window & shutter', doors: 'door', general: 'general contracting', other: 'trade' }[topTrade];
+  const big = c.permits.filter(p => p.value != null).sort((a,b)=>b.value-a.value)[0];
+  const days = Math.max(1, Math.round(((S.to||TODAY) - (S.from||TODAY)) / DAY));
+  const street = recent.address ? titleCase(recent.address.replace(/\s{2,}.*$/, '')) : 'a recent job';
+  const hook = { roofing: 'With that much re-roof volume moving through Dade before storm season, material lead times and crew scheduling tend to be the squeeze.', windows: 'Impact-window work at that pace usually means product lead times and NOA paperwork are the bottleneck.', doors: 'At that pace, getting product on site fast (and code-compliant) is usually the whole game.', general: 'Running that many jobs at once usually means subs and materials are where the time goes.', other: 'At that volume, keeping crews supplied and moving is usually where the time goes.' }[topTrade];
+  const subj = `${fmtInt(c.count)} permits in ${days} days — quick idea for ${name}`;
+  const email = `Subject: ${subj}
+
+Hi ${name} team,
+
+I noticed you've pulled ${fmtInt(c.count)} permits in Miami-Dade over the last ${days} days — most recently ${recent.workType ? titleCase(recent.workType).toLowerCase() : 'work'} at ${street}${recent.date ? ' (issued ' + fmtDate(recent.date) + ')' : ''}${big ? `, and a ${fmtMoney(big.value)} job at ${titleCase(String(big.address||'').replace(/\s{2,}.*$/,''))}` : ''}.
+
+${hook}
+
+We work with ${tl} contractors across South Florida on exactly that — [your one-line value prop]. Worth a 10-minute call this week to see if we can take something off your plate on the next one?
+
+Best,
+[Your name]
+[Company] · [Phone]`;
+  const what = (recent.trade && recent.trade !== 'other') ? TRADE_LABEL[recent.trade].toLowerCase() : (recent.workType ? titleCase(recent.workType).toLowerCase() : 'new');
+  const dm = `Hey ${name} team — saw you just pulled a ${recent.value != null ? fmtMoney(recent.value) + ' ' : ''}${what} permit on ${street}${recent.date ? ' (' + fmtDate(recent.date) + ')' : ''}. ${fmtInt(c.count)} permits in ${days}d is a serious clip 👀 Open to a quick chat about how we help ${tl} crews in Dade move faster?`;
+  return { email, dm };
+}
+function renderDossier(){
+  const el = $('#dossier'); const c = S.dossierKey && S.contractors.get(S.dossierKey);
+  if (!c) {
+    const sug = leaderboard(S.view).slice(0, 6);
+    el.innerHTML = `<div class="card p-8 text-center rise"><div class="text-xl font-bold">Pick a contractor to open their dossier</div><div class="muted mt-1 mb-5">Click any contractor name or a "Dossier →" button — or start with one of today's busiest:</div><div class="flex flex-wrap justify-center gap-2">${sug.map(o => `<button class="btn" data-dossier="${esc(o.key)}"><span class="grade ${o.grade}" style="width:18px;height:18px;font-size:10px">${o.grade}</span>${dash(titleCase(o.name))}</button>`).join('') || '<span class="muted">No contractors in range.</span>'}</div></div>`;
+    return;
+  }
+  const K = outreach(c); const trades = Object.entries(c.trades).sort((a,b)=>b[1]-a[1]); const tmax = Math.max(1, ...trades.map(t=>t[1]));
+  const { B } = bucketize(c.permits, 7); const bm = Math.max(1, ...B.map(b => b.n));
+  const cities = {}; c.permits.forEach(p => { const k = p.city ? titleCase(p.city) : '—'; cities[k] = (cities[k]||0) + 1; });
+  el.innerHTML = `
+  <div class="flex flex-wrap items-start justify-between gap-3 mb-3 rise">
+    <div class="flex items-center gap-4">
+      <span class="grade ${c.grade}" style="width:48px;height:48px;font-size:22px;border-radius:10px">${c.grade}</span>
+      <div><div class="lbl">Contractor dossier</div><div class="text-2xl font-extrabold tracking-tight">${dash(titleCase(c.name))}</div>
+      <div class="muted mono text-[12px] mt-0.5">License ${dash(c.license)} · ${dash(c.phone)} · last permit ${fmtDate(c.last)}</div></div>
+    </div>
+    <button class="btn" data-goto="installers">← Leaderboard</button>
+  </div>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div class="card hov stat rise"><div class="lbl">Permits in range</div><div class="v mono" id="dCount">—</div><div class="sub">${Object.entries(cities).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k,v])=>esc(k)+' '+v).join(' · ')}</div></div>
+    <div class="card hov stat rise" style="animation-delay:.05s"><div class="lbl">Total job value</div><div class="v mono" id="dTotal">—</div><div class="sub">${fmtInt(c.valued)} permits with a value</div></div>
+    <div class="card hov stat rise" style="animation-delay:.1s"><div class="lbl">Avg job value</div><div class="v mono" id="dAvg">—</div><div class="sub">volume percentile ${Math.round(c.volPct*100)}</div></div>
+    <div class="card hov stat rise" style="animation-delay:.15s"><div class="lbl">Weekly cadence</div><svg class="spark" id="dSpark" style="height:46px" preserveAspectRatio="none"></svg><div class="sub">${fmtInt(B.length ? c.count / B.length : 0)} permits / week</div></div>
+  </div>
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-3 mt-3">
+    <div class="card rise" style="animation-delay:.2s"><div class="card-h"><span>Trade breakdown</span><span class="muted mono normal-case tracking-normal text-[11px]">permits</span></div><div class="p-4">${trades.map(([t,n],i)=>`<div class="hbar" data-tip="${esc(`<div class='h'>${TRADE_LABEL[t]}</div>${fmtInt(n)} permits · ${fmtMoney(c.tradeVal[t])}`)}"><span class="ink2">${TRADE_LABEL[t]}</span><div class="track"><div class="fill" style="width:${(n/tmax*100).toFixed(1)}%;animation-delay:${i*.07}s"></div></div><span class="mono text-right">${fmtInt(n)}</span></div>`).join('')}</div></div>
+    <div class="card xl:col-span-2 rise" style="animation-delay:.25s"><div class="card-h"><span>Recent permits</span><span class="muted mono normal-case tracking-normal text-[11px]">${fmtInt(c.permits.length)} in range</span></div>
+      <div class="tbl-wrap" style="max-height:330px;overflow:auto"><table class="t"><thead><tr><th>Issued</th><th>Permit</th><th>Address</th><th>Work type</th><th class="r">Value</th><th>Status</th><th>Lead</th></tr></thead><tbody>${c.permits.slice(0, 40).map((p,i)=>`<tr class="rise" style="animation-delay:${Math.min(i,15)*.025}s"><td class="mono muted">${fmtDate(p.date)}</td><td class="mono ink2">${dash(p.id)}</td><td><span class="trunc">${dash(p.address)}</span></td><td><span class="pill ${p.trade}">${esc(TRADE_LABEL[p.trade])}</span> <span class="muted text-[11px] trunc" style="max-width:150px">${dash(p.workType?titleCase(p.workType):null)}</span></td><td class="r mono">${fmtMoney(p.value)}</td><td class="muted">${dash(p.status)}</td><td><span class="grade ${p.grade}">${p.grade}</span></td></tr>`).join('')}</tbody></table></div></div>
+  </div>
+  <div class="card mt-3 rise" style="animation-delay:.3s">
+    <div class="card-h"><span>Outreach kit · auto-generated</span><span class="muted normal-case tracking-normal text-[11px]">edit the [brackets] before sending</span></div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 p-4">
+      <div class="lg:col-span-2"><div class="flex items-center justify-between mb-2"><span class="lbl">Cold email</span><button class="btn sm" data-copy="email">Copy</button></div><div class="kit" id="kitEmail"></div></div>
+      <div><div class="flex items-center justify-between mb-2"><span class="lbl">DM opener</span><button class="btn sm" data-copy="dm">Copy</button></div><div class="kit" id="kitDm"></div>
+        <div class="lbl mt-4 mb-2">Talking points</div>
+        <ul class="text-[12.5px] ink2 space-y-1.5 list-disc pl-4">
+          <li>${fmtInt(c.count)} permits in range — top ${Math.max(1, 100 - Math.round(c.volPct * 100))}% by volume in Dade</li>
+          <li>Mostly ${esc(TRADE_LABEL[trades[0] ? trades[0][0] : 'general'].toLowerCase())} (${trades[0] ? Math.round(trades[0][1] / c.count * 100) : 0}% of permits)</li>
+          <li>Largest job: ${(() => { const b = c.permits.filter(p=>p.value!=null).sort((a,b)=>b.value-a.value)[0]; return b ? fmtMoney(b.value) + ' at ' + esc(b.address || '—') : '—'; })()}</li>
+        </ul>
+      </div>
+    </div>
+  </div>`;
+  typeInto($('#kitEmail'), K.email); typeInto($('#kitDm'), K.dm);
+  el._kit = K;
+  countUp($('#dCount'), c.count, fmtInt); countUp($('#dTotal'), c.total, fmtMoney); countUp($('#dAvg'), c.avg == null ? NaN : c.avg, fmtMoney);
+  requestAnimationFrame(() => spark('#dSpark', B.map(b => b.n)));
+}
+function typeInto(el, text){ let i = 0; const step = Math.max(3, Math.ceil(text.length / 70)); cancelAnimationFrame(el._raf); const tick = () => { i = Math.min(text.length, i + step); el.textContent = text.slice(0, i); if (i < text.length) el._raf = requestAnimationFrame(tick); }; tick(); }
+function openDossier(key){ if (!key) return; S.dossierKey = key; S.dirty.dossier = 1; go('dossier'); }
+
+/* ================= map ================= */
+let MAP = null, CLUSTER = null;
+function renderMap(){
+  if (typeof L === 'undefined') { $('#map').innerHTML = '<div class="empty">Map library failed to load.</div>'; return; }
+  if (!MAP) {
+    MAP = L.map('map', { zoomControl: true, preferCanvas: true }).setView([25.70, -80.35], 10);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors', maxZoom: 16 }).addTo(MAP);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, pane: 'shadowPane', opacity: .8 }).addTo(MAP);
+  }
+  setTimeout(() => MAP.invalidateSize(), 60);
+  if (CLUSTER) MAP.removeLayer(CLUSTER);
+  const rank = { A: 3, B: 2, C: 1 };
+  CLUSTER = L.markerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false, maxClusterRadius: 48, spiderfyOnMaxZoom: true,
+    iconCreateFunction: cl => { const ms = cl.getAllChildMarkers(); let best = 'C'; for (const m of ms) { if (rank[m.options.grade] > rank[best]) best = m.options.grade; if (best === 'A') break; } const n = cl.getChildCount(); const s = n < 50 ? 32 : n < 500 ? 40 : 50; return L.divIcon({ html: `<div class="clu ${best}" style="width:${s}px;height:${s}px">${n >= 1000 ? (n/1000).toFixed(1) + 'k' : n}</div>`, className: '', iconSize: [s, s] }); } });
+  const icons = { A: L.divIcon({ html: '<div class="pin A">A</div>', className: '', iconSize: [18,18] }), B: L.divIcon({ html: '<div class="pin B">B</div>', className: '', iconSize: [18,18] }), C: L.divIcon({ html: '<div class="pin C">C</div>', className: '', iconSize: [18,18] }) };
+  const geoLbl = { exact: 'exact coordinates', grid: 'street-grid estimate', zip: 'zip centroid', street: 'street / area estimate', city: 'city centroid', county: 'county centroid' };
+  const ms = [];
+  for (const p of S.view) { if (p.geo === 'county' || p.lat == null || !isFinite(p.lat)) continue;
+    const m = L.marker([p.lat, p.lng], { icon: icons[p.grade] || icons.C, grade: p.grade });
+    m.bindPopup(() => `<div style="min-width:220px"><div class="flex items-center gap-2 mb-1"><span class="grade ${p.grade}">${p.grade}</span><b>${dash(p.contractor ? titleCase(p.contractor) : null)}</b></div>
+      <div class="mono text-[18px] font-bold">${fmtMoney(p.value)}</div>
+      <div>${dash(p.address)}${p.city ? ', ' + esc(titleCase(p.city)) : ''}</div>
+      <div class="muted">${dash(p.workType ? titleCase(p.workType) : null)} · ${esc(TRADE_LABEL[p.trade])}</div>
+      <div class="muted mono text-[11px] mt-1">#${dash(p.id)} · ${fmtDate(p.date)} · ${dash(p.status)}</div>
+      <div class="muted text-[11px]">Lead score ${p.score} · located by ${geoLbl[p.geo]}</div>
+      ${p.key ? `<button class="btn sm mt-2" data-dossier="${esc(p.key)}">Open dossier →</button>` : ''}</div>`);
+    ms.push(m); }
+  CLUSTER.addLayers(ms); MAP.addLayer(CLUSTER);
+  const approx = S.view.filter(p => p.geo === 'county').length;
+  $('#mapCount').textContent = `${fmtInt(ms.length)} permits plotted` + (approx ? ` · ${fmtInt(approx)} not plotted (no coordinates, zip, or grid-style address)` : '');
+}
+
+/* ================= navigation ================= */
+function moveInk(){ const t = $('.tab.on'), ink = $('#tabInk'); if (!t) return; ink.style.left = t.offsetLeft + 'px'; ink.style.width = t.offsetWidth + 'px'; }
+function go(v){
+  if (!v) return; S.view_name = v;
+  $$('.tab').forEach(t => t.classList.toggle('on', t.dataset.v === v));
+  const swap = () => { $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v)); render(); if (v === 'overview' && !G.raf) G.raf = requestAnimationFrame(drawGlobe); if (v === 'map' && MAP) setTimeout(() => MAP.invalidateSize(), 60); };
+  swap(); moveInk(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  try { history.replaceState(null, '', '#' + v); } catch (e) {}
+}
+
+/* ================= filters UI ================= */
+function drawTradeChips(){
+  const html = TRADES.map(([k, l]) => `<button class="chip ${S.trade === k ? 'on' : ''}" data-trade="${k}">${l}</button>`).join('');
+  $('#trades').innerHTML = html; $('#trades2').innerHTML = html;
+}
+function syncDates(){ $('#dFrom').value = S.from ? isoDay(S.from) : ''; $('#dTo').value = S.to ? isoDay(S.to) : ''; }
+async function setRange(from, to){
+  if (from && to && from > to) [from, to] = [to, from];
+  S.from = from; S.to = to; syncDates();
+  const span = Math.round((to - from) / DAY);
+  const anchor = S.source === 'csv' ? to : TODAY;
+  $$('#presets .chip').forEach(c => c.classList.toggle('on', isoDay(to) === isoDay(anchor) && +c.dataset.d === span));
+  await ensureRange(); recompute();
+}
+
+document.addEventListener('click', e => {
+  const d = e.target.closest('[data-dossier]'); if (d) { openDossier(d.dataset.dossier); return; }
+  const t = e.target.closest('.tab'); if (t) { go(t.dataset.v); return; }
+  const g = e.target.closest('[data-goto]'); if (g) { go(g.dataset.goto); return; }
+  const tr = e.target.closest('[data-trade]'); if (tr) { S.trade = tr.dataset.trade; drawTradeChips(); recompute(); return; }
+  const pr = e.target.closest('#presets .chip'); if (pr) { const to = S.source === 'csv' && S.to ? S.to : TODAY; setRange(new Date(+to - +pr.dataset.d * DAY), to); return; }
+  const so = e.target.closest('th[data-sort]'); if (so) { const k = so.dataset.sort; S.instSort = { k, d: S.instSort.k === k ? -S.instSort.d : (k === 'name' || k === 'license' || k === 'rank' || k === 'grade' ? 1 : -1) }; S.dirty.installers = 1; render(); return; }
+  const cp = e.target.closest('[data-copy]'); if (cp) { const K = $('#dossier')._kit; if (!K) return; const txt = K[cp.dataset.copy]; (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => { cp.textContent = 'Copied ✓'; setTimeout(() => cp.textContent = 'Copy', 1400); }).catch(() => { cp.textContent = 'Select & copy'; }); return; }
+});
+document.addEventListener('mouseover', e => { const el = e.target.closest('[data-tip]'); if (el) el.onmousemove = ev => showTip(el.dataset.tip, ev.clientX, ev.clientY); });
+document.addEventListener('mouseout', e => { const el = e.target.closest('[data-tip]'); if (el && !el.contains(e.relatedTarget)) hideTip(); });
+$('#q').addEventListener('input', debounce(e => { S.q = e.target.value; recompute(); }, 160));
+document.addEventListener('keydown', e => { if (e.key === '/' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); $('#q').focus(); } if (e.key === 'Escape') { $('#q').value = ''; S.q = ''; recompute(); $('#q').blur(); } });
+$('#dFrom').addEventListener('change', e => { const d = parseDate(e.target.value); if (d) setRange(d, S.to || TODAY); });
+$('#dTo').addEventListener('change', e => { const d = parseDate(e.target.value); if (d) setRange(S.from || new Date(+d - 90*DAY), d); });
+$('#file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (f) loadCSV(f); e.target.value = ''; });
+$('#reload').addEventListener('click', () => { S.source = 'live'; S.to = TODAY; S.from = new Date(+TODAY - 90 * DAY); syncDates(); $$('#presets .chip').forEach(c => c.classList.toggle('on', c.dataset.d === '90')); initLive(); });
+$('#exportMl').addEventListener('click', exportMorning);
+$('#instMore').addEventListener('click', () => { S.instLimit += 100; S.dirty.installers = 1; render(); });
+addEventListener('resize', debounce(() => { moveInk(); if (S.view_name === 'overview') { S.dirty.overview = 1; render(); } }, 200));
+// drag & drop CSV anywhere
+addEventListener('dragover', e => e.preventDefault());
+addEventListener('drop', e => { e.preventDefault(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f && /\.csv$/i.test(f.name)) loadCSV(f); });
+window.addEventListener('error', e => console.warn('Handled error:', e.message));
+
+/* ================= boot ================= */
+S.to = TODAY; S.from = new Date(+TODAY - 90 * DAY); syncDates(); drawTradeChips();
+requestAnimationFrame(moveInk); if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveInk);
+const h = (location.hash || '').slice(1); if (['overview','morning','installers','dossier','map'].includes(h)) go(h);
+initLive();
+})();
+</script>
+</body>
+</html>
