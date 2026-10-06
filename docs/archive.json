@@ -28,5 +28,15 @@
     "top_points": 99.8,
     "top_team": "Pending Update",
     "week": 3
+  },
+  "4": {
+    "generated_at": "2026-10-06T18:50:03+00:00",
+    "is_demo": false,
+    "league": "Philly_VZW",
+    "matchups": 8,
+    "season": 2026,
+    "top_points": 102.4,
+    "top_team": "Man Coverage Brandon",
+    "week": 4
   }
 }
