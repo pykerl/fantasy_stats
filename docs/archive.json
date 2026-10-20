@@ -48,5 +48,15 @@
     "top_points": 106.1,
     "top_team": "Parita's Pleasant Team",
     "week": 5
+  },
+  "6": {
+    "generated_at": "2026-10-20T17:49:39+00:00",
+    "is_demo": false,
+    "league": "Philly_VZW",
+    "matchups": 8,
+    "season": 2026,
+    "top_points": 105.1,
+    "top_team": "Man Coverage Brandon",
+    "week": 6
   }
 }
