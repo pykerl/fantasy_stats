@@ -78,5 +78,15 @@
     "top_points": 105.4,
     "top_team": "Parita's Pleasant Team",
     "week": 8
+  },
+  "9": {
+    "generated_at": "2026-11-10T20:19:36+00:00",
+    "is_demo": false,
+    "league": "Philly_VZW",
+    "matchups": 8,
+    "season": 2026,
+    "top_points": 107.1,
+    "top_team": "Parita's Pleasant Team",
+    "week": 9
   }
 }
